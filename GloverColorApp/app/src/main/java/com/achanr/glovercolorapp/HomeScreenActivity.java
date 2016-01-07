@@ -52,7 +52,7 @@ public class HomeScreenActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_screen, menu);
+        //getMenuInflater().inflate(R.menu.home_screen, menu);
         return true;
     }
 
@@ -78,7 +78,7 @@ public class HomeScreenActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_saved_color_sets) {
-            // Handle the camera action
+            
         } else if (id == R.id.nav_edit_profile) {
 
         }

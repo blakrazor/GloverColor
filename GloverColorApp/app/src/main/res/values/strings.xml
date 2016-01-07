@@ -5,4 +5,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="welcome">Welcome to GloverColor!</string>
+    <string name="glovercolor_tagline">Create, save, and share your colors</string>
+    <string name="glovercolor">GloverColor</string>
+    <string name="menu_saved_color_sets">Saved color sets</string>
+    <string name="menu_edit_profile">Edit my profile</string>
 </resources>

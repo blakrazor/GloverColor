@@ -5,11 +5,11 @@
         <item
             android:id="@+id/nav_saved_color_sets"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Saved color sets"/>
+            android:title="@string/menu_saved_color_sets"/>
         <item
             android:id="@+id/nav_edit_profile"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Edit my profile"/>
+            android:title="@string/menu_edit_profile"/>
         <!--<item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
