@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GloverColorApp</string>
+    <string name="app_name">GloverColor</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -10,4 +10,6 @@
     <string name="glovercolor">GloverColor</string>
     <string name="menu_saved_color_sets">Saved color sets</string>
     <string name="menu_edit_profile">Edit my profile</string>
+    <string name="title_your_saved_sets">Your Saved Sets</string>
+    <string name="title_activity_gcwelcome_screen">Welcome</string>
 </resources>

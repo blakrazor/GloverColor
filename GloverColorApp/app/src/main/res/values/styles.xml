@@ -27,4 +27,14 @@
         <item name="android:textColor">@android:color/secondary_text_light</item>
     </style>
 
+    <style name="ListItemSavedSetTitle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
+    <style name="ListItemSavedSetDescription">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
 </resources>

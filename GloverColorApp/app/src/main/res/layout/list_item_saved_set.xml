@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/list_item_saved_set_layout"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="?android:attr/listPreferredItemHeight"
+              android:padding="10dp">
+
+    <TextView
+        android:id="@+id/list_item_saved_set_title"
+        style="@style/ListItemSavedSetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="Saved Set 1"/>
+
+    <LinearLayout
+        android:id="@+id/list_item_saved_set_desc_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/list_item_saved_set_desc_colors"
+            style="@style/ListItemSavedSetDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Colors: BlCyGrYeRe"/>
+
+        <TextView
+            android:id="@+id/list_item_saved_set_desc_mode"
+            style="@style/ListItemSavedSetDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mode: Hyperstrobe"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
