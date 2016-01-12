@@ -2,9 +2,11 @@ package com.achanr.glovercolorapp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
@@ -57,8 +59,9 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         String title = mSavedSetList.get(position).getTitle();
         String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mSavedSetList.get(position).getColors());
         EGCModeEnum mode = mSavedSetList.get(position).getMode();
+        SpannableStringBuilder builder = GCUtil.generateMultiColoredString(shortenedColorString);
         holder.txtTitle.setText(title);
-        holder.txtColors.setText(shortenedColorString);
+        holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
         holder.txtMode.setText(mode.toString());
         holder.position = position;
     }

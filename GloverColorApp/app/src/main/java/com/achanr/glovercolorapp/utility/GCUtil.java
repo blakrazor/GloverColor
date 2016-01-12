@@ -1,6 +1,10 @@
 package com.achanr.glovercolorapp.utility;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
@@ -55,6 +59,77 @@ public class GCUtil {
         return shortenedColorString;
     }
 
+    public static EGCColorEnum convertColorAbbrevToColorEnum(String colorAbbrev){
+        if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_red_abbrev))){
+            return EGCColorEnum.RED;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blue_abbrev))){
+            return EGCColorEnum.BLUE;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_green_abbrev))){
+            return EGCColorEnum.GREEN;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_yellow_abbrev))){
+            return EGCColorEnum.YELLOW;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_orange_abbrev))){
+            return EGCColorEnum.ORANGE;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_purple_abbrev))){
+            return EGCColorEnum.PURPLE;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_white_abbrev))){
+            return EGCColorEnum.WHITE;
+        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blank_abbrev))){
+            return EGCColorEnum.BLANK;
+        }
+        return EGCColorEnum.BLANK;
+    }
+
+    private static int[] getRGBValuesForColorAbbrev(String colorAbbrev){
+        int[] rgbValues = new int[3];
+
+        EGCColorEnum colorEnum = convertColorAbbrevToColorEnum(colorAbbrev);
+        switch(colorEnum){
+            case RED:
+                rgbValues[0] = 255;
+                rgbValues[1] = 0;
+                rgbValues[2] = 0;
+                break;
+            case BLUE:
+                rgbValues[0] = 0;
+                rgbValues[1] = 0;
+                rgbValues[2] = 255;
+                break;
+            case GREEN:
+                rgbValues[0] = 0;
+                rgbValues[1] = 255;
+                rgbValues[2] = 0;
+                break;
+            case YELLOW:
+                rgbValues[0] = 255;
+                rgbValues[1] = 255;
+                rgbValues[2] = 0;
+                break;
+            case ORANGE:
+                rgbValues[0] = 255;
+                rgbValues[1] = 165;
+                rgbValues[2] = 0;
+                break;
+            case PURPLE:
+                rgbValues[0] = 128;
+                rgbValues[1] = 0;
+                rgbValues[2] = 128;
+                break;
+            case WHITE:
+                rgbValues[0] = 128;
+                rgbValues[1] = 128;
+                rgbValues[2] = 128;
+                break;
+            case BLANK:
+                rgbValues[0] = 0;
+                rgbValues[1] = 0;
+                rgbValues[2] = 0;
+                break;
+        }
+
+        return rgbValues;
+    }
+
     public static ArrayList<EGCColorEnum>  convertShortenedColorStringToColorList(String shortenedColorString){
         ArrayList<EGCColorEnum> colorList = new ArrayList<>();
 
@@ -76,27 +151,6 @@ public class GCUtil {
             parts.add(string.substring(i, Math.min(len, i + partitionSize)));
         }
         return parts;
-    }
-
-    public static EGCColorEnum convertColorAbbrevToColorEnum(String colorAbbrev){
-        if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_red_abbrev))){
-            return EGCColorEnum.RED;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blue_abbrev))){
-            return EGCColorEnum.BLUE;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_green_abbrev))){
-            return EGCColorEnum.GREEN;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_yellow_abbrev))){
-            return EGCColorEnum.YELLOW;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_orange_abbrev))){
-            return EGCColorEnum.ORANGE;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_purple_abbrev))){
-            return EGCColorEnum.PURPLE;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_white_abbrev))){
-            return EGCColorEnum.WHITE;
-        } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blank_abbrev))){
-            return EGCColorEnum.BLANK;
-        }
-        return EGCColorEnum.BLANK;
     }
 
     public static String randomTitle(ArrayList<GCSavedSetDataModel> savedSetList){
@@ -129,5 +183,19 @@ public class GCUtil {
     public static EGCModeEnum randomMode(){
         List<EGCModeEnum> modeValues = Collections.unmodifiableList(Arrays.asList(EGCModeEnum.values()));
         return modeValues.get((new Random()).nextInt(modeValues.size()));
+    }
+
+    public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString){
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        List<String> stringParts = getParts(shortenedColorString, 2);
+        for(String colorAbbrev : stringParts){
+            SpannableString spannableString = new SpannableString(colorAbbrev);
+            int[] rgbValues = getRGBValuesForColorAbbrev(colorAbbrev);
+            spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorAbbrev.length(), 0);
+            builder.append(spannableString);
+        }
+
+        return builder;
     }
 }
