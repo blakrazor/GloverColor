@@ -6,7 +6,7 @@ package com.achanr.glovercolorapp.utility;
  * @author Andrew Chanrasmi
  * @created 1/8/16 12:51 PM
  */
-public enum GCModeEnum {
+public enum EGCModeEnum {
     STROBE,
     HYPERSTROBE,
     SOLID,

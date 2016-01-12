@@ -3,9 +3,13 @@ package com.achanr.glovercolorapp.utility;
 import android.content.Context;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Glover Color App Project
@@ -14,9 +18,9 @@ import java.util.List;
  */
 public class GCUtil {
 
-    public static String convertColorListToShortenedColorString(Context context, ArrayList<GCColorEnum> colorList) {
+    public static String convertColorListToShortenedColorString(Context context, ArrayList<EGCColorEnum> colorList) {
         String shortenedColorString = "";
-        for (GCColorEnum color : colorList) {
+        for (EGCColorEnum color : colorList) {
             switch (color) {
                 case RED:
                     shortenedColorString += context.getString(R.string.color_red_abbrev);
@@ -47,13 +51,13 @@ public class GCUtil {
         return shortenedColorString;
     }
 
-    public static ArrayList<GCColorEnum>  convertShortenedColorStringToColorList(Context context, String shortenedColorString){
-        ArrayList<GCColorEnum> colorList = new ArrayList<>();
+    public static ArrayList<EGCColorEnum>  convertShortenedColorStringToColorList(Context context, String shortenedColorString){
+        ArrayList<EGCColorEnum> colorList = new ArrayList<>();
 
         List<String> stringParts = getParts(shortenedColorString, 2);
 
         for(String colorAbbrev : stringParts){
-            GCColorEnum colorEnum = convertColorAbbrevToColorEnum(context, colorAbbrev);
+            EGCColorEnum colorEnum = convertColorAbbrevToColorEnum(context, colorAbbrev);
             colorList.add(colorEnum);
         }
 
@@ -70,24 +74,56 @@ public class GCUtil {
         return parts;
     }
 
-    public static GCColorEnum convertColorAbbrevToColorEnum(Context context, String colorAbbrev){
+    public static EGCColorEnum convertColorAbbrevToColorEnum(Context context, String colorAbbrev){
         if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_red_abbrev))){
-            return GCColorEnum.RED;
+            return EGCColorEnum.RED;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blue_abbrev))){
-            return GCColorEnum.BLUE;
+            return EGCColorEnum.BLUE;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_green_abbrev))){
-            return GCColorEnum.GREEN;
+            return EGCColorEnum.GREEN;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_yellow_abbrev))){
-            return GCColorEnum.YELLOW;
+            return EGCColorEnum.YELLOW;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_orange_abbrev))){
-            return GCColorEnum.ORANGE;
+            return EGCColorEnum.ORANGE;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_purple_abbrev))){
-            return GCColorEnum.PURPLE;
+            return EGCColorEnum.PURPLE;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_white_abbrev))){
-            return GCColorEnum.WHITE;
+            return EGCColorEnum.WHITE;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blank_abbrev))){
-            return GCColorEnum.BLANK;
+            return EGCColorEnum.BLANK;
         }
-        return GCColorEnum.BLANK;
+        return EGCColorEnum.BLANK;
+    }
+
+    public static String randomTitle(ArrayList<GCSavedSetDataModel> savedSetList){
+        String newTitle = randomString();
+        for(GCSavedSetDataModel savedSet: savedSetList){
+            if(savedSet.getTitle().equals(newTitle)){
+                return randomTitle(savedSetList);
+            }
+        }
+        return newTitle;
+    }
+
+    public static String randomString() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(5) + 5;
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = "qwertyuiopasdfghjklzxcvbnm".charAt(generator.nextInt("qwertyuiopasdfghjklzxcvbnm".length()));
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
+    }
+
+    public static EGCColorEnum randomColor(){
+        List<EGCColorEnum> colorValues = Collections.unmodifiableList(Arrays.asList(EGCColorEnum.values()));
+        return colorValues.get((new Random()).nextInt(colorValues.size()));
+    }
+
+    public static EGCModeEnum randomMode(){
+        List<EGCModeEnum> modeValues = Collections.unmodifiableList(Arrays.asList(EGCModeEnum.values()));
+        return modeValues.get((new Random()).nextInt(modeValues.size()));
     }
 }

@@ -1,10 +1,11 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.GloverColorApplication;
-import com.achanr.glovercolorapp.utility.GCColorEnum;
-import com.achanr.glovercolorapp.utility.GCModeEnum;
+import com.achanr.glovercolorapp.utility.EGCColorEnum;
+import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.utility.GloverColorApplication;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,11 +13,11 @@ import java.util.ArrayList;
  *
  * @author Andrew Chanrasmi
  */
-public class GCSavedSetDataModel {
+public class GCSavedSetDataModel implements Serializable {
 
     private String mTitle;
-    private ArrayList<GCColorEnum> mColors;
-    private GCModeEnum mMode;
+    private ArrayList<EGCColorEnum> mColors;
+    private EGCModeEnum mMode;
 
     public String getTitle() {
         return mTitle;
@@ -26,19 +27,19 @@ public class GCSavedSetDataModel {
         mTitle = title;
     }
 
-    public ArrayList<GCColorEnum> getColors() {
+    public ArrayList<EGCColorEnum> getColors() {
         return mColors;
     }
 
-    public void setColors(ArrayList<GCColorEnum> colors) {
+    public void setColors(ArrayList<EGCColorEnum> colors) {
         mColors = colors;
     }
 
-    public GCModeEnum getMode() {
+    public EGCModeEnum getMode() {
         return mMode;
     }
 
-    public void setMode(GCModeEnum mode) {
+    public void setMode(EGCModeEnum mode) {
         mMode = mode;
     }
 

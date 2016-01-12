@@ -27,6 +27,11 @@
         <item name="android:textColor">@android:color/secondary_text_light</item>
     </style>
 
+    <style name="EditSavedSetColorText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
     <style name="ListItemSavedSetTitle">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@android:color/secondary_text_light</item>
@@ -35,6 +40,11 @@
     <style name="ListItemSavedSetDescription">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
+    <style name="PrimaryRaisedButton" parent="android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/raised_button_background</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
 </resources>

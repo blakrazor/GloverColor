@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
-import com.achanr.glovercolorapp.utility.GCModeEnum;
+import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.views.GCSavedSetListItemViewHolder;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author Andrew Chanrasmi
  */
-public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListAdapter.ViewHolder> {
+public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListItemViewHolder> {
 
     private ArrayList<GCSavedSetDataModel> mSavedSetList;
     private Context mContext;
@@ -32,6 +32,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListAd
     public void add(int position, GCSavedSetDataModel savedSet) {
         mSavedSetList.add(position, savedSet);
         notifyItemInserted(position);
+
     }
 
     public void remove(GCSavedSetDataModel savedSet) {
@@ -41,24 +42,25 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListAd
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GCSavedSetListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_saved_set, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
+        GCSavedSetListItemViewHolder vh = new GCSavedSetListItemViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(GCSavedSetListItemViewHolder holder, int position) {
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
         String title = mSavedSetList.get(position).getTitle();
         String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mContext, mSavedSetList.get(position).getColors());
-        GCModeEnum mode = mSavedSetList.get(position).getMode();
+        EGCModeEnum mode = mSavedSetList.get(position).getMode();
         holder.txtTitle.setText(title);
         holder.txtColors.setText(shortenedColorString);
         holder.txtMode.setText(mode.toString());
+        holder.position = position;
     }
 
     @Override
@@ -66,17 +68,4 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListAd
         return mSavedSetList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView txtTitle;
-        public TextView txtColors;
-        public TextView txtMode;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            txtTitle = (TextView) itemView.findViewById(R.id.list_item_saved_set_title);
-            txtColors = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_colors);
-            txtMode = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_mode);
-        }
-    }
 }

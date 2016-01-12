@@ -25,6 +25,7 @@ public class GCBaseActivity extends AppCompatActivity
 
     protected FrameLayout mFrameLayout;
     protected Toolbar mToolbar;
+    protected ActionBarDrawerToggle mToggle;
     protected static int mPosition;
     protected NavigationView mNavigationView;
 
@@ -41,10 +42,10 @@ public class GCBaseActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        mToggle = new ActionBarDrawerToggle(
                 this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        drawer.setDrawerListener(mToggle);
+        mToggle.syncState();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -81,9 +82,9 @@ public class GCBaseActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

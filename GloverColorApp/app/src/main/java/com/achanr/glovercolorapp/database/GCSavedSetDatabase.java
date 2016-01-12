@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
-import com.achanr.glovercolorapp.utility.GCModeEnum;
+import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class GCSavedSetDatabase {
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
-                GCSavedSetEntry.COLUMN_NAME_TITLE + " DESC";
+                GCSavedSetEntry.COLUMN_NAME_TITLE + " ASC";
 
         Cursor mCursor = mSavedSetDatabase.query(
                 GCSavedSetEntry.TABLE_NAME,  // The table to query
@@ -72,16 +72,16 @@ public class GCSavedSetDatabase {
 
         if (mCursor != null) {
             mCursor.moveToFirst();
-            while (mCursor.moveToNext()) {
+            do {
                 GCSavedSetDataModel savedSet = new GCSavedSetDataModel();
                 String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_TITLE));
                 String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
                 String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
                 savedSet.setTitle(title);
                 savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(mContext, shortenedColorString));
-                savedSet.setMode(GCModeEnum.valueOf(modeString.toUpperCase()));
+                savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
                 savedSetList.add(savedSet);
-            }
+            } while (mCursor.moveToNext());
         }
 
         return savedSetList;

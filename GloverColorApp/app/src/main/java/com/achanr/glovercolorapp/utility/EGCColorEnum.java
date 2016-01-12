@@ -6,7 +6,7 @@ package com.achanr.glovercolorapp.utility;
  * @author Andrew Chanrasmi
  * @date 1/8/16 12:32 PM
  */
-public enum GCColorEnum {
+public enum EGCColorEnum {
     RED,
     BLUE,
     GREEN,
