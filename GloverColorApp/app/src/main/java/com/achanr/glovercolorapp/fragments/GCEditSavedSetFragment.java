@@ -117,6 +117,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
         if (mSavedSet != null) {
             fillOutData();
+        } else {
+            fillDefaultData();
         }
         return v;
     }
@@ -151,10 +153,12 @@ public class GCEditSavedSetFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 1: //Save
-                if (isNewSet) {
-                    showSaveDialog("Add New Set", "Add new set?");
-                } else {
-                    showSaveDialog("Save Changes", "Save your changes?");
+                if (validateFields()) {
+                    if (isNewSet) {
+                        showSaveDialog("Add New Set", "Add new set?");
+                    } else {
+                        showSaveDialog("Save Changes", "Save your changes?");
+                    }
                 }
                 return true;
             case 2: //Delete
@@ -163,6 +167,33 @@ public class GCEditSavedSetFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public boolean validateFields() {
+        String newTitle = mTitleEditText.getText().toString().trim();
+        if (newTitle.isEmpty()) {
+            showErrorDialog("Title cannot be empty.");
+            return false;
+        } else if (newTitle.length() > 100) {
+            showErrorDialog("Title must be less than 20 characters.");
+            return false;
+        }
+
+        int blankCount = 0;
+        EGCColorEnum[] colors = EGCColorEnum.values();
+        ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
+        for (int i = 0; i < colorSpinnerSize; i++) {
+            int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
+            if (colors[colorPosition] == EGCColorEnum.BLANK) {
+                blankCount++;
+            }
+        }
+        if (blankCount >= 6) {
+            showErrorDialog("You must choose at least 1 color.");
+            return false;
+        }
+
+        return true;
     }
 
     private void fillSpinnerWithEnums(Spinner spinner, Object[] values) {
@@ -184,6 +215,7 @@ public class GCEditSavedSetFragment extends Fragment {
             for (EGCColorEnum colorItem : colors) {
                 if (colorItem == color) {
                     getColorSpinner(spinnerIndex).setSelection(colorIndex);
+                    break;
                 } else {
                     colorIndex++;
                 }
@@ -197,6 +229,21 @@ public class GCEditSavedSetFragment extends Fragment {
                 mModeSpinner.setSelection(modeIndex);
             } else {
                 modeIndex++;
+            }
+        }
+    }
+
+    private void fillDefaultData() {
+        EGCColorEnum[] colors = EGCColorEnum.values();
+        for (int i = 0; i < colorSpinnerSize; i++) {
+            int colorIndex = 0;
+            for (EGCColorEnum colorItem : colors) {
+                if (colorItem == EGCColorEnum.BLANK) {
+                    getColorSpinner(i + 1).setSelection(colorIndex);
+                    break;
+                } else {
+                    colorIndex++;
+                }
             }
         }
     }
@@ -221,7 +268,7 @@ public class GCEditSavedSetFragment extends Fragment {
     }
 
     private void saveSet() {
-        String newTitle = mTitleEditText.getText().toString();
+        String newTitle = mTitleEditText.getText().toString().trim();
 
         EGCColorEnum[] colors = EGCColorEnum.values();
         ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
@@ -240,7 +287,7 @@ public class GCEditSavedSetFragment extends Fragment {
         mNewSet.setMode(newMode);
 
         if (mListener != null) {
-            if(isNewSet){
+            if (isNewSet) {
                 mListener.onSetAdded(mNewSet);
             } else {
                 mListener.onSetSaved(mSavedSet, mNewSet);
@@ -284,5 +331,64 @@ public class GCEditSavedSetFragment extends Fragment {
                 })
                 .setIcon(android.R.drawable.ic_menu_delete)
                 .show();
+    }
+
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(mContext)
+                .setTitle("Error")
+                .setMessage(message)
+                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void showLeavingDialog() {
+        new AlertDialog.Builder(mContext)
+                .setTitle("Unsaved Changes")
+                .setMessage("You have unsaved changes. Are you sure you want to leave?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mListener != null) {
+                            mListener.onLeaveConfirmed();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public boolean madeChanges() {
+        if (mSavedSet == null) {
+            return true;
+        }
+
+        if (!mTitleEditText.getText().toString().trim().equals(mSavedSet.getTitle())) {
+            return true;
+        }
+
+        EGCColorEnum[] colors = EGCColorEnum.values();
+        for (int i = 0; i < colorSpinnerSize; i++) {
+            int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
+            if (colors[colorPosition] != mSavedSet.getColors().get(i)) {
+                return true;
+            }
+        }
+
+        EGCModeEnum[] modes = EGCModeEnum.values();
+        int modePosition = mModeSpinner.getSelectedItemPosition();
+        if (modes[modePosition] != mSavedSet.getMode()) {
+            return true;
+        }
+
+        return false;
     }
 }

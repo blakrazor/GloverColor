@@ -31,6 +31,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     private GCSavedSetDatabase mSavedSetDatabase;
     private ArrayList<GCSavedSetDataModel> mSavedSetList;
     private GCSavedSetListFragment mSavedSetListFragment;
+    private GCEditSavedSetFragment mEditSavedSetFragment;
 
     private enum TransactionEnum {ADD, REPLACE}
 
@@ -91,14 +92,14 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     @Override
     public void onSavedSetListItemClicked(int position) {
         GCSavedSetDataModel savedSet = mSavedSetList.get(position);
-        GCEditSavedSetFragment editSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
-        doFragmentTransaction(editSavedSetFragment, TransactionEnum.REPLACE);
+        mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
+        doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
     }
 
     @Override
     public void onAddSetListItemClicked() {
-        GCEditSavedSetFragment editSavedSetFragment = GCEditSavedSetFragment.newInstance(null, true);
-        doFragmentTransaction(editSavedSetFragment, TransactionEnum.REPLACE);
+        mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(null, true);
+        doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
     }
 
     @Override
@@ -121,12 +122,19 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         popBackStackAndRefreshWithMessage("Your set has been added.");
     }
 
+    @Override
+    public void onLeaveConfirmed() {
+        popBackStackAndRefreshWithMessage("");
+    }
+
     private void popBackStackAndRefreshWithMessage(String message) {
         mSavedSetList = mSavedSetDatabase.readData();
         mFragmentManager.popBackStack();
         displayBackButton(false);
         refreshSavedSetList();
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        if (!message.isEmpty()) {
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void refreshSavedSetList() {
@@ -155,8 +163,19 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
 
     @Override
     public void onBackPressed() {
-        displayBackButton(false);
-        super.onBackPressed();
+        if (isBackButton) {
+            if(mEditSavedSetFragment.validateFields()) {
+                if (mEditSavedSetFragment.madeChanges()) {
+                    mEditSavedSetFragment.showLeavingDialog();
+                } else {
+                    displayBackButton(false);
+                    super.onBackPressed();
+                }
+            }
+        } else {
+            displayBackButton(false);
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -12,4 +12,5 @@ public interface IGCEditSavedSetFragmentListener {
     void onSetSaved(GCSavedSetDataModel oldSet, GCSavedSetDataModel newSet);
     void onSetDeleted(GCSavedSetDataModel savedSet, boolean isNewSet);
     void onSetAdded(GCSavedSetDataModel newSet);
+    void onLeaveConfirmed();
 }
