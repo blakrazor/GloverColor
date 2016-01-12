@@ -1,12 +1,14 @@
 package com.achanr.glovercolorapp.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
@@ -33,13 +35,18 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     private GCSavedSetListFragment mSavedSetListFragment;
     private GCEditSavedSetFragment mEditSavedSetFragment;
 
-    private enum TransactionEnum {ADD, REPLACE}
+    private enum TransactionEnum {ADD, REPLACE};
 
-    ;
+    private boolean isNewSet = false;
 
     private FragmentManager mFragmentManager;
 
     private boolean isBackButton = false;
+
+    public static final String FROM_NAVIGATION = "from_navigation";
+    public static final String NEW_SET_KEY = "new_set_key";
+    private String mFromNavigation;
+    private GCSavedSetDataModel mNewSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +55,25 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         mContext = this;
         setupToolbar(getString(R.string.title_your_saved_sets));
 
+        Intent intent = getIntent();
+        if(intent != null){
+            mFromNavigation = intent.getStringExtra(FROM_NAVIGATION);
+            mNewSet = (GCSavedSetDataModel) intent.getSerializableExtra(NEW_SET_KEY);
+        }
+
         mSavedSetDatabase = new GCSavedSetDatabase(mContext);
         mSavedSetList = getSavedSetListFromDatabase();
 
         mFragmentManager = getSupportFragmentManager();
         mSavedSetListFragment = GCSavedSetListFragment.newInstance(mSavedSetList);
         doFragmentTransaction(mSavedSetListFragment, TransactionEnum.ADD);
+
+        if(mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
+            mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(mNewSet, true);
+            doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
+            getSupportActionBar().setTitle(R.string.title_add_set);
+            isNewSet = true;
+        }
     }
 
     @Override
@@ -73,6 +93,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
 
     private void doFragmentTransaction(Fragment fragment, TransactionEnum transaction) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         switch (transaction) {
             case ADD:
                 fragmentTransaction.add(R.id.saved_set_list_fragment_container, fragment);
@@ -94,12 +115,15 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         GCSavedSetDataModel savedSet = mSavedSetList.get(position);
         mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
         doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
+        getSupportActionBar().setTitle(R.string.title_edit_set);
     }
 
     @Override
     public void onAddSetListItemClicked() {
         mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(null, true);
         doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
+        getSupportActionBar().setTitle(R.string.title_add_set);
+        isNewSet = true;
     }
 
     @Override
@@ -157,20 +181,31 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         } else {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             isBackButton = false;
+            isNewSet = false;
             setupToolbar(getString(R.string.title_your_saved_sets));
+            // Check if no view has focus:
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
         if (isBackButton) {
-            if(mEditSavedSetFragment.validateFields()) {
-                if (mEditSavedSetFragment.madeChanges()) {
-                    mEditSavedSetFragment.showLeavingDialog();
-                } else {
-                    displayBackButton(false);
-                    super.onBackPressed();
+            if(!isNewSet) {
+                if (mEditSavedSetFragment.validateFields()) {
+                    if (mEditSavedSetFragment.madeChanges()) {
+                        mEditSavedSetFragment.showLeavingDialog();
+                    } else {
+                        displayBackButton(false);
+                        super.onBackPressed();
+                    }
                 }
+            } else {
+                mEditSavedSetFragment.showLeavingDialog();
             }
         } else {
             displayBackButton(false);

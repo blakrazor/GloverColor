@@ -55,7 +55,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
         String title = mSavedSetList.get(position).getTitle();
-        String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mContext, mSavedSetList.get(position).getColors());
+        String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mSavedSetList.get(position).getColors());
         EGCModeEnum mode = mSavedSetList.get(position).getMode();
         holder.txtTitle.setText(title);
         holder.txtColors.setText(shortenedColorString);

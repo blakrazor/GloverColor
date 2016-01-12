@@ -64,6 +64,9 @@ public class GCBaseActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            if(getSupportFragmentManager().getBackStackEntryCount() < 1){
+                super.onBackPressed();
+            }
         }
     }
 
@@ -105,8 +108,11 @@ public class GCBaseActivity extends AppCompatActivity
             Intent intent = new Intent(this, GCSavedSetListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-        } else if (id == R.id.nav_edit_profile && mPosition != R.id.nav_edit_profile) {
-            mPosition = R.id.nav_edit_profile;
+        } else if (id == R.id.nav_enter_code && mPosition != R.id.nav_enter_code) {
+            mPosition = R.id.nav_enter_code;
+            Intent intent = new Intent(this, GCEnterCodeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
 
         }
 

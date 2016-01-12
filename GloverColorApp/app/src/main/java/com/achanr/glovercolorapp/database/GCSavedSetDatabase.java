@@ -36,7 +36,7 @@ public class GCSavedSetDatabase {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.COLUMN_NAME_TITLE, savedSet.getTitle());
-        values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(mContext, savedSet.getColors()));
+        values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
         values.put(GCSavedSetEntry.COLUMN_NAME_MODE, savedSet.getMode().toString());
 
         // Insert the new row, returning the primary key value of the new row
@@ -78,7 +78,7 @@ public class GCSavedSetDatabase {
                 String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
                 String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
                 savedSet.setTitle(title);
-                savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(mContext, shortenedColorString));
+                savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
                 savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
                 savedSetList.add(savedSet);
             } while (mCursor.moveToNext());
@@ -103,7 +103,7 @@ public class GCSavedSetDatabase {
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.COLUMN_NAME_TITLE, newSavedSet.getTitle());
-        values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(mContext, newSavedSet.getColors()));
+        values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(newSavedSet.getColors()));
         values.put(GCSavedSetEntry.COLUMN_NAME_MODE, newSavedSet.getMode().toString());
 
         // Which row to update, based on the ID

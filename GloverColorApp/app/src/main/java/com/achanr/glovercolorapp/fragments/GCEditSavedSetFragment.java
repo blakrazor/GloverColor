@@ -1,10 +1,16 @@
 package com.achanr.glovercolorapp.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,12 +21,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
 import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
+import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
 
@@ -51,6 +61,35 @@ public class GCEditSavedSetFragment extends Fragment {
     private static final String SAVED_SET_KEY = "saved_set_key";
     private static final String NEW_SET_KEY = "new_set_key";
     private int colorSpinnerSize = 6;
+
+    public static final int MAX_TITLE_LENGTH = 100;
+
+    private InputFilter titleFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+
+            if (source instanceof SpannableStringBuilder) {
+                SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
+                for (int i = end - 1; i >= start; i--) {
+                    char currentChar = source.charAt(i);
+                    if (!Character.isLetterOrDigit(currentChar) && !Character.isSpaceChar(currentChar)) {
+                        sourceAsSpannableBuilder.delete(i, i+1);
+                    }
+                }
+                return source;
+            } else {
+                StringBuilder filteredStringBuilder = new StringBuilder();
+                for (int i = start; i < end; i++) {
+                    char currentChar = source.charAt(i);
+                    if (Character.isLetterOrDigit(currentChar) || Character.isSpaceChar(currentChar)) {
+                        filteredStringBuilder.append(currentChar);
+                    }
+                }
+                return filteredStringBuilder.toString();
+            }
+        }
+    };
 
     public GCEditSavedSetFragment() {
         // Required empty public constructor
@@ -99,6 +138,8 @@ public class GCEditSavedSetFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_edit_saved_set, container, false);
         mTitleEditText = (EditText) v.findViewById(R.id.edit_text_title);
+        mTitleEditText.setFilters(new InputFilter[]{titleFilter});
+
         mColor1Spinner = (Spinner) v.findViewById(R.id.edit_text_color_1);
         mColor2Spinner = (Spinner) v.findViewById(R.id.edit_text_color_2);
         mColor3Spinner = (Spinner) v.findViewById(R.id.edit_text_color_3);
@@ -142,9 +183,15 @@ public class GCEditSavedSetFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.add(0, 1, 1, "Save").setIcon(android.R.drawable.ic_menu_save)
+        if(!isNewSet) {
+            menu.add(0, 1, 1, "Share").setIcon(android.R.drawable.ic_menu_share)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+        menu.add(0, 2, 2, "Save").setIcon(android.R.drawable.ic_menu_save)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(0, 2, 2, "Delete").setIcon(android.R.drawable.ic_menu_delete)
+        menu.add(0, 3, 3, "Reset").setIcon(android.R.drawable.ic_menu_revert)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(0, 4, 4, "Delete").setIcon(android.R.drawable.ic_menu_delete)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -152,7 +199,10 @@ public class GCEditSavedSetFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 1: //Save
+            case 1: //share
+                showShareDialog();
+                return true;
+            case 2: //Save
                 if (validateFields()) {
                     if (isNewSet) {
                         showSaveDialog("Add New Set", "Add new set?");
@@ -161,7 +211,10 @@ public class GCEditSavedSetFragment extends Fragment {
                     }
                 }
                 return true;
-            case 2: //Delete
+            case 3: //revert changes
+                showResetDialog();
+                return true;
+            case 4: //Delete
                 showDeleteDialog();
                 return true;
             default:
@@ -174,14 +227,13 @@ public class GCEditSavedSetFragment extends Fragment {
         if (newTitle.isEmpty()) {
             showErrorDialog("Title cannot be empty.");
             return false;
-        } else if (newTitle.length() > 100) {
-            showErrorDialog("Title must be less than 20 characters.");
+        } else if (newTitle.length() > MAX_TITLE_LENGTH) {
+            showErrorDialog("Title must be less than " + MAX_TITLE_LENGTH + " characters.");
             return false;
         }
 
         int blankCount = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
-        ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
         for (int i = 0; i < colorSpinnerSize; i++) {
             int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
             if (colors[colorPosition] == EGCColorEnum.BLANK) {
@@ -234,6 +286,8 @@ public class GCEditSavedSetFragment extends Fragment {
     }
 
     private void fillDefaultData() {
+        mTitleEditText.setText("");
+
         EGCColorEnum[] colors = EGCColorEnum.values();
         for (int i = 0; i < colorSpinnerSize; i++) {
             int colorIndex = 0;
@@ -246,6 +300,8 @@ public class GCEditSavedSetFragment extends Fragment {
                 }
             }
         }
+
+        mModeSpinner.setSelection(0);
     }
 
     private Spinner getColorSpinner(int position) {
@@ -267,15 +323,24 @@ public class GCEditSavedSetFragment extends Fragment {
         }
     }
 
-    private void saveSet() {
-        String newTitle = mTitleEditText.getText().toString().trim();
-
+    private ArrayList<EGCColorEnum> getNewColorList() {
         EGCColorEnum[] colors = EGCColorEnum.values();
         ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
         for (int i = 0; i < colorSpinnerSize; i++) {
             int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
             newColorList.add(colors[colorPosition]);
         }
+        return newColorList;
+    }
+
+    private void saveSet() {
+        String newTitle = mTitleEditText.getText().toString().trim();
+        if(validateTitleAgainstDatabase(newTitle)){
+            showErrorDialog("Title already exists. Choose a different title.");
+            return;
+        }
+
+        ArrayList<EGCColorEnum> newColorList = getNewColorList();
 
         EGCModeEnum[] modes = EGCModeEnum.values();
         int modePosition = mModeSpinner.getSelectedItemPosition();
@@ -295,6 +360,17 @@ public class GCEditSavedSetFragment extends Fragment {
         }
     }
 
+    private boolean validateTitleAgainstDatabase(String title){
+        GCSavedSetDatabase mSavedSetDatabase = new GCSavedSetDatabase(mContext);
+        ArrayList<GCSavedSetDataModel> savedSetList = mSavedSetDatabase.readData();
+        for(GCSavedSetDataModel savedSet : savedSetList){
+            if(savedSet.getTitle().equals(title)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void showSaveDialog(String title, String body) {
         new AlertDialog.Builder(mContext)
                 .setTitle(title)
@@ -310,6 +386,28 @@ public class GCEditSavedSetFragment extends Fragment {
                     }
                 })
                 .setIcon(android.R.drawable.ic_menu_save)
+                .show();
+    }
+
+    private void showResetDialog() {
+        new AlertDialog.Builder(mContext)
+                .setTitle("Revert Changes")
+                .setMessage("Revert Changes?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mSavedSet == null) {
+                            fillDefaultData();
+                        } else {
+                            fillOutData();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_menu_revert)
                 .show();
     }
 
@@ -364,6 +462,59 @@ public class GCEditSavedSetFragment extends Fragment {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    public void showShareDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+        alert.setTitle("Share");
+        alert.setMessage("Copy this string and share with friends:");
+
+        TextView input = new TextView(mContext);
+        input.setTextIsSelectable(true);
+        final String shareString = getShareString();
+        input.setText(shareString);
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
+        alert.setView(input);
+
+        alert.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied Text", shareString);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = alert.create();
+        alertDialog.show();
+    }
+
+    private String getShareString() {
+        String shareString = "";
+        String breakCharacter = GCUtil.BREAK_CHARACTER_FOR_SHARING;
+
+        //Get title
+        shareString += mTitleEditText.getText().toString().trim();
+        shareString += breakCharacter;
+
+        //Get colors
+        ArrayList<EGCColorEnum> newColorList = getNewColorList();
+        shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
+        shareString += breakCharacter;
+
+        //Get mode
+        EGCModeEnum[] modes = EGCModeEnum.values();
+        int modePosition = mModeSpinner.getSelectedItemPosition();
+        EGCModeEnum modeEnum = modes[modePosition];
+        shareString += modeEnum.toString();
+
+        return shareString;
     }
 
     public boolean madeChanges() {

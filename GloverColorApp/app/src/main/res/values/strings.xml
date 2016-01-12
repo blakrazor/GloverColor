@@ -8,7 +8,9 @@
     <string name="glovercolor_tagline">Create, save, and share your colors</string>
     <string name="glovercolor">GloverColor</string>
     <string name="menu_saved_color_sets">Saved color sets</string>
-    <string name="menu_edit_profile">Edit my profile</string>
     <string name="title_your_saved_sets">Your Saved Sets</string>
     <string name="title_activity_gcwelcome_screen">Welcome</string>
+    <string name="title_edit_set">Edit Set</string>
+    <string name="title_add_set">Add Set</string>
+    <string name="title_enter_code">Enter Code</string>
 </resources>

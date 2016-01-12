@@ -18,7 +18,11 @@ import java.util.Random;
  */
 public class GCUtil {
 
-    public static String convertColorListToShortenedColorString(Context context, ArrayList<EGCColorEnum> colorList) {
+    public static final String BREAK_CHARACTER_FOR_SHARING = ":";
+
+    private static Context context = GloverColorApplication.getContext();
+
+    public static String convertColorListToShortenedColorString(ArrayList<EGCColorEnum> colorList) {
         String shortenedColorString = "";
         for (EGCColorEnum color : colorList) {
             switch (color) {
@@ -51,13 +55,13 @@ public class GCUtil {
         return shortenedColorString;
     }
 
-    public static ArrayList<EGCColorEnum>  convertShortenedColorStringToColorList(Context context, String shortenedColorString){
+    public static ArrayList<EGCColorEnum>  convertShortenedColorStringToColorList(String shortenedColorString){
         ArrayList<EGCColorEnum> colorList = new ArrayList<>();
 
         List<String> stringParts = getParts(shortenedColorString, 2);
 
         for(String colorAbbrev : stringParts){
-            EGCColorEnum colorEnum = convertColorAbbrevToColorEnum(context, colorAbbrev);
+            EGCColorEnum colorEnum = convertColorAbbrevToColorEnum(colorAbbrev);
             colorList.add(colorEnum);
         }
 
@@ -74,7 +78,7 @@ public class GCUtil {
         return parts;
     }
 
-    public static EGCColorEnum convertColorAbbrevToColorEnum(Context context, String colorAbbrev){
+    public static EGCColorEnum convertColorAbbrevToColorEnum(String colorAbbrev){
         if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_red_abbrev))){
             return EGCColorEnum.RED;
         } else if(colorAbbrev.equalsIgnoreCase(context.getString(R.string.color_blue_abbrev))){

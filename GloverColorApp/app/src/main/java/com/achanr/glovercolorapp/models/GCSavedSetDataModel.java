@@ -3,7 +3,6 @@ package com.achanr.glovercolorapp.models;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
-import com.achanr.glovercolorapp.utility.GloverColorApplication;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,6 +58,6 @@ public class GCSavedSetDataModel implements Serializable {
 
     @Override
     public String toString() {
-        return "Title:" + mTitle + " Colors:" + GCUtil.convertColorListToShortenedColorString(GloverColorApplication.getContext(), mColors) + " Mode:" + mMode;
+        return "Title:" + mTitle + " Colors:" + GCUtil.convertColorListToShortenedColorString(mColors) + " Mode:" + mMode;
     }
 }

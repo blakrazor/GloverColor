@@ -11,9 +11,9 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_saved_color_sets"/>
         <item
-            android:id="@+id/nav_edit_profile"
+            android:id="@+id/nav_enter_code"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_edit_profile"/>
+            android:title="Enter code"/>
         <!--<item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
