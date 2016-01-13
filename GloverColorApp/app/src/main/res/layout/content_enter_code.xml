@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:text="Enter or paste your code here \nto add a new set:"/>
+        android:text="@string/enter_code_description"/>
 
     <EditText
         android:id="@+id/edit_text_enter_code"
@@ -29,7 +29,7 @@
         android:layout_below="@id/text_view_enter_code"
         android:layout_marginTop="20dp"
         android:ellipsize="end"
-        android:hint="Paste or enter code here"
+        android:hint="@string/enter_code_hint"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:maxLines="1"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/edit_text_enter_code"
         android:layout_below="@+id/edit_text_enter_code"
-        android:text="Submit"
+        android:text="@string/submit"
         android:textColor="@android:color/primary_text_dark"/>
 
 </RelativeLayout>

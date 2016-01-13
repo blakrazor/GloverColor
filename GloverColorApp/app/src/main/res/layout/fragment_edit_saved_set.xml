@@ -16,13 +16,13 @@
             style="@style/BodyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"/>
+            android:text="@string/title"/>
 
         <EditText
             android:id="@+id/edit_text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter a name for your set"
+            android:hint="@string/title_hint"
             android:maxLines="1"
             android:singleLine="true"
             android:ellipsize="end"
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Colors"/>
+            android:text="@string/colors"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 1: "/>
+                    android:text="@string/color_1_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_1"
@@ -75,7 +75,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 4: "/>
+                    android:text="@string/color_4_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_4"
@@ -105,7 +105,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 2: "/>
+                    android:text="@string/color_2_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_2"
@@ -127,7 +127,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 5: "/>
+                    android:text="@string/color_5_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_5"
@@ -156,7 +156,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 3: "/>
+                    android:text="@string/color_3_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_3"
@@ -178,7 +178,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Color 6: "/>
+                    android:text="@string/color_6_subtitle"/>
 
                 <Spinner
                     android:id="@+id/edit_text_color_6"
@@ -195,7 +195,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Mode"/>
+            android:text="@string/mode"/>
 
         <LinearLayout
             android:id="@+id/mode_layout"
@@ -208,7 +208,7 @@
                 style="@style/EditSavedSetColorText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mode: "/>
+                android:text="@string/mode_subtitle"/>
 
             <Spinner
                 android:id="@+id/edit_text_mode"

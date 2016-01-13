@@ -129,7 +129,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     @Override
     public void onSetSaved(GCSavedSet oldSet, GCSavedSet newSet) {
         mSavedSetDatabase.updateData(oldSet, newSet);
-        popBackStackAndRefreshWithMessage("Your set has been updated.");
+        popBackStackAndRefreshWithMessage(getString(R.string.set_updated_message));
     }
 
     @Override
@@ -137,13 +137,13 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         if (!isNewSet) {
             mSavedSetDatabase.deleteData(savedSet);
         }
-        popBackStackAndRefreshWithMessage("Your set has been deleted.");
+        popBackStackAndRefreshWithMessage(getString(R.string.set_deleted_message));
     }
 
     @Override
     public void onSetAdded(GCSavedSet newSet) {
         mSavedSetDatabase.insertData(newSet);
-        popBackStackAndRefreshWithMessage("Your set has been added.");
+        popBackStackAndRefreshWithMessage(getString(R.string.set_added_message));
     }
 
     @Override

@@ -101,7 +101,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else {
-            showErrorDialog("Invalid code. Try a different code.");
+            showErrorDialog(getString(R.string.error_invalid_code));
         }
     }
 
@@ -143,7 +143,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(mContext)
-                .setTitle("Error")
+                .setTitle(getString(R.string.error))
                 .setMessage(message)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

@@ -205,9 +205,9 @@ public class GCEditSavedSetFragment extends Fragment {
             case 2: //Save
                 if (validateFields()) {
                     if (isNewSet) {
-                        showSaveDialog("Add New Set", "Add new set?");
+                        showSaveDialog(mContext.getString(R.string.add_new_set), mContext.getString(R.string.add_new_set_dialog));
                     } else {
-                        showSaveDialog("Save Changes", "Save your changes?");
+                        showSaveDialog(mContext.getString(R.string.save_changes), mContext.getString(R.string.save_changes_dialog));
                     }
                 }
                 return true;
@@ -225,10 +225,10 @@ public class GCEditSavedSetFragment extends Fragment {
     public boolean validateFields() {
         String newTitle = mTitleEditText.getText().toString().trim();
         if (newTitle.isEmpty()) {
-            showErrorDialog("Title cannot be empty.");
+            showErrorDialog(mContext.getString(R.string.error_title_empty));
             return false;
         } else if (newTitle.length() > MAX_TITLE_LENGTH) {
-            showErrorDialog("Title must be less than " + MAX_TITLE_LENGTH + " characters.");
+            showErrorDialog(String.format(mContext.getString(R.string.error_title_length), MAX_TITLE_LENGTH));
             return false;
         }
 
@@ -241,7 +241,7 @@ public class GCEditSavedSetFragment extends Fragment {
             }
         }
         if (blankCount >= 6) {
-            showErrorDialog("You must choose at least 1 color.");
+            showErrorDialog(mContext.getString(R.string.error_no_color));
             return false;
         }
 
@@ -336,7 +336,7 @@ public class GCEditSavedSetFragment extends Fragment {
     private void saveSet() {
         String newTitle = mTitleEditText.getText().toString().trim();
         if(validateTitleAgainstDatabase(newTitle)){
-            showErrorDialog("Title already exists. Choose a different title.");
+            showErrorDialog(mContext.getString(R.string.error_title_exists));
             return;
         }
 
@@ -391,8 +391,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private void showResetDialog() {
         new AlertDialog.Builder(mContext)
-                .setTitle("Revert Changes")
-                .setMessage("Revert Changes?")
+                .setTitle(mContext.getString(R.string.revert_changes))
+                .setMessage(mContext.getString(R.string.revert_changes_dialog))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mSavedSet == null) {
@@ -413,8 +413,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private void showDeleteDialog() {
         new AlertDialog.Builder(mContext)
-                .setTitle("Delete")
-                .setMessage("Delete this set?")
+                .setTitle(mContext.getString(R.string.delete))
+                .setMessage(mContext.getString(R.string.delete_dialog))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
@@ -433,7 +433,7 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(mContext)
-                .setTitle("Error")
+                .setTitle(mContext.getString(R.string.error))
                 .setMessage(message)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -446,8 +446,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     public void showLeavingDialog() {
         new AlertDialog.Builder(mContext)
-                .setTitle("Unsaved Changes")
-                .setMessage("You have unsaved changes. Are you sure you want to leave?")
+                .setTitle(mContext.getString(R.string.unsaved_changes))
+                .setMessage(mContext.getString(R.string.unsaved_changes_dialog))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
@@ -466,8 +466,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     public void showShareDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-        alert.setTitle("Share");
-        alert.setMessage("Copy this string and share with friends:");
+        alert.setTitle(mContext.getString(R.string.share));
+        alert.setMessage(mContext.getString(R.string.share_dialog));
 
         TextView input = new TextView(mContext);
         input.setTextIsSelectable(true);
@@ -476,7 +476,7 @@ public class GCEditSavedSetFragment extends Fragment {
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
 
-        alert.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Copied Text", shareString);
@@ -485,7 +485,7 @@ public class GCEditSavedSetFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
