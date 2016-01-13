@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#8C9EFF</color>
-    <color name="background">#FFFFFF</color>
+    <color name="blueThemePrimary">#2196f3</color>
+    <color name="blueThemePrimaryDark">#1976d2</color>
+    <color name="blueThemeAccent">#448aff</color>
+    <color name="blueThemeBackground">#bbdefb</color>
+
+    <color name="purpleThemePrimary">#9c27b0</color>
+    <color name="purpleThemePrimaryDark">#7b1fa2</color>
+    <color name="purpleThemeAccent">#e040fb</color>
+    <color name="purpleThemeBackground">#e1bee7</color>
+
+    <color name="greenThemePrimary">#4caf50</color>
+    <color name="greenThemePrimaryDark">#388e3c</color>
+    <color name="greenThemeAccent">#69f0ae</color>
+    <color name="greenThemeBackground">#c8e6c9</color>
 </resources>

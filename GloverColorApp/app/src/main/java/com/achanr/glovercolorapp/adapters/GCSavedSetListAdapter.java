@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 import com.achanr.glovercolorapp.views.GCSavedSetListItemViewHolder;
@@ -23,21 +23,21 @@ import java.util.ArrayList;
  */
 public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListItemViewHolder> {
 
-    private ArrayList<GCSavedSetDataModel> mSavedSetList;
+    private ArrayList<GCSavedSet> mSavedSetList;
     private Context mContext;
 
-    public GCSavedSetListAdapter(Context context, ArrayList<GCSavedSetDataModel> savedSetList) {
+    public GCSavedSetListAdapter(Context context, ArrayList<GCSavedSet> savedSetList) {
         mSavedSetList = savedSetList;
         mContext = context;
     }
 
-    public void add(int position, GCSavedSetDataModel savedSet) {
+    public void add(int position, GCSavedSet savedSet) {
         mSavedSetList.add(position, savedSet);
         notifyItemInserted(position);
 
     }
 
-    public void remove(GCSavedSetDataModel savedSet) {
+    public void remove(GCSavedSet savedSet) {
         int position = mSavedSetList.indexOf(savedSet);
         mSavedSetList.remove(position);
         notifyItemRemoved(position);

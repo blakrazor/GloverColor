@@ -14,14 +14,14 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListItemClickListener;
 import com.achanr.glovercolorapp.listeners.IGCSavedSetListFragmentListener;
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
 
 
 public class GCSavedSetListFragment extends Fragment implements View.OnClickListener {
 
-    private ArrayList<GCSavedSetDataModel> mSavedSetList;
+    private ArrayList<GCSavedSet> mSavedSetList;
     private RecyclerView mSavedSetListRecyclerView;
     private GCSavedSetListAdapter mSavedSetListAdapter;
     private RecyclerView.LayoutManager mSavedSetListLayoutManager;
@@ -43,7 +43,7 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
      *
      * @return A new instance of fragment SavedSetListFragment.
      */
-    public static GCSavedSetListFragment newInstance(ArrayList<GCSavedSetDataModel> savedSetList) {
+    public static GCSavedSetListFragment newInstance(ArrayList<GCSavedSet> savedSetList) {
         GCSavedSetListFragment fragment = new GCSavedSetListFragment();
         Bundle args = new Bundle();
         args.putSerializable(SAVED_SET_LIST_KEY, savedSetList);
@@ -68,7 +68,7 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if (getArguments() != null) {
-            mSavedSetList = (ArrayList<GCSavedSetDataModel>) getArguments().getSerializable(SAVED_SET_LIST_KEY);
+            mSavedSetList = (ArrayList<GCSavedSet>) getArguments().getSerializable(SAVED_SET_LIST_KEY);
         }
     }
 
@@ -110,7 +110,7 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
 
         mSavedSetListRecyclerView.addOnItemTouchListener(
                 new GCSavedSetListItemClickListener(mContext,
-                        new GCSavedSetListItemClickListener.OnItemClickListener() {
+                        new GCSavedSetListItemClickListener.OnSavedSetItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
                                 if (mListener != null) {
@@ -134,7 +134,7 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
         }
     }
 
-    public void refreshList(ArrayList<GCSavedSetDataModel> savedSetList){
+    public void refreshList(ArrayList<GCSavedSet> savedSetList){
         mSavedSetList = savedSetList;
         setupSavedSetList();
     }

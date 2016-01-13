@@ -13,15 +13,15 @@ import android.view.View;
  * @created 1/11/16 2:28 PM
  */
 public class GCSavedSetListItemClickListener implements RecyclerView.OnItemTouchListener {
-    private OnItemClickListener mListener;
+    private OnSavedSetItemClickListener mListener;
 
-    public interface OnItemClickListener {
+    public interface OnSavedSetItemClickListener {
         void onItemClick(View view, int position);
     }
 
     GestureDetector mGestureDetector;
 
-    public GCSavedSetListItemClickListener(Context context, OnItemClickListener listener) {
+    public GCSavedSetListItemClickListener(Context context, OnSavedSetItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override

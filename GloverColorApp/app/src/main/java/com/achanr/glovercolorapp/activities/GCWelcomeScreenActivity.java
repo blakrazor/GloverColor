@@ -9,7 +9,7 @@ public class GCWelcomeScreenActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.app_bar_home_screen, mFrameLayout);
+        getLayoutInflater().inflate(R.layout.activity_welcome_screen, mFrameLayout);
         setupToolbar(getString(R.string.title_activity_gcwelcome_screen));
     }
 

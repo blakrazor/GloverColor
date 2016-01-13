@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -29,7 +29,7 @@ public class GCSavedSetDatabase {
         mContext = context;
     }
 
-    public long insertData(GCSavedSetDataModel savedSet) {
+    public long insertData(GCSavedSet savedSet) {
         // Gets the data repository in write mode
         mSavedSetDatabase = mSavedSetDbHelper.getWritableDatabase();
 
@@ -43,8 +43,8 @@ public class GCSavedSetDatabase {
         return mSavedSetDatabase.insert(GCSavedSetEntry.TABLE_NAME, null, values);
     }
 
-    public ArrayList<GCSavedSetDataModel> readData() {
-        ArrayList<GCSavedSetDataModel> savedSetList = new ArrayList<>();
+    public ArrayList<GCSavedSet> readData() {
+        ArrayList<GCSavedSet> savedSetList = new ArrayList<>();
         mSavedSetDatabase = mSavedSetDbHelper.getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
@@ -73,7 +73,7 @@ public class GCSavedSetDatabase {
         if (mCursor != null) {
             mCursor.moveToFirst();
             do {
-                GCSavedSetDataModel savedSet = new GCSavedSetDataModel();
+                GCSavedSet savedSet = new GCSavedSet();
                 String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_TITLE));
                 String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
                 String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
@@ -87,7 +87,7 @@ public class GCSavedSetDatabase {
         return savedSetList;
     }
 
-    public boolean deleteData(GCSavedSetDataModel savedSet) {
+    public boolean deleteData(GCSavedSet savedSet) {
         mSavedSetDatabase = mSavedSetDbHelper.getWritableDatabase();
         // Define 'where' part of query.
         String selection = GCSavedSetEntry.COLUMN_NAME_TITLE + "=?";
@@ -97,7 +97,7 @@ public class GCSavedSetDatabase {
         return mSavedSetDatabase.delete(GCSavedSetEntry.TABLE_NAME, selection, selectionArgs) > 0;
     }
 
-    public int updateData(GCSavedSetDataModel oldSavedSet, GCSavedSetDataModel newSavedSet) {
+    public int updateData(GCSavedSet oldSavedSet, GCSavedSet newSavedSet) {
         mSavedSetDatabase = mSavedSetDbHelper.getReadableDatabase();
 
         // New value for one column

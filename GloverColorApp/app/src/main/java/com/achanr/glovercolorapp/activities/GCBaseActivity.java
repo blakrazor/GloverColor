@@ -1,7 +1,9 @@
 package com.achanr.glovercolorapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,9 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.utility.EGCThemeEnum;
+import com.achanr.glovercolorapp.utility.GCUtil;
 
 /**
  * Glover Color App Project
@@ -21,25 +30,28 @@ import com.achanr.glovercolorapp.R;
  */
 
 public class GCBaseActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
     protected FrameLayout mFrameLayout;
     protected Toolbar mToolbar;
     protected ActionBarDrawerToggle mToggle;
     protected static int mPosition;
     protected NavigationView mNavigationView;
+    private Spinner mThemeSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+        GCUtil.onActivityCreateSetTheme(this);
+        setContentView(R.layout.navigation_drawer_layout);
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
     }
 
     protected void setupToolbar(String title) {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(title);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(title);
+        ((TextView)findViewById(R.id.toolbar_title)).setText(title);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(
@@ -50,6 +62,21 @@ public class GCBaseActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.setCheckedItem(mPosition);
+
+        setupThemeSpinner();
+    }
+
+    protected void setupThemeSpinner(){
+        mThemeSpinner = (Spinner) findViewById(R.id.theme_spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.themes, R.layout.spinner_theme_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mThemeSpinner.setAdapter(adapter);
+        mThemeSpinner.setSelection(getPositionOfStoredThemeEnum(), false);
+        mThemeSpinner.setOnItemSelectedListener(this);
     }
 
     protected void setPosition(int position) {
@@ -119,5 +146,31 @@ public class GCBaseActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedTheme = parent.getItemAtPosition(position).toString();
+        String newString = selectedTheme.replace(" ", "_").toUpperCase();
+        GCUtil.changeToTheme(this, EGCThemeEnum.valueOf(newString));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private int getPositionOfStoredThemeEnum(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String themeString = prefs.getString(GCUtil.THEME_KEY, EGCThemeEnum.BLUE_THEME.toString());
+        EGCThemeEnum[] themeValues = EGCThemeEnum.values();
+        int position = 0;
+        for(EGCThemeEnum themeValue : themeValues){
+            if(themeValue == EGCThemeEnum.valueOf(themeString)){
+                return position;
+            }
+            position++;
+        }
+        return 0;
     }
 }

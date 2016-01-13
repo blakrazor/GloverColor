@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BlueTheme">
+        <item name="colorPrimary">@color/blueThemePrimary</item>
+        <item name="colorPrimaryDark">@color/blueThemePrimaryDark</item>
+        <item name="colorAccent">@color/blueThemeAccent</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="background">@color/blueThemeBackground</item>
+        <item name="android:windowBackground">?attr/background</item>
+    </style>
+
+    <style name="PurpleTheme">
+        <item name="colorPrimary">@color/purpleThemePrimary</item>
+        <item name="colorPrimaryDark">@color/purpleThemePrimaryDark</item>
+        <item name="colorAccent">@color/purpleThemeAccent</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="background">@color/purpleThemeBackground</item>
+        <item name="android:windowBackground">?attr/background</item>
+    </style>
+
+    <style name="GreenTheme">
+        <item name="colorPrimary">@color/greenThemePrimary</item>
+        <item name="colorPrimaryDark">@color/greenThemePrimaryDark</item>
+        <item name="colorAccent">@color/greenThemeAccent</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="background">@color/greenThemeBackground</item>
+        <item name="android:windowBackground">?attr/background</item>
+    </style>
+</resources>

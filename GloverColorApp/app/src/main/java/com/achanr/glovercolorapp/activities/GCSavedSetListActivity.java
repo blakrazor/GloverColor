@@ -17,7 +17,7 @@ import com.achanr.glovercolorapp.fragments.GCEditSavedSetFragment;
 import com.achanr.glovercolorapp.fragments.GCSavedSetListFragment;
 import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
 import com.achanr.glovercolorapp.listeners.IGCSavedSetListFragmentListener;
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
 
     private Context mContext;
     private GCSavedSetDatabase mSavedSetDatabase;
-    private ArrayList<GCSavedSetDataModel> mSavedSetList;
+    private ArrayList<GCSavedSet> mSavedSetList;
     private GCSavedSetListFragment mSavedSetListFragment;
     private GCEditSavedSetFragment mEditSavedSetFragment;
 
@@ -46,7 +46,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     public static final String FROM_NAVIGATION = "from_navigation";
     public static final String NEW_SET_KEY = "new_set_key";
     private String mFromNavigation;
-    private GCSavedSetDataModel mNewSet;
+    private GCSavedSet mNewSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         Intent intent = getIntent();
         if(intent != null){
             mFromNavigation = intent.getStringExtra(FROM_NAVIGATION);
-            mNewSet = (GCSavedSetDataModel) intent.getSerializableExtra(NEW_SET_KEY);
+            mNewSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
         }
 
         mSavedSetDatabase = new GCSavedSetDatabase(mContext);
@@ -83,8 +83,8 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         refreshSavedSetList();
     }
 
-    private ArrayList<GCSavedSetDataModel> getSavedSetListFromDatabase() {
-        ArrayList<GCSavedSetDataModel> savedSetList = mSavedSetDatabase.readData();
+    private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
+        ArrayList<GCSavedSet> savedSetList = mSavedSetDatabase.readData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
@@ -112,7 +112,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
 
     @Override
     public void onSavedSetListItemClicked(int position) {
-        GCSavedSetDataModel savedSet = mSavedSetList.get(position);
+        GCSavedSet savedSet = mSavedSetList.get(position);
         mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
         doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
         getSupportActionBar().setTitle(R.string.title_edit_set);
@@ -127,13 +127,13 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     }
 
     @Override
-    public void onSetSaved(GCSavedSetDataModel oldSet, GCSavedSetDataModel newSet) {
+    public void onSetSaved(GCSavedSet oldSet, GCSavedSet newSet) {
         mSavedSetDatabase.updateData(oldSet, newSet);
         popBackStackAndRefreshWithMessage("Your set has been updated.");
     }
 
     @Override
-    public void onSetDeleted(GCSavedSetDataModel savedSet, boolean isNewSet) {
+    public void onSetDeleted(GCSavedSet savedSet, boolean isNewSet) {
         if (!isNewSet) {
             mSavedSetDatabase.deleteData(savedSet);
         }
@@ -141,7 +141,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     }
 
     @Override
-    public void onSetAdded(GCSavedSetDataModel newSet) {
+    public void onSetAdded(GCSavedSet newSet) {
         mSavedSetDatabase.insertData(newSet);
         popBackStackAndRefreshWithMessage("Your set has been added.");
     }
@@ -169,6 +169,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     private void displayBackButton(boolean shouldDisplay) {
         if (shouldDisplay) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.GONE);
             isBackButton = true;
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -180,6 +181,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
             });
         } else {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.VISIBLE);
             isBackButton = false;
             isNewSet = false;
             setupToolbar(getString(R.string.title_your_saved_sets));

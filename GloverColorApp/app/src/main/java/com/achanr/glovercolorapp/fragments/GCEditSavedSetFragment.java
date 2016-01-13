@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
@@ -44,8 +44,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private Context mContext;
     private IGCEditSavedSetFragmentListener mListener;
-    private GCSavedSetDataModel mSavedSet;
-    private GCSavedSetDataModel mNewSet;
+    private GCSavedSet mSavedSet;
+    private GCSavedSet mNewSet;
     private EditText mTitleEditText;
     private Spinner mColor1Spinner;
     private Spinner mColor2Spinner;
@@ -101,7 +101,7 @@ public class GCEditSavedSetFragment extends Fragment {
      *
      * @return A new instance of fragment SavedSetListFragment.
      */
-    public static GCEditSavedSetFragment newInstance(GCSavedSetDataModel savedSet, boolean isNewSet) {
+    public static GCEditSavedSetFragment newInstance(GCSavedSet savedSet, boolean isNewSet) {
         GCEditSavedSetFragment fragment = new GCEditSavedSetFragment();
         Bundle args = new Bundle();
         args.putSerializable(SAVED_SET_KEY, savedSet);
@@ -127,7 +127,7 @@ public class GCEditSavedSetFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mSavedSet = (GCSavedSetDataModel) getArguments().getSerializable(SAVED_SET_KEY);
+            mSavedSet = (GCSavedSet) getArguments().getSerializable(SAVED_SET_KEY);
             isNewSet = getArguments().getBoolean(NEW_SET_KEY);
         }
     }
@@ -346,7 +346,7 @@ public class GCEditSavedSetFragment extends Fragment {
         int modePosition = mModeSpinner.getSelectedItemPosition();
         EGCModeEnum newMode = modes[modePosition];
 
-        mNewSet = new GCSavedSetDataModel();
+        mNewSet = new GCSavedSet();
         mNewSet.setTitle(newTitle);
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
@@ -362,8 +362,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private boolean validateTitleAgainstDatabase(String title){
         GCSavedSetDatabase mSavedSetDatabase = new GCSavedSetDatabase(mContext);
-        ArrayList<GCSavedSetDataModel> savedSetList = mSavedSetDatabase.readData();
-        for(GCSavedSetDataModel savedSet : savedSetList){
+        ArrayList<GCSavedSet> savedSetList = mSavedSetDatabase.readData();
+        for(GCSavedSet savedSet : savedSetList){
             if(savedSet.getTitle().equals(title)){
                 return true;
             }

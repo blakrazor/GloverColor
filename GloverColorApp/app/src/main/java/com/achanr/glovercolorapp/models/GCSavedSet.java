@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Andrew Chanrasmi
  */
-public class GCSavedSetDataModel implements Serializable {
+public class GCSavedSet implements Serializable {
 
     private String mTitle;
     private ArrayList<EGCColorEnum> mColors;
@@ -44,10 +44,10 @@ public class GCSavedSetDataModel implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof GCSavedSetDataModel)) {
+        if (!(o instanceof GCSavedSet)) {
             return false;
         }
-        GCSavedSetDataModel other = (GCSavedSetDataModel) o;
+        GCSavedSet other = (GCSavedSet) o;
         return mTitle.equalsIgnoreCase(other.getTitle());
     }
 

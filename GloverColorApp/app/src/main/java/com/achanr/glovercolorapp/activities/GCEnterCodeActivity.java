@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
@@ -93,7 +93,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
     private void submitAction() {
         String setString = mEnterCodeEditText.getText().toString().trim();
-        GCSavedSetDataModel newSet = convertStringToSavedSet(setString);
+        GCSavedSet newSet = convertStringToSavedSet(setString);
         if (newSet != null) {
             Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
             intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEnterCodeActivity.class.getName());
@@ -105,8 +105,8 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         }
     }
 
-    private GCSavedSetDataModel convertStringToSavedSet(String setString) {
-        GCSavedSetDataModel newSet = new GCSavedSetDataModel();
+    private GCSavedSet convertStringToSavedSet(String setString) {
+        GCSavedSet newSet = new GCSavedSet();
 
         if (setString.trim().isEmpty()) {
             return null;

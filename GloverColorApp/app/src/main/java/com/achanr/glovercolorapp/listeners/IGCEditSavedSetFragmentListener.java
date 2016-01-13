@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.listeners;
 
-import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 
 /**
  * Glover Color App Project
@@ -9,8 +9,8 @@ import com.achanr.glovercolorapp.models.GCSavedSetDataModel;
  * @created 1/11/16 3:41 PM
  */
 public interface IGCEditSavedSetFragmentListener {
-    void onSetSaved(GCSavedSetDataModel oldSet, GCSavedSetDataModel newSet);
-    void onSetDeleted(GCSavedSetDataModel savedSet, boolean isNewSet);
-    void onSetAdded(GCSavedSetDataModel newSet);
+    void onSetSaved(GCSavedSet oldSet, GCSavedSet newSet);
+    void onSetDeleted(GCSavedSet savedSet, boolean isNewSet);
+    void onSetAdded(GCSavedSet newSet);
     void onLeaveConfirmed();
 }
