@@ -51,7 +51,7 @@ public class GCBaseActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(title);
-        ((TextView)findViewById(R.id.toolbar_title)).setText(title);
+        setCustomTitle(title);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(
@@ -64,6 +64,10 @@ public class GCBaseActivity extends AppCompatActivity
         mNavigationView.setCheckedItem(mPosition);
 
         setupThemeSpinner();
+    }
+
+    protected void setCustomTitle(String title){
+        ((TextView)findViewById(R.id.toolbar_title)).setText(title);
     }
 
     protected void setupThemeSpinner(){

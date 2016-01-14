@@ -71,7 +71,7 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         if(mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
             mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(mNewSet, true);
             doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-            getSupportActionBar().setTitle(R.string.title_add_set);
+            setCustomTitle(getString(R.string.title_add_set));
             isNewSet = true;
         }
     }
@@ -115,14 +115,14 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         GCSavedSet savedSet = mSavedSetList.get(position);
         mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
         doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-        getSupportActionBar().setTitle(R.string.title_edit_set);
+        setCustomTitle(getString(R.string.title_edit_set));
     }
 
     @Override
     public void onAddSetListItemClicked() {
         mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(null, true);
         doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-        getSupportActionBar().setTitle(R.string.title_add_set);
+        setCustomTitle(getString(R.string.title_add_set));
         isNewSet = true;
     }
 
