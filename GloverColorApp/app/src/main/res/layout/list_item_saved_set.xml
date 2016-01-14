@@ -3,8 +3,9 @@
     android:id="@+id/list_item_saved_set_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="10dp">
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="15dp">
 
     <TextView
         android:id="@+id/list_item_saved_set_title"

@@ -37,6 +37,63 @@
             android:text="@string/colors"/>
 
         <LinearLayout
+            android:id="@+id/color_swatch_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6">
+
+            <View
+                android:id="@+id/color_swatch_1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+            <View
+                android:id="@+id/color_swatch_2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+            <View
+                android:id="@+id/color_swatch_3"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+            <View
+                android:id="@+id/color_swatch_4"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+            <View
+                android:id="@+id/color_swatch_5"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+            <View
+                android:id="@+id/color_swatch_6"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -56,7 +113,7 @@
                     android:text="@string/color_1_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_1"
+                    android:id="@+id/spinner_color_1"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -78,7 +135,7 @@
                     android:text="@string/color_4_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_4"
+                    android:id="@+id/spinner_color_4"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -108,7 +165,7 @@
                     android:text="@string/color_2_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_2"
+                    android:id="@+id/spinner_color_2"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -130,7 +187,7 @@
                     android:text="@string/color_5_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_5"
+                    android:id="@+id/spinner_color_5"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -159,7 +216,7 @@
                     android:text="@string/color_3_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_3"
+                    android:id="@+id/spinner_color_3"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -181,7 +238,7 @@
                     android:text="@string/color_6_subtitle"/>
 
                 <Spinner
-                    android:id="@+id/edit_text_color_6"
+                    android:id="@+id/spinner_color_6"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

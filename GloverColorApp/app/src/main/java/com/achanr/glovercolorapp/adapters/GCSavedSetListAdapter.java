@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
@@ -64,6 +65,21 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
         holder.txtMode.setText(mode.toString());
         holder.position = position;
+        if(mSavedSetList.size() > 0 && position == mSavedSetList.size()-1){
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 200);
+            holder.rlSavedSetItem.setLayoutParams(params);
+        } else {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            holder.rlSavedSetItem.setLayoutParams(params);
+        }
     }
 
     @Override
