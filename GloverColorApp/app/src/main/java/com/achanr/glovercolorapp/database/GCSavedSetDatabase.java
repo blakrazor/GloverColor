@@ -71,17 +71,18 @@ public class GCSavedSetDatabase {
         );
 
         if (mCursor != null) {
-            mCursor.moveToFirst();
-            do {
-                GCSavedSet savedSet = new GCSavedSet();
-                String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_TITLE));
-                String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
-                String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
-                savedSet.setTitle(title);
-                savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-                savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
-                savedSetList.add(savedSet);
-            } while (mCursor.moveToNext());
+            if (mCursor.moveToFirst()) {
+                do {
+                    GCSavedSet savedSet = new GCSavedSet();
+                    String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_TITLE));
+                    String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
+                    String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
+                    savedSet.setTitle(title);
+                    savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
+                    savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
+                    savedSetList.add(savedSet);
+                } while (mCursor.moveToNext());
+            }
         }
 
         return savedSetList;
