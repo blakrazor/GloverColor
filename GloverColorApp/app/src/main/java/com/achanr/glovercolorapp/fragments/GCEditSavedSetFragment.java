@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,7 +62,7 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private static final String SAVED_SET_KEY = "saved_set_key";
     private static final String NEW_SET_KEY = "new_set_key";
-    private int colorSpinnerSize = 6;
+    private final int COLOR_SPINNER_SIZE = 6;
 
     public static final int MAX_TITLE_LENGTH = 100;
 
@@ -161,6 +163,7 @@ public class GCEditSavedSetFragment extends Fragment {
         } else {
             fillDefaultData();
         }
+        setupColorSpinnerSelectionListeners();
         return v;
     }
 
@@ -234,7 +237,7 @@ public class GCEditSavedSetFragment extends Fragment {
 
         int blankCount = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < colorSpinnerSize; i++) {
+        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
             int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
             if (colors[colorPosition] == EGCColorEnum.BLANK) {
                 blankCount++;
@@ -289,7 +292,7 @@ public class GCEditSavedSetFragment extends Fragment {
         mTitleEditText.setText("");
 
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < colorSpinnerSize; i++) {
+        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
             int colorIndex = 0;
             for (EGCColorEnum colorItem : colors) {
                 if (colorItem == EGCColorEnum.BLANK) {
@@ -303,6 +306,28 @@ public class GCEditSavedSetFragment extends Fragment {
 
         mModeSpinner.setSelection(0);
     }
+
+    private void setupColorSpinnerSelectionListeners(){
+        for(int i = 0; i< COLOR_SPINNER_SIZE; i++){
+            getColorSpinner(i + 1).setOnItemSelectedListener(mColorSpinnerSelectedListener);
+        }
+    }
+
+    private AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            TextView spinnerTv = ((TextView)view.findViewById(R.id.spinner_color_item_title));
+            String colorString = spinnerTv.getText().toString();
+            EGCColorEnum colorEnum = EGCColorEnum.valueOf(colorString);
+            int[] rgbValues = colorEnum.getRgbValues();
+            spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
     private Spinner getColorSpinner(int position) {
         switch (position) {
@@ -326,7 +351,7 @@ public class GCEditSavedSetFragment extends Fragment {
     private ArrayList<EGCColorEnum> getNewColorList() {
         EGCColorEnum[] colors = EGCColorEnum.values();
         ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
-        for (int i = 0; i < colorSpinnerSize; i++) {
+        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
             int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
             newColorList.add(colors[colorPosition]);
         }
@@ -527,7 +552,7 @@ public class GCEditSavedSetFragment extends Fragment {
         }
 
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < colorSpinnerSize; i++) {
+        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
             int colorPosition = getColorSpinner(i + 1).getSelectedItemPosition();
             if (colors[colorPosition] != mSavedSet.getColors().get(i)) {
                 return true;
