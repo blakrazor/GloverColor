@@ -20,8 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,20 +49,13 @@ public class GCEditSavedSetFragment extends Fragment {
     private GCSavedSet mSavedSet;
     private GCSavedSet mNewSet;
     private EditText mTitleEditText;
-    private ColorSpinnerHolder mColor1Spinner;
-    private ColorSpinnerHolder mColor2Spinner;
-    private ColorSpinnerHolder mColor3Spinner;
-    private ColorSpinnerHolder mColor4Spinner;
-    private ColorSpinnerHolder mColor5Spinner;
-    private ColorSpinnerHolder mColor6Spinner;
+    private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
-    private Button mSaveButton;
 
     private boolean isNewSet = false;
 
     private static final String SAVED_SET_KEY = "saved_set_key";
     private static final String NEW_SET_KEY = "new_set_key";
-    private final int COLOR_SPINNER_SIZE = 6;
 
     public static final int MAX_TITLE_LENGTH = 100;
 
@@ -94,28 +87,26 @@ public class GCEditSavedSetFragment extends Fragment {
     };
 
     private class ColorSpinnerHolder {
+        private LinearLayout mColorLayout;
         private Spinner mColorSpinner;
         private View mColorSwatch;
 
-        public ColorSpinnerHolder(Spinner colorSpinner, View colorSwatch) {
+        public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, View colorSwatch) {
+            mColorLayout = colorLayout;
             mColorSpinner = colorSpinner;
             mColorSwatch = colorSwatch;
+        }
+
+        public LinearLayout getColorLayout() {
+            return mColorLayout;
         }
 
         public Spinner getColorSpinner() {
             return mColorSpinner;
         }
 
-        public void setColorSpinner(Spinner colorSpinner) {
-            mColorSpinner = colorSpinner;
-        }
-
         public View getColorSwatch() {
             return mColorSwatch;
-        }
-
-        public void setColorSwatch(View colorSwatch) {
-            mColorSwatch = colorSwatch;
         }
     }
 
@@ -126,8 +117,6 @@ public class GCEditSavedSetFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment SavedSetListFragment.
      */
     public static GCEditSavedSetFragment newInstance(GCSavedSet savedSet, boolean isNewSet) {
         GCEditSavedSetFragment fragment = new GCEditSavedSetFragment();
@@ -169,15 +158,10 @@ public class GCEditSavedSetFragment extends Fragment {
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
 
         setupColorSpinnerHolders(v);
-        mModeSpinner = (Spinner) v.findViewById(R.id.edit_text_mode);
+        fillColorSpinnerWithEnums();
 
-        fillSpinnerWithEnums(mColor1Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mColor2Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mColor3Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mColor4Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mColor5Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mColor6Spinner.getColorSpinner(), EGCColorEnum.values());
-        fillSpinnerWithEnums(mModeSpinner, EGCModeEnum.values());
+        mModeSpinner = (Spinner) v.findViewById(R.id.edit_text_mode);
+        mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, EGCModeEnum.values()));
 
         if (mSavedSet != null) {
             fillOutData();
@@ -191,18 +175,6 @@ public class GCEditSavedSetFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-        mContext = null;
-        mSavedSet = null;
-        mTitleEditText = null;
-        mColor1Spinner = null;
-        mColor2Spinner = null;
-        mColor3Spinner = null;
-        mColor4Spinner = null;
-        mColor5Spinner = null;
-        mColor6Spinner = null;
-        mModeSpinner = null;
-        mSaveButton = null;
     }
 
     @Override
@@ -258,13 +230,13 @@ public class GCEditSavedSetFragment extends Fragment {
 
         int blankCount = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
-            int colorPosition = getColorSpinnerHolder(i + 1).getColorSpinner().getSelectedItemPosition();
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
             if (colors[colorPosition] == EGCColorEnum.BLANK) {
                 blankCount++;
             }
         }
-        if (blankCount >= 6) {
+        if (blankCount >= mColorSpinnerHolders.size()) {
             showErrorDialog(mContext.getString(R.string.error_no_color));
             return false;
         }
@@ -273,24 +245,39 @@ public class GCEditSavedSetFragment extends Fragment {
     }
 
     private void setupColorSpinnerHolders(View v) {
-        mColor1Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_1), v.findViewById(R.id.color_swatch_1));
-        mColor2Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_2), v.findViewById(R.id.color_swatch_2));
-        mColor3Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_3), v.findViewById(R.id.color_swatch_3));
-        mColor4Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_4), v.findViewById(R.id.color_swatch_4));
-        mColor5Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_5), v.findViewById(R.id.color_swatch_5));
-        mColor6Spinner = new ColorSpinnerHolder((Spinner) v.findViewById(R.id.spinner_color_6), v.findViewById(R.id.color_swatch_6));
+        mColorSpinnerHolders = new ArrayList<>();
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_1_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_1),
+                v.findViewById(R.id.color_swatch_1)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_2_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_2),
+                v.findViewById(R.id.color_swatch_2)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_3_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_3),
+                v.findViewById(R.id.color_swatch_3)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_4_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_4),
+                v.findViewById(R.id.color_swatch_4)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_5_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_5),
+                v.findViewById(R.id.color_swatch_5)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_6_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_6),
+                v.findViewById(R.id.color_swatch_6)));
     }
 
     private void matchColorSpinnerToSwatch() {
-        for(int i = 0; i < COLOR_SPINNER_SIZE; i++) {
-            EGCColorEnum colorEnum = (EGCColorEnum) getColorSpinnerHolder(i + 1).getColorSpinner().getSelectedItem();
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
             int[] rgbValues = colorEnum.getRgbValues();
-            getColorSpinnerHolder(i + 1).getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+            colorSpinnerHolder.getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
         }
     }
 
-    private void fillSpinnerWithEnums(Spinner spinner, Object[] values) {
-        spinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, values));
+    private void fillColorSpinnerWithEnums() {
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            colorSpinnerHolder.getColorSpinner().setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, EGCColorEnum.values()));
+        }
     }
 
     private void fillOutData() {
@@ -303,16 +290,16 @@ public class GCEditSavedSetFragment extends Fragment {
         int spinnerIndex = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
         for (EGCColorEnum color : colorList) {
-            spinnerIndex++;
             int colorIndex = 0;
             for (EGCColorEnum colorItem : colors) {
                 if (colorItem == color) {
-                    getColorSpinnerHolder(spinnerIndex).getColorSpinner().setSelection(colorIndex);
+                    mColorSpinnerHolders.get(spinnerIndex).getColorSpinner().setSelection(colorIndex);
                     break;
                 } else {
                     colorIndex++;
                 }
             }
+            spinnerIndex++;
         }
 
         EGCModeEnum[] modes = EGCModeEnum.values();
@@ -330,11 +317,11 @@ public class GCEditSavedSetFragment extends Fragment {
         mTitleEditText.setText("");
 
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorIndex = 0;
             for (EGCColorEnum colorItem : colors) {
-                if (colorItem == EGCColorEnum.BLANK) {
-                    getColorSpinnerHolder(i + 1).getColorSpinner().setSelection(colorIndex);
+                if (colorItem == EGCColorEnum.NONE) {
+                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
                     break;
                 } else {
                     colorIndex++;
@@ -346,8 +333,8 @@ public class GCEditSavedSetFragment extends Fragment {
     }
 
     private void setupColorSpinnerSelectionListeners() {
-        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
-            getColorSpinnerHolder(i + 1).getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            colorSpinnerHolder.getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
         }
     }
 
@@ -357,9 +344,15 @@ public class GCEditSavedSetFragment extends Fragment {
             TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
             String colorString = spinnerTv.getText().toString();
             EGCColorEnum colorEnum = EGCColorEnum.valueOf(colorString);
-            int[] rgbValues = colorEnum.getRgbValues();
-            spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
-            matchColorSpinnerToSwatch();
+            if (colorEnum == EGCColorEnum.NONE) {
+                ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
+                hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+            } else {
+                int[] rgbValues = colorEnum.getRgbValues();
+                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                unhideNextColorSpinner(parent);
+                matchColorSpinnerToSwatch();
+            }
         }
 
         @Override
@@ -368,30 +361,55 @@ public class GCEditSavedSetFragment extends Fragment {
         }
     };
 
-    private ColorSpinnerHolder getColorSpinnerHolder(int position) {
-        switch (position) {
-            case 1:
-                return mColor1Spinner;
-            case 2:
-                return mColor2Spinner;
-            case 3:
-                return mColor3Spinner;
-            case 4:
-                return mColor4Spinner;
-            case 5:
-                return mColor5Spinner;
-            case 6:
-                return mColor6Spinner;
-            default:
-                return null;
+    private ColorSpinnerHolder getColorSpinnerHolder(View view) {
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            if (colorSpinnerHolder.getColorSpinner() == view) {
+                return colorSpinnerHolder;
+            }
         }
+        return null;
+    }
+
+    private void hideColorSpinnersAfterPosition(int position) {
+        EGCColorEnum[] colors = EGCColorEnum.values();
+        for (int i = position+1; i < mColorSpinnerHolders.size(); i++) {
+            int colorIndex = 0;
+            for (EGCColorEnum colorItem : colors) {
+                if (colorItem == EGCColorEnum.NONE) {
+                    mColorSpinnerHolders.get(i).getColorSpinner().setSelection(colorIndex);
+                    break;
+                } else {
+                    colorIndex++;
+                }
+            }
+            mColorSpinnerHolders.get(i).getColorLayout().setVisibility(View.INVISIBLE);
+            mColorSpinnerHolders.get(i).getColorSwatch().setVisibility(View.GONE);
+        }
+
+        mColorSpinnerHolders.get(position).getColorSwatch().setVisibility(View.GONE);
+    }
+
+    private void unhideNextColorSpinner(View view) {
+        int selectedSpinner = 0;
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            if (colorSpinnerHolder.getColorSpinner() == view) {
+                break;
+            } else {
+                selectedSpinner++;
+            }
+        }
+
+        if (selectedSpinner < mColorSpinnerHolders.size() - 1) {
+            mColorSpinnerHolders.get(selectedSpinner + 1).getColorLayout().setVisibility(View.VISIBLE);
+        }
+        mColorSpinnerHolders.get(selectedSpinner).getColorSwatch().setVisibility(View.VISIBLE);
     }
 
     private ArrayList<EGCColorEnum> getNewColorList() {
         EGCColorEnum[] colors = EGCColorEnum.values();
         ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
-        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
-            int colorPosition = getColorSpinnerHolder(i + 1).getColorSpinner().getSelectedItemPosition();
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
             newColorList.add(colors[colorPosition]);
         }
         return newColorList;
@@ -591,11 +609,13 @@ public class GCEditSavedSetFragment extends Fragment {
         }
 
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = 0; i < COLOR_SPINNER_SIZE; i++) {
-            int colorPosition = getColorSpinnerHolder(i + 1).getColorSpinner().getSelectedItemPosition();
-            if (colors[colorPosition] != mSavedSet.getColors().get(i)) {
+        int index = 0;
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
+            if (colors[colorPosition] != mSavedSet.getColors().get(index)) {
                 return true;
             }
+            index++;
         }
 
         EGCModeEnum[] modes = EGCModeEnum.values();
