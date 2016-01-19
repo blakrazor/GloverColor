@@ -228,15 +228,16 @@ public class GCEditSavedSetFragment extends Fragment {
             return false;
         }
 
-        int blankCount = 0;
+        int colorCount = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
-            if (colors[colorPosition] == EGCColorEnum.BLANK) {
-                blankCount++;
+            if (colors[colorPosition] != EGCColorEnum.BLANK
+                    && colors[colorPosition] != EGCColorEnum.NONE) {
+                colorCount++;
             }
         }
-        if (blankCount >= mColorSpinnerHolders.size()) {
+        if (colorCount == 0) {
             showErrorDialog(mContext.getString(R.string.error_no_color));
             return false;
         }
@@ -264,6 +265,12 @@ public class GCEditSavedSetFragment extends Fragment {
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_6_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_6),
                 v.findViewById(R.id.color_swatch_6)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_7_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_7),
+                v.findViewById(R.id.color_swatch_7)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_8_layout),
+                (Spinner) v.findViewById(R.id.spinner_color_8),
+                v.findViewById(R.id.color_swatch_8)));
     }
 
     private void matchColorSpinnerToSwatch() {
@@ -372,7 +379,7 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private void hideColorSpinnersAfterPosition(int position) {
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (int i = position+1; i < mColorSpinnerHolders.size(); i++) {
+        for (int i = position + 1; i < mColorSpinnerHolders.size(); i++) {
             int colorIndex = 0;
             for (EGCColorEnum colorItem : colors) {
                 if (colorItem == EGCColorEnum.NONE) {
@@ -457,7 +464,7 @@ public class GCEditSavedSetFragment extends Fragment {
         new AlertDialog.Builder(mContext)
                 .setTitle(title)
                 .setMessage(body)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mContext.getString(R.string.save), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         saveSet();
                     }
@@ -475,7 +482,7 @@ public class GCEditSavedSetFragment extends Fragment {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.revert_changes))
                 .setMessage(mContext.getString(R.string.revert_changes_dialog))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mContext.getString(R.string.reset), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mSavedSet == null) {
                             fillDefaultData();
@@ -497,7 +504,7 @@ public class GCEditSavedSetFragment extends Fragment {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete))
                 .setMessage(mContext.getString(R.string.delete_dialog))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
                             mListener.onSetDeleted(mSavedSet, isNewSet);
@@ -530,7 +537,7 @@ public class GCEditSavedSetFragment extends Fragment {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.unsaved_changes))
                 .setMessage(mContext.getString(R.string.unsaved_changes_dialog))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
                             mListener.onLeaveConfirmed();
@@ -612,7 +619,11 @@ public class GCEditSavedSetFragment extends Fragment {
         int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
-            if (colors[colorPosition] != mSavedSet.getColors().get(index)) {
+            if (mSavedSet.getColors().size() > index) {
+                if (colors[colorPosition] != mSavedSet.getColors().get(index)) {
+                    return true;
+                }
+            } else if (colors[colorPosition] != EGCColorEnum.NONE) {
                 return true;
             }
             index++;
