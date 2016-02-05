@@ -44,69 +44,181 @@
             android:orientation="horizontal"
             android:weightSum="8">
 
-            <View
+            <RelativeLayout
                 android:id="@+id/color_swatch_1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_1_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_2_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_3_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_4_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_5_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_6"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_6_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_7"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
 
-            <View
+                <TextView
+                    android:id="@+id/color_swatch_7_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/color_swatch_8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/black"/>
+                android:background="@android:color/white">
+
+                <TextView
+                    android:id="@+id/color_swatch_8_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="H"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:alpha="0.5"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

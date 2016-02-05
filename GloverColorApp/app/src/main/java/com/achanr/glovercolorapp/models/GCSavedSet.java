@@ -1,6 +1,5 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class GCSavedSet implements Serializable {
 
     private String mTitle;
-    private ArrayList<EGCColorEnum> mColors;
+    private ArrayList<GCColor> mColors;
     private EGCModeEnum mMode;
 
     public String getTitle() {
@@ -26,11 +25,11 @@ public class GCSavedSet implements Serializable {
         mTitle = title;
     }
 
-    public ArrayList<EGCColorEnum> getColors() {
+    public ArrayList<GCColor> getColors() {
         return mColors;
     }
 
-    public void setColors(ArrayList<EGCColorEnum> colors) {
+    public void setColors(ArrayList<GCColor> colors) {
         mColors = colors;
     }
 

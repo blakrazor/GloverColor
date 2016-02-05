@@ -11,6 +11,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -42,22 +43,35 @@ public class GCUtil {
         }
     }
 
-    public static String convertColorListToShortenedColorString(ArrayList<EGCColorEnum> colorList) {
+    private static final Map<String, EGCPowerLevelEnum> powerLevelToEnumHashMap = new HashMap<>();
+
+    static {
+        for (final EGCPowerLevelEnum s : EnumSet.allOf(EGCPowerLevelEnum.class)) {
+            powerLevelToEnumHashMap.put(s.getPowerAbbrev(), s);
+        }
+    }
+
+    public static String convertColorListToShortenedColorString(ArrayList<GCColor> colorList) {
         String shortenedColorString = "";
-        for (EGCColorEnum color : colorList) {
-            shortenedColorString += color.getColorAbbrev();
+        for (GCColor color : colorList) {
+            if (color.getColorEnum() != EGCColorEnum.NONE) {
+                shortenedColorString += (color.getColorEnum().getColorAbbrev() + color.getPowerLevelEnum().getPowerAbbrev());
+            }
         }
         return shortenedColorString;
     }
 
-    public static ArrayList<EGCColorEnum> convertShortenedColorStringToColorList(String shortenedColorString) {
-        ArrayList<EGCColorEnum> colorList = new ArrayList<>();
+    public static ArrayList<GCColor> convertShortenedColorStringToColorList(String shortenedColorString) {
+        ArrayList<GCColor> colorList = new ArrayList<>();
 
-        List<String> stringParts = getParts(shortenedColorString, 2);
+        List<String> stringParts = getParts(shortenedColorString, 3);
 
         for (String colorAbbrev : stringParts) {
-            EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorAbbrev);
-            colorList.add(colorEnum);
+            String colorString = colorAbbrev.substring(0, 2);
+            String powerString = colorAbbrev.substring(2, 3);
+            EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
+            EGCPowerLevelEnum powerLevelEnum = powerLevelToEnumHashMap.get(powerString);
+            colorList.add(new GCColor(colorEnum, powerLevelEnum));
         }
 
         return colorList;
@@ -107,11 +121,15 @@ public class GCUtil {
     public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
 
-        List<String> stringParts = getParts(shortenedColorString, 2);
+        List<String> stringParts = getParts(shortenedColorString, 3);
         for (String colorAbbrev : stringParts) {
-            SpannableString spannableString = new SpannableString(colorAbbrev);
-            int[] rgbValues = colorAbbrevToEnumHashMap.get(colorAbbrev).getRgbValues();
-            spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorAbbrev.length(), 0);
+            String colorString = colorAbbrev.substring(0, 2);
+            String powerString = colorAbbrev.substring(2, 3);
+            SpannableString spannableString = new SpannableString(colorString);
+            EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
+            EGCPowerLevelEnum powerLevelEnum = powerLevelToEnumHashMap.get(powerString);
+            int[] rgbValues = convertRgbToPowerLevel(colorEnum.getRgbValues(), powerLevelEnum);
+            spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorString.length(), 0);
             builder.append(spannableString);
         }
 
@@ -150,5 +168,41 @@ public class GCUtil {
                 activity.setTheme(R.style.GreenTheme);
                 break;
         }
+    }
+
+    public static EGCPowerLevelEnum getPowerLevelEnum(String powerAbbrev) {
+        return powerLevelToEnumHashMap.get(powerAbbrev);
+    }
+
+    public static int[] convertRgbToPowerLevel(int[] originalRgb, EGCPowerLevelEnum mPowerLevelEnum) {
+        int[] newRgbValues = new int[3];
+
+        float[] hsv = new float[3];
+        Color.RGBToHSV(originalRgb[0], originalRgb[1], originalRgb[2], hsv);
+
+        switch (mPowerLevelEnum) {
+            case HIGH:
+                if (hsv[1] != 0) {
+                    hsv[1] = (float) 1.0;
+                }
+                break;
+            case MEDIUM:
+                if (hsv[1] != 0) {
+                    hsv[1] = (float) 0.5;
+                }
+                break;
+            case LOW:
+                if (hsv[1] != 0) {
+                    hsv[1] = (float) 0.2;
+                }
+                break;
+        }
+
+        int outputColor = Color.HSVToColor(hsv);
+        newRgbValues[0] = Color.red(outputColor);
+        newRgbValues[1] = Color.green(outputColor);
+        newRgbValues[2] = Color.blue(outputColor);
+
+        return newRgbValues;
     }
 }

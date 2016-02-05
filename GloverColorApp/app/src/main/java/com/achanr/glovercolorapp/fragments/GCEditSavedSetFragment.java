@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +30,11 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
+import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
+import com.achanr.glovercolorapp.utility.EGCPowerLevelEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
@@ -89,12 +92,16 @@ public class GCEditSavedSetFragment extends Fragment {
     private class ColorSpinnerHolder {
         private LinearLayout mColorLayout;
         private Spinner mColorSpinner;
-        private View mColorSwatch;
+        private RelativeLayout mColorSwatch;
+        private TextView mColorSwatchTextView;
+        private EGCPowerLevelEnum mPowerLevelEnum;
 
-        public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, View colorSwatch) {
+        public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
             mColorLayout = colorLayout;
             mColorSpinner = colorSpinner;
             mColorSwatch = colorSwatch;
+            mColorSwatchTextView = colorSwatchTextView;
+            mPowerLevelEnum = EGCPowerLevelEnum.HIGH;
         }
 
         public LinearLayout getColorLayout() {
@@ -105,8 +112,20 @@ public class GCEditSavedSetFragment extends Fragment {
             return mColorSpinner;
         }
 
-        public View getColorSwatch() {
+        public RelativeLayout getColorSwatch() {
             return mColorSwatch;
+        }
+
+        public TextView getColorSwatchTextView() {
+            return mColorSwatchTextView;
+        }
+
+        public EGCPowerLevelEnum getPowerLevelEnum() {
+            return mPowerLevelEnum;
+        }
+
+        public void setPowerLevelEnum(EGCPowerLevelEnum powerLevelEnum) {
+            mPowerLevelEnum = powerLevelEnum;
         }
     }
 
@@ -168,7 +187,7 @@ public class GCEditSavedSetFragment extends Fragment {
         } else {
             fillDefaultData();
         }
-        setupColorSpinnerSelectionListeners();
+        setupColorListeners();
         return v;
     }
 
@@ -249,34 +268,42 @@ public class GCEditSavedSetFragment extends Fragment {
         mColorSpinnerHolders = new ArrayList<>();
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_1_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_1),
-                v.findViewById(R.id.color_swatch_1)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_1),
+                (TextView) v.findViewById(R.id.color_swatch_1_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_2_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_2),
-                v.findViewById(R.id.color_swatch_2)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_2),
+                (TextView) v.findViewById(R.id.color_swatch_2_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_3_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_3),
-                v.findViewById(R.id.color_swatch_3)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_3),
+                (TextView) v.findViewById(R.id.color_swatch_3_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_4_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_4),
-                v.findViewById(R.id.color_swatch_4)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_4),
+                (TextView) v.findViewById(R.id.color_swatch_4_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_5_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_5),
-                v.findViewById(R.id.color_swatch_5)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_5),
+                (TextView) v.findViewById(R.id.color_swatch_5_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_6_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_6),
-                v.findViewById(R.id.color_swatch_6)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_6),
+                (TextView) v.findViewById(R.id.color_swatch_6_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_7_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_7),
-                v.findViewById(R.id.color_swatch_7)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_7),
+                (TextView) v.findViewById(R.id.color_swatch_7_textview)));
         mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_8_layout),
                 (Spinner) v.findViewById(R.id.spinner_color_8),
-                v.findViewById(R.id.color_swatch_8)));
+                (RelativeLayout) v.findViewById(R.id.color_swatch_8),
+                (TextView) v.findViewById(R.id.color_swatch_8_textview)));
     }
 
     private void matchColorSpinnerToSwatch() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
-            int[] rgbValues = colorEnum.getRgbValues();
+            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevelEnum());
             colorSpinnerHolder.getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
         }
     }
@@ -289,18 +316,21 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private void fillOutData() {
         String title = mSavedSet.getTitle();
-        ArrayList<EGCColorEnum> colorList = mSavedSet.getColors();
+        ArrayList<GCColor> colorList = mSavedSet.getColors();
         EGCModeEnum mode = mSavedSet.getMode();
 
         mTitleEditText.setText(title);
 
         int spinnerIndex = 0;
         EGCColorEnum[] colors = EGCColorEnum.values();
-        for (EGCColorEnum color : colorList) {
+        for (GCColor color : colorList) {
             int colorIndex = 0;
             for (EGCColorEnum colorItem : colors) {
-                if (colorItem == color) {
-                    mColorSpinnerHolders.get(spinnerIndex).getColorSpinner().setSelection(colorIndex);
+                if (colorItem == color.getColorEnum()) {
+                    ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
+                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
+                    colorSpinnerHolder.setPowerLevelEnum(color.getPowerLevelEnum());
+                    colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevelEnum().getPowerAbbrev());
                     break;
                 } else {
                     colorIndex++;
@@ -339,9 +369,10 @@ public class GCEditSavedSetFragment extends Fragment {
         mModeSpinner.setSelection(0);
     }
 
-    private void setupColorSpinnerSelectionListeners() {
+    private void setupColorListeners() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             colorSpinnerHolder.getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
+            colorSpinnerHolder.getColorSwatchTextView().setOnClickListener(mColorSwatchClickListener);
         }
     }
 
@@ -367,6 +398,42 @@ public class GCEditSavedSetFragment extends Fragment {
 
         }
     };
+
+    private View.OnClickListener mColorSwatchClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            TextView colorSwatchTv = (TextView) v;
+            String currentLevelString = colorSwatchTv.getText().toString();
+            EGCPowerLevelEnum currentLevel = GCUtil.getPowerLevelEnum(currentLevelString);
+            syncSpinnerAndSwatch(colorSwatchTv, currentLevel);
+        }
+    };
+
+    private void syncSpinnerAndSwatch(TextView colorSwatchTv, EGCPowerLevelEnum currentLevel) {
+        EGCPowerLevelEnum newLevel = null;
+        if (currentLevel == EGCPowerLevelEnum.HIGH) {
+            colorSwatchTv.setText("M");
+            newLevel = EGCPowerLevelEnum.MEDIUM;
+        } else if (currentLevel == EGCPowerLevelEnum.MEDIUM) {
+            colorSwatchTv.setText("L");
+            newLevel = EGCPowerLevelEnum.LOW;
+        } else if (currentLevel == EGCPowerLevelEnum.LOW) {
+            colorSwatchTv.setText("H");
+            newLevel = EGCPowerLevelEnum.HIGH;
+        }
+
+        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            if (colorSpinnerHolder.getColorSwatchTextView() == colorSwatchTv) {
+                colorSpinnerHolder.setPowerLevelEnum(newLevel);
+                /*EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+                TextView spinnerTv = (TextView) colorSpinnerHolder.getColorSpinner().findViewById(R.id.spinner_color_item_title);
+                int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevelEnum());
+                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));*/
+                matchColorSpinnerToSwatch();
+                break;
+            }
+        }
+    }
 
     private ColorSpinnerHolder getColorSpinnerHolder(View view) {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
@@ -412,12 +479,16 @@ public class GCEditSavedSetFragment extends Fragment {
         mColorSpinnerHolders.get(selectedSpinner).getColorSwatch().setVisibility(View.VISIBLE);
     }
 
-    private ArrayList<EGCColorEnum> getNewColorList() {
+    private ArrayList<GCColor> getNewColorList() {
         EGCColorEnum[] colors = EGCColorEnum.values();
-        ArrayList<EGCColorEnum> newColorList = new ArrayList<>();
+        ArrayList<GCColor> newColorList = new ArrayList<>();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
-            newColorList.add(colors[colorPosition]);
+            EGCColorEnum color = colors[colorPosition];
+            EGCPowerLevelEnum power = colorSpinnerHolder.getPowerLevelEnum();
+            GCColor newColor = new GCColor(color, power);
+            newColorList.add(newColor);
+
         }
         return newColorList;
     }
@@ -429,7 +500,7 @@ public class GCEditSavedSetFragment extends Fragment {
             return;
         }
 
-        ArrayList<EGCColorEnum> newColorList = getNewColorList();
+        ArrayList<GCColor> newColorList = getNewColorList();
 
         EGCModeEnum[] modes = EGCModeEnum.values();
         int modePosition = mModeSpinner.getSelectedItemPosition();
@@ -593,7 +664,7 @@ public class GCEditSavedSetFragment extends Fragment {
         shareString += breakCharacter;
 
         //Get colors
-        ArrayList<EGCColorEnum> newColorList = getNewColorList();
+        ArrayList<GCColor> newColorList = getNewColorList();
         shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
         shareString += breakCharacter;
 
@@ -620,7 +691,8 @@ public class GCEditSavedSetFragment extends Fragment {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
             if (mSavedSet.getColors().size() > index) {
-                if (colors[colorPosition] != mSavedSet.getColors().get(index)) {
+                if (colors[colorPosition] != mSavedSet.getColors().get(index).getColorEnum()
+                        || colorSpinnerHolder.getPowerLevelEnum() != mSavedSet.getColors().get(index).getPowerLevelEnum()) {
                     return true;
                 }
             } else if (colors[colorPosition] != EGCColorEnum.NONE) {

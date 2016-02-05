@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -121,7 +121,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         String shortenedColorString = splitString[1];
         String mode = splitString[2];
 
-        ArrayList<EGCColorEnum> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
+        ArrayList<GCColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
         EGCModeEnum newMode = EGCModeEnum.valueOf(mode);
 
         newSet.setTitle(title);
