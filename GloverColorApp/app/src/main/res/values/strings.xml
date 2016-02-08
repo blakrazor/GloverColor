@@ -7,8 +7,8 @@
     <string name="welcome">Welcome to GloverColor!</string>
     <string name="glovercolor_tagline">Create, save, and share your colors</string>
     <string name="glovercolor">GloverColor</string>
-    <string name="menu_saved_color_sets">Saved color sets</string>
-    <string name="title_your_saved_sets">Your Saved Sets</string>
+    <string name="menu_saved_color_sets">Saved Sets</string>
+    <string name="title_your_saved_sets">Saved Sets</string>
     <string name="title_activity_gcwelcome_screen">Welcome</string>
     <string name="title_edit_set">Edit Set</string>
     <string name="title_add_set">Add Set</string>
@@ -58,4 +58,5 @@
     <string name="reset">RESET</string>
     <string name="exit">EXIT</string>
     <string name="H">H</string>
+    <string name="title_activity_gcedit_saved_set">GCEditSavedSetActivity</string>
 </resources>

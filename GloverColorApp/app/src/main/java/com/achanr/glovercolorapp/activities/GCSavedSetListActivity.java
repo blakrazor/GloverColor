@@ -3,20 +3,15 @@ package com.achanr.glovercolorapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
-import com.achanr.glovercolorapp.fragments.GCEditSavedSetFragment;
-import com.achanr.glovercolorapp.fragments.GCSavedSetListFragment;
-import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
-import com.achanr.glovercolorapp.listeners.IGCSavedSetListFragmentListener;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -27,26 +22,45 @@ import java.util.ArrayList;
  * @author Andrew Chanrasmi
  */
 
-public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSetListFragmentListener, IGCEditSavedSetFragmentListener {
+public class GCSavedSetListActivity extends GCBaseActivity {
 
     private Context mContext;
     private GCSavedSetDatabase mSavedSetDatabase;
     private ArrayList<GCSavedSet> mSavedSetList;
-    private GCSavedSetListFragment mSavedSetListFragment;
-    private GCEditSavedSetFragment mEditSavedSetFragment;
-
-    private enum TransactionEnum {ADD, REPLACE};
-
-    private boolean isNewSet = false;
-
-    private FragmentManager mFragmentManager;
-
-    private boolean isBackButton = false;
+    private RecyclerView mSavedSetListRecyclerView;
+    private GCSavedSetListAdapter mSavedSetListAdapter;
+    private RecyclerView.LayoutManager mSavedSetListLayoutManager;
+    private FloatingActionButton mFab;
 
     public static final String FROM_NAVIGATION = "from_navigation";
     public static final String NEW_SET_KEY = "new_set_key";
-    private String mFromNavigation;
-    private GCSavedSet mNewSet;
+    public static final String OLD_SET_KEY = "old_set_key";
+    public static final String IS_DELETE_KEY = "is_delete_key";
+
+    public static final int ADD_NEW_SET_REQUEST_CODE = 1;
+    public static final int UPDATE_SET_REQUEST_CODE = 2;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_NEW_SET_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
+            if (!isDeleted) {
+                GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
+                onSetAdded(newSet);
+            }
+        } else if (requestCode == UPDATE_SET_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
+            if (isDeleted) {
+                GCSavedSet savedSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                onSetDeleted(savedSet);
+            } else {
+                GCSavedSet oldSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
+                onSetUpdated(oldSet, newSet);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +69,33 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         mContext = this;
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        Intent intent = getIntent();
-        if(intent != null){
-            mFromNavigation = intent.getStringExtra(FROM_NAVIGATION);
-            mNewSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
-        }
-
         mSavedSetDatabase = new GCSavedSetDatabase(mContext);
         mSavedSetList = getSavedSetListFromDatabase();
 
-        mFragmentManager = getSupportFragmentManager();
-        mSavedSetListFragment = GCSavedSetListFragment.newInstance(mSavedSetList);
-        doFragmentTransaction(mSavedSetListFragment, TransactionEnum.ADD);
+        mSavedSetListRecyclerView = (RecyclerView) findViewById(R.id.saved_set_list_recyclerview);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddSetListItemClicked();
+            }
+        });
 
-        if(mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
-            mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(mNewSet, true);
-            doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-            setCustomTitle(getString(R.string.title_add_set));
-            isNewSet = true;
+        setupSavedSetList();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            String fromNavigation = intent.getStringExtra(FROM_NAVIGATION);
+            if (fromNavigation != null) {
+                if (fromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
+                    GCSavedSet newSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
+                    Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
+                    newIntent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
+                    newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
+                    startActivityForResult(newIntent, ADD_NEW_SET_REQUEST_CODE);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                }
+            }
         }
     }
 
@@ -80,7 +103,6 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_saved_color_sets);
-        refreshSavedSetList();
     }
 
     private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
@@ -91,138 +113,63 @@ public class GCSavedSetListActivity extends GCBaseActivity implements IGCSavedSe
         return savedSetList;
     }
 
-    private void doFragmentTransaction(Fragment fragment, TransactionEnum transaction) {
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        switch (transaction) {
-            case ADD:
-                fragmentTransaction.add(R.id.saved_set_list_fragment_container, fragment);
-                break;
-            case REPLACE:
-                fragmentTransaction.replace(R.id.saved_set_list_fragment_container, fragment);
-                break;
-        }
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+    private void setupSavedSetList() {
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mSavedSetListRecyclerView.setHasFixedSize(true);
 
-        if (fragment instanceof GCEditSavedSetFragment) {
-            displayBackButton(true);
-        }
+        // use a linear layout manager
+        mSavedSetListLayoutManager = new LinearLayoutManager(mContext);
+        mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
+        mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
+        mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
+
+        /*mSavedSetListRecyclerView.addOnItemTouchListener(
+                new GCSavedSetListItemClickListener(mContext,
+                        new GCSavedSetListItemClickListener.OnSavedSetItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                if (mListener != null) {
+                                    //mListener.onSavedSetListItemClicked(position);
+                                }
+                            }
+                        })
+        );*/
     }
 
-    @Override
     public void onSavedSetListItemClicked(int position) {
         GCSavedSet savedSet = mSavedSetList.get(position);
-        mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(savedSet, false);
-        doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-        setCustomTitle(getString(R.string.title_edit_set));
+        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+        intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
+        startActivityForResult(intent, UPDATE_SET_REQUEST_CODE);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
-    @Override
     public void onAddSetListItemClicked() {
-        mEditSavedSetFragment = GCEditSavedSetFragment.newInstance(null, true);
-        doFragmentTransaction(mEditSavedSetFragment, TransactionEnum.REPLACE);
-        setCustomTitle(getString(R.string.title_add_set));
-        isNewSet = true;
+        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+        intent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
+        startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
-    @Override
-    public void onSetSaved(GCSavedSet oldSet, GCSavedSet newSet) {
+    public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         mSavedSetDatabase.updateData(oldSet, newSet);
-        popBackStackAndRefreshWithMessage(getString(R.string.set_updated_message));
+        mSavedSetList = getSavedSetListFromDatabase();
+        mSavedSetListAdapter.update(oldSet, newSet);
+        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT);
     }
 
-    @Override
-    public void onSetDeleted(GCSavedSet savedSet, boolean isNewSet) {
-        if (!isNewSet) {
-            mSavedSetDatabase.deleteData(savedSet);
-        }
-        popBackStackAndRefreshWithMessage(getString(R.string.set_deleted_message));
+    public void onSetDeleted(GCSavedSet savedSet) {
+        mSavedSetDatabase.deleteData(savedSet);
+        mSavedSetList = getSavedSetListFromDatabase();
+        mSavedSetListAdapter.remove(savedSet);
+        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT);
     }
 
-    @Override
     public void onSetAdded(GCSavedSet newSet) {
         mSavedSetDatabase.insertData(newSet);
-        popBackStackAndRefreshWithMessage(getString(R.string.set_added_message));
-    }
-
-    @Override
-    public void onLeaveConfirmed() {
-        popBackStackAndRefreshWithMessage("");
-    }
-
-    private void popBackStackAndRefreshWithMessage(String message) {
-        mSavedSetList = mSavedSetDatabase.readData();
-        mFragmentManager.popBackStack();
-        displayBackButton(false);
-        refreshSavedSetList();
-        if (!message.isEmpty()) {
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void refreshSavedSetList() {
         mSavedSetList = getSavedSetListFromDatabase();
-        mSavedSetListFragment.refreshList(mSavedSetList);
-    }
-
-    private void displayBackButton(boolean shouldDisplay) {
-        if (shouldDisplay) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.GONE);
-            isBackButton = true;
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isBackButton) {
-                        onBackPressed();
-                    }
-                }
-            });
-        } else {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.VISIBLE);
-            isBackButton = false;
-            isNewSet = false;
-            setupToolbar(getString(R.string.title_your_saved_sets));
-            // Check if no view has focus:
-            View view = this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isBackButton) {
-            if(!isNewSet) {
-                if (mEditSavedSetFragment.validateFields()) {
-                    if (mEditSavedSetFragment.madeChanges()) {
-                        mEditSavedSetFragment.showLeavingDialog();
-                    } else {
-                        displayBackButton(false);
-                        super.onBackPressed();
-                    }
-                }
-            } else {
-                mEditSavedSetFragment.showLeavingDialog();
-            }
-        } else {
-            displayBackButton(false);
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
+        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT);
     }
 }

@@ -9,8 +9,15 @@
     tools:context=".activities.GCBaseActivity"
     android:background="?attr/background">
 
-    <include layout="@layout/app_bar_base_layout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <include layout="@layout/content_welcome_screen"/>
+        <include layout="@layout/app_bar_base_layout"/>
+
+        <include layout="@layout/content_welcome_screen"/>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

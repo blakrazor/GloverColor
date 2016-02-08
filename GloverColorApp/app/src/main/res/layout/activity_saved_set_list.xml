@@ -9,16 +9,15 @@
     tools:context=".activities.GCSavedSetListActivity"
     android:background="?attr/background">
 
-    <include layout="@layout/app_bar_base_layout"/>
-
-    <FrameLayout
-        android:id="@+id/saved_set_list_fragment_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activities.GCSavedSetListActivity"
-        tools:showIn="@layout/activity_saved_set_list">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    </FrameLayout>
+        <include layout="@layout/app_bar_base_layout"/>
+
+        <include layout="@layout/content_saved_set_list"/>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

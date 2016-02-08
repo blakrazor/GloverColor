@@ -1,3 +1,4 @@
+/*
 package com.achanr.glovercolorapp.fragments;
 
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
-import com.achanr.glovercolorapp.adapters.GCSavedSetListItemClickListener;
 import com.achanr.glovercolorapp.listeners.IGCSavedSetListFragmentListener;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
@@ -31,18 +31,20 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
 
     private IGCSavedSetListFragmentListener mListener;
 
-    private static final String SAVED_SET_LIST_KEY = "saved_set_list_key";
+    public static final String SAVED_SET_LIST_KEY = "saved_set_list_key";
 
     public GCSavedSetListFragment() {
         // Required empty public constructor
     }
 
-    /**
+    */
+/**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment SavedSetListFragment.
-     */
+     *//*
+
     public static GCSavedSetListFragment newInstance(ArrayList<GCSavedSet> savedSetList) {
         GCSavedSetListFragment fragment = new GCSavedSetListFragment();
         Bundle args = new Bundle();
@@ -64,11 +66,27 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mSavedSetList = (ArrayList<GCSavedSet>) savedInstanceState.getSerializable(SAVED_SET_LIST_KEY);
+            mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList, mListener);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(SAVED_SET_LIST_KEY, mSavedSetList);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
         if (getArguments() != null) {
             mSavedSetList = (ArrayList<GCSavedSet>) getArguments().getSerializable(SAVED_SET_LIST_KEY);
+            mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList, mListener);
         }
     }
 
@@ -104,21 +122,21 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
         // use a linear layout manager
         mSavedSetListLayoutManager = new LinearLayoutManager(mContext);
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
-
-        mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
 
-        mSavedSetListRecyclerView.addOnItemTouchListener(
+        */
+/*mSavedSetListRecyclerView.addOnItemTouchListener(
                 new GCSavedSetListItemClickListener(mContext,
                         new GCSavedSetListItemClickListener.OnSavedSetItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
                                 if (mListener != null) {
-                                    mListener.onSavedSetListItemClicked(position);
+                                    //mListener.onSavedSetListItemClicked(position);
                                 }
                             }
                         })
-        );
+        );*//*
+
     }
 
     @Override
@@ -134,8 +152,16 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
         }
     }
 
-    public void refreshList(ArrayList<GCSavedSet> savedSetList){
-        mSavedSetList = savedSetList;
-        setupSavedSetList();
+    public void onSetAdded(int position, GCSavedSet savedSet) {
+        mSavedSetListAdapter.add(position, savedSet);
+    }
+
+    public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
+        mSavedSetListAdapter.update(oldSet, newSet);
+    }
+
+    public void onSetDeleted(GCSavedSet savedSet) {
+        mSavedSetListAdapter.remove(savedSet);
     }
 }
+*/

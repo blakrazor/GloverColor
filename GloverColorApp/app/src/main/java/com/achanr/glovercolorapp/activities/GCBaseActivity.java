@@ -95,9 +95,6 @@ public class GCBaseActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-            if(getSupportFragmentManager().getBackStackEntryCount() < 1){
-                super.onBackPressed();
-            }
         }
     }
 

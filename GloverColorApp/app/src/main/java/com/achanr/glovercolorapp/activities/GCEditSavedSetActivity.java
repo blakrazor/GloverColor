@@ -1,24 +1,21 @@
-/*
-package com.achanr.glovercolorapp.fragments;
+package com.achanr.glovercolorapp.activities;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,7 +27,6 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
-import com.achanr.glovercolorapp.listeners.IGCEditSavedSetFragmentListener;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
@@ -40,18 +36,9 @@ import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
 
-*/
-/**
- * Glover Color App Project
- *
- * @author Andrew Chanrasmi
- * @created 1/11/16 3:40 PM
- *//*
+public class GCEditSavedSetActivity extends GCBaseActivity {
 
-public class GCEditSavedSetFragment extends Fragment {
-
-    private Context mContext;
-    private IGCEditSavedSetFragmentListener mListener;
+    public Context mContext;
     private GCSavedSet mSavedSet;
     private GCSavedSet mNewSet;
     private EditText mTitleEditText;
@@ -60,8 +47,8 @@ public class GCEditSavedSetFragment extends Fragment {
 
     private boolean isNewSet = false;
 
-    private static final String SAVED_SET_KEY = "saved_set_key";
-    private static final String NEW_SET_KEY = "new_set_key";
+    public static final String SAVED_SET_KEY = "saved_set_key";
+    public static final String IS_NEW_SET_KEY = "is_new_set_key";
 
     public static final int MAX_TITLE_LENGTH = 100;
 
@@ -132,59 +119,47 @@ public class GCEditSavedSetFragment extends Fragment {
         }
     }
 
-    public GCEditSavedSetFragment() {
-        // Required empty public constructor
-    }
-
-    */
-/**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *//*
-
-    public static GCEditSavedSetFragment newInstance(GCSavedSet savedSet, boolean isNewSet) {
-        GCEditSavedSetFragment fragment = new GCEditSavedSetFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(SAVED_SET_KEY, savedSet);
-        args.putBoolean(NEW_SET_KEY, isNewSet);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        if (context instanceof IGCEditSavedSetFragmentListener) {
-            mListener = (IGCEditSavedSetFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement IGCEditSavedSetFragmentListener");
+    protected void onStop() {
+        super.onStop();
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            mSavedSet = (GCSavedSet) getArguments().getSerializable(SAVED_SET_KEY);
-            isNewSet = getArguments().getBoolean(NEW_SET_KEY);
-        }
-    }
+        getLayoutInflater().inflate(R.layout.activity_edit_saved_set, mFrameLayout);
+        mContext = this;
+        setupToolbar(getString(R.string.title_edit_set));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.GONE);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_edit_saved_set, container, false);
-        mTitleEditText = (EditText) v.findViewById(R.id.edit_text_title);
+        Intent intent = getIntent();
+        if (intent != null) {
+            mSavedSet = (GCSavedSet) intent.getSerializableExtra(SAVED_SET_KEY);
+            isNewSet = intent.getBooleanExtra(IS_NEW_SET_KEY, false);
+            if (isNewSet) {
+                setCustomTitle(getString(R.string.title_add_set));
+            }
+        }
+
+        mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
 
-        setupColorSpinnerHolders(v);
+        setupColorSpinnerHolders();
         fillColorSpinnerWithEnums();
 
-        mModeSpinner = (Spinner) v.findViewById(R.id.edit_text_mode);
+        mModeSpinner = (Spinner) findViewById(R.id.edit_text_mode);
         mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, EGCModeEnum.values()));
 
         if (mSavedSet != null) {
@@ -193,16 +168,10 @@ public class GCEditSavedSetFragment extends Fragment {
             fillDefaultData();
         }
         setupColorListeners();
-        return v;
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         if (!isNewSet) {
             menu.add(0, 1, 1, "Share").setIcon(android.R.drawable.ic_menu_share)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -213,7 +182,7 @@ public class GCEditSavedSetFragment extends Fragment {
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         menu.add(0, 4, 4, "Delete").setIcon(android.R.drawable.ic_menu_delete)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        super.onCreateOptionsMenu(menu, inflater);
+        return true;
     }
 
     @Override
@@ -236,6 +205,9 @@ public class GCEditSavedSetFragment extends Fragment {
                 return true;
             case 4: //Delete
                 showDeleteDialog();
+                return true;
+            case android.R.id.home:
+                super.onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -269,40 +241,40 @@ public class GCEditSavedSetFragment extends Fragment {
         return true;
     }
 
-    private void setupColorSpinnerHolders(View v) {
+    private void setupColorSpinnerHolders() {
         mColorSpinnerHolders = new ArrayList<>();
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_1_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_1),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_1),
-                (TextView) v.findViewById(R.id.color_swatch_1_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_2_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_2),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_2),
-                (TextView) v.findViewById(R.id.color_swatch_2_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_3_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_3),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_3),
-                (TextView) v.findViewById(R.id.color_swatch_3_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_4_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_4),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_4),
-                (TextView) v.findViewById(R.id.color_swatch_4_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_5_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_5),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_5),
-                (TextView) v.findViewById(R.id.color_swatch_5_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_6_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_6),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_6),
-                (TextView) v.findViewById(R.id.color_swatch_6_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_7_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_7),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_7),
-                (TextView) v.findViewById(R.id.color_swatch_7_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) v.findViewById(R.id.color_8_layout),
-                (Spinner) v.findViewById(R.id.spinner_color_8),
-                (RelativeLayout) v.findViewById(R.id.color_swatch_8),
-                (TextView) v.findViewById(R.id.color_swatch_8_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_1_layout),
+                (Spinner) findViewById(R.id.spinner_color_1),
+                (RelativeLayout) findViewById(R.id.color_swatch_1),
+                (TextView) findViewById(R.id.color_swatch_1_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_2_layout),
+                (Spinner) findViewById(R.id.spinner_color_2),
+                (RelativeLayout) findViewById(R.id.color_swatch_2),
+                (TextView) findViewById(R.id.color_swatch_2_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_3_layout),
+                (Spinner) findViewById(R.id.spinner_color_3),
+                (RelativeLayout) findViewById(R.id.color_swatch_3),
+                (TextView) findViewById(R.id.color_swatch_3_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_4_layout),
+                (Spinner) findViewById(R.id.spinner_color_4),
+                (RelativeLayout) findViewById(R.id.color_swatch_4),
+                (TextView) findViewById(R.id.color_swatch_4_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_5_layout),
+                (Spinner) findViewById(R.id.spinner_color_5),
+                (RelativeLayout) findViewById(R.id.color_swatch_5),
+                (TextView) findViewById(R.id.color_swatch_5_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_6_layout),
+                (Spinner) findViewById(R.id.spinner_color_6),
+                (RelativeLayout) findViewById(R.id.color_swatch_6),
+                (TextView) findViewById(R.id.color_swatch_6_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_7_layout),
+                (Spinner) findViewById(R.id.spinner_color_7),
+                (RelativeLayout) findViewById(R.id.color_swatch_7),
+                (TextView) findViewById(R.id.color_swatch_7_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_8_layout),
+                (Spinner) findViewById(R.id.spinner_color_8),
+                (RelativeLayout) findViewById(R.id.color_swatch_8),
+                (TextView) findViewById(R.id.color_swatch_8_textview)));
     }
 
     private void matchColorSpinnerToSwatch() {
@@ -430,12 +402,10 @@ public class GCEditSavedSetFragment extends Fragment {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             if (colorSpinnerHolder.getColorSwatchTextView() == colorSwatchTv) {
                 colorSpinnerHolder.setPowerLevelEnum(newLevel);
-                */
-/*EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+                /*EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
                 TextView spinnerTv = (TextView) colorSpinnerHolder.getColorSpinner().findViewById(R.id.spinner_color_item_title);
                 int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevelEnum());
-                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));*//*
-
+                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));*/
                 matchColorSpinnerToSwatch();
                 break;
             }
@@ -518,12 +488,19 @@ public class GCEditSavedSetFragment extends Fragment {
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
 
-        if (mListener != null) {
-            if (isNewSet) {
-                mListener.onSetAdded(mNewSet);
-            } else {
-                mListener.onSetUpdated(mSavedSet, mNewSet);
-            }
+        if (isNewSet) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
+            resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 
@@ -584,9 +561,12 @@ public class GCEditSavedSetFragment extends Fragment {
                 .setMessage(mContext.getString(R.string.delete_dialog))
                 .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mListener != null) {
-                            mListener.onSetDeleted(mSavedSet, isNewSet);
-                        }
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
+                        resultIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -617,9 +597,9 @@ public class GCEditSavedSetFragment extends Fragment {
                 .setMessage(mContext.getString(R.string.unsaved_changes_dialog))
                 .setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mListener != null) {
-                            mListener.onLeaveConfirmed();
-                        }
+                        setResult(RESULT_CANCELED);
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -716,5 +696,15 @@ public class GCEditSavedSetFragment extends Fragment {
 
         return false;
     }
+
+    @Override
+    public void onBackPressed() {
+        if (madeChanges()) {
+            showLeavingDialog();
+        } else {
+            setResult(RESULT_CANCELED);
+            finish();
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+    }
 }
-*/

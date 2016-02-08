@@ -1,46 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/list_item_saved_set_layout"
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:padding="15dp">
-
-    <TextView
-        android:id="@+id/list_item_saved_set_title"
-        style="@style/ListItemSavedSetTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_toLeftOf="@+id/list_item_saved_set_desc_layout"/>
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="4dp">
 
     <LinearLayout
-        android:id="@+id/list_item_saved_set_desc_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:gravity="right"
+        android:background="?attr/colorPrimaryDark"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/list_item_saved_set_desc_colors"
-            style="@style/ListItemSavedSetDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <RelativeLayout
+            android:id="@+id/list_item_saved_set_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/list_item_saved_set_desc_mode"
-            style="@style/ListItemSavedSetDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/list_item_saved_set_title"
+                style="@style/ListItemSavedSetTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="false"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/list_item_saved_set_desc_layout"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Example Title"/>
+
+            <LinearLayout
+                android:id="@+id/list_item_saved_set_desc_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/list_item_saved_set_desc_colors"
+                    style="@style/ListItemSavedSetDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BlReGrYeOr"/>
+
+                <TextView
+                    android:id="@+id/list_item_saved_set_desc_mode"
+                    style="@style/ListItemSavedSetDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="STROBE"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageButton
+                android:id="@+id/share_card_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:src="@android:drawable/ic_menu_share"/>
+
+            <ImageButton
+                android:id="@+id/edit_card_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:src="@android:drawable/ic_menu_edit"/>
+
+            <ImageButton
+                android:id="@+id/delete_card_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:src="@android:drawable/ic_menu_delete"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-
-</RelativeLayout>
+</android.support.v7.widget.CardView>

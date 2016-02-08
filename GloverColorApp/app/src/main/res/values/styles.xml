@@ -16,27 +16,32 @@
 
     <style name="HeaderText">
         <item name="android:textSize">25sp</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="BodyText">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="EditSavedSetColorText">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="ListItemSavedSetTitle">
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="ListItemSavedSetDescription">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="AppTheme.NoActionBar.AppBarOverlay"
+           parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>
