@@ -324,11 +324,16 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     TextView tv = (TextView) v.findViewById(R.id.spinner_color_dropdown_item_title);
                     EGCColorEnum colorEnum = EGCColorEnum.values()[position];
                     tv.setText(colorEnum.toString());
-                    if(colorEnum == EGCColorEnum.BLANK){
+                    if (colorEnum == EGCColorEnum.BLANK) {
                         tv.setTextColor(Color.WHITE);
+                    } else {
+                        tv.setTextColor(Color.BLACK);
                     }
-                    if (colorEnum != EGCColorEnum.NONE) {
-                        RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
+
+                    RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
+                    if (colorEnum == EGCColorEnum.NONE) {
+                        dropdownItemBackground.setBackgroundColor(Color.WHITE);
+                    } else {
                         int[] rgbValues = colorEnum.getRgbValues();
                         dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
                     }
