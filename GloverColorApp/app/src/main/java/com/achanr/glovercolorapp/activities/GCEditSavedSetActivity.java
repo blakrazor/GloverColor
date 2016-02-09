@@ -11,6 +11,7 @@ import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -309,7 +310,32 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillColorSpinnerWithEnums() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            colorSpinnerHolder.getColorSpinner().setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, EGCColorEnum.values()));
+            ArrayAdapter<EGCColorEnum> customAdapter = new ArrayAdapter<EGCColorEnum>(mContext, R.layout.spinner_color_item, EGCColorEnum.values()) {
+                @Override
+                public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
+                    View v = convertView;
+                    if (v == null) {
+                        Context mContext = this.getContext();
+                        LayoutInflater vi = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        // Androids orginal spinner view item
+                        v = vi.inflate(R.layout.spinner_color_dropdown_item, null);
+                    }
+                    // The text view of the spinner list view
+                    TextView tv = (TextView) v.findViewById(R.id.spinner_color_dropdown_item_title);
+                    EGCColorEnum colorEnum = EGCColorEnum.values()[position];
+                    tv.setText(colorEnum.toString());
+                    if(colorEnum == EGCColorEnum.BLANK){
+                        tv.setTextColor(Color.WHITE);
+                    }
+                    if (colorEnum != EGCColorEnum.NONE) {
+                        RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
+                        int[] rgbValues = colorEnum.getRgbValues();
+                        dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                    }
+                    return v;
+                }
+            };
+            colorSpinnerHolder.getColorSpinner().setAdapter(customAdapter);
         }
     }
 
@@ -426,10 +452,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             if (colorSpinnerHolder.getColorSwatchTextView() == colorSwatchTv) {
                 colorSpinnerHolder.setPowerLevelEnum(newLevel);
-                /*EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
-                TextView spinnerTv = (TextView) colorSpinnerHolder.getColorSpinner().findViewById(R.id.spinner_color_item_title);
-                int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevelEnum());
-                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));*/
                 matchColorSpinnerToSwatch();
                 break;
             }
@@ -579,29 +601,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .show();
     }
 
-    /*private void showDeleteDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.delete))
-                .setMessage(mContext.getString(R.string.delete_dialog))
-                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
-                        resultIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
-                        setResult(RESULT_OK, resultIntent);
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_menu_delete)
-                .show();
-    }*/
-
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.error))
@@ -634,59 +633,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setIcon(R.drawable.ic_warning_black_48dp)
                 .show();
     }
-
-    /*public void showShareDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-        alert.setTitle(mContext.getString(R.string.share));
-        alert.setMessage(mContext.getString(R.string.share_dialog));
-
-        TextView input = new TextView(mContext);
-        input.setTextIsSelectable(true);
-        final String shareString = getShareString();
-        input.setText(shareString);
-        input.setGravity(Gravity.CENTER_HORIZONTAL);
-        alert.setView(input);
-
-        alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Copied Text", shareString);
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
-        alert.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog alertDialog = alert.create();
-        alertDialog.show();
-    }*/
-
-    /*private String getShareString() {
-        String shareString = "";
-        String breakCharacter = GCUtil.BREAK_CHARACTER_FOR_SHARING;
-
-        //Get title
-        shareString += mTitleEditText.getText().toString().trim();
-        shareString += breakCharacter;
-
-        //Get colors
-        ArrayList<GCColor> newColorList = getNewColorList();
-        shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
-        shareString += breakCharacter;
-
-        //Get mode
-        EGCModeEnum[] modes = EGCModeEnum.values();
-        int modePosition = mModeSpinner.getSelectedItemPosition();
-        EGCModeEnum modeEnum = modes[modePosition];
-        shareString += modeEnum.toString();
-
-        return shareString;
-    }*/
 
     public boolean madeChanges() {
         if (mSavedSet == null) {
