@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.activities.GCSavedSetListActivity;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
-import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
@@ -109,25 +108,6 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         return mSavedSetList.size();
     }
 
-    private String getShareString(int position) {
-        String shareString = "";
-        String breakCharacter = GCUtil.BREAK_CHARACTER_FOR_SHARING;
-
-        //Get title
-        shareString += mSavedSetList.get(position).getTitle();
-        shareString += breakCharacter;
-
-        //Get colors
-        ArrayList<GCColor> newColorList = mSavedSetList.get(position).getColors();
-        shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
-        shareString += breakCharacter;
-
-        //Get mode
-        shareString += mSavedSetList.get(position).getMode();
-
-        return shareString;
-    }
-
     public void showShareDialog(int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle(mContext.getString(R.string.share));
@@ -136,7 +116,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
 
         TextView input = new TextView(mContext);
         input.setTextIsSelectable(true);
-        final String shareString = getShareString(position);
+        final String shareString = GCUtil.getShareString(mSavedSetList.get(position));
         input.setText(shareString);
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
@@ -155,9 +135,9 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
             public void onClick(DialogInterface dialog, int which) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareString + mContext.getString(R.string.share_body_text));
                 sendIntent.setType("text/plain");
-                mContext.startActivity(Intent.createChooser(sendIntent, "Send to"));
+                mContext.startActivity(Intent.createChooser(sendIntent, "Share gloving set with"));
             }
         });
         alert.setNeutralButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {

@@ -59,4 +59,5 @@
     <string name="exit">EXIT</string>
     <string name="H">H</string>
     <string name="title_activity_gcedit_saved_set">GCEditSavedSetActivity</string>
+    <string name="share_body_text">\n\nEnter the code above on the GloverColor mobile app to view and save this gloving set.</string>
 </resources>

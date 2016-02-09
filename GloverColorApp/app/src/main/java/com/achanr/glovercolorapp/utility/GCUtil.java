@@ -192,22 +192,8 @@ public class GCUtil {
         float[] hsv = new float[3];
         Color.RGBToHSV(originalRgb[0], originalRgb[1], originalRgb[2], hsv);
 
-        switch (mPowerLevelEnum) {
-            case HIGH:
-                if (hsv[1] != 0) {
-                    hsv[1] = (float) 1.0;
-                }
-                break;
-            case MEDIUM:
-                if (hsv[1] != 0) {
-                    hsv[1] = (float) 0.5;
-                }
-                break;
-            case LOW:
-                if (hsv[1] != 0) {
-                    hsv[1] = (float) 0.2;
-                }
-                break;
+        if (hsv[1] != 0) {
+            hsv[1] = mPowerLevelEnum.getSaturationValue();
         }
 
         int outputColor = Color.HSVToColor(hsv);
@@ -216,5 +202,26 @@ public class GCUtil {
         newRgbValues[2] = Color.blue(outputColor);
 
         return newRgbValues;
+    }
+
+    public static String getShareString(GCSavedSet savedSet) {
+        String shareString = "";
+        String breakCharacter = BREAK_CHARACTER_FOR_SHARING;
+
+        //Get title
+        String title = savedSet.getTitle();
+        title = title.replace(" ", "_");
+        shareString += title;
+        shareString += breakCharacter;
+
+        //Get colors
+        ArrayList<GCColor> newColorList = savedSet.getColors();
+        shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
+        shareString += breakCharacter;
+
+        //Get mode
+        shareString += savedSet.getMode();
+
+        return shareString;
     }
 }

@@ -18,11 +18,11 @@ public class GCSavedSet implements Serializable {
     private EGCModeEnum mMode;
 
     public String getTitle() {
-        return mTitle;
+        return mTitle = mTitle.replace("_", " ");
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        mTitle = title.replace(" ", "_");
     }
 
     public ArrayList<GCColor> getColors() {
