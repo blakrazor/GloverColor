@@ -72,6 +72,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetDatabase = new GCSavedSetDatabase(mContext);
         mSavedSetList = getSavedSetListFromDatabase();
 
+        if (mSavedSetList != null && mSavedSetList.size() > 0) {
+            findViewById(R.id.icon_background).setVisibility(View.GONE);
+        }
+
         mSavedSetListRecyclerView = (RecyclerView) findViewById(R.id.saved_set_list_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {

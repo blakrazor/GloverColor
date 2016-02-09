@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
@@ -125,12 +128,21 @@ public class GCUtil {
         for (String colorAbbrev : stringParts) {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
-            SpannableString spannableString = new SpannableString(colorString);
             EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
             EGCPowerLevelEnum powerLevelEnum = powerLevelToEnumHashMap.get(powerString);
             int[] rgbValues = convertRgbToPowerLevel(colorEnum.getRgbValues(), powerLevelEnum);
-            spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorString.length(), 0);
-            builder.append(spannableString);
+
+            if (colorString.equalsIgnoreCase("--")) {
+                SpannableString spannableString = new SpannableString(colorString);
+                spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorString.length(), 0);
+                builder.append(spannableString);
+            } else {
+                SpannableString spannableString = new SpannableString(colorAbbrev);
+                spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, 3, 0);
+                spannableString.setSpan(new SuperscriptSpan(), colorAbbrev.length() - 1, colorAbbrev.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new RelativeSizeSpan(0.75f), colorAbbrev.length() - 1, colorAbbrev.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.append(spannableString);
+            }
         }
 
         return builder;
