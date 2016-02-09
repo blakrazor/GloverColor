@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
@@ -131,6 +132,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle(mContext.getString(R.string.share));
         alert.setMessage(mContext.getString(R.string.share_dialog));
+        alert.setIcon(R.drawable.ic_share_black_48dp);
 
         TextView input = new TextView(mContext);
         input.setTextIsSelectable(true);
@@ -148,7 +150,17 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
                 dialog.dismiss();
             }
         });
-        alert.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(mContext.getString(R.string.share), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+                sendIntent.setType("text/plain");
+                mContext.startActivity(Intent.createChooser(sendIntent, "Send to"));
+            }
+        });
+        alert.setNeutralButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -176,7 +188,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
                         dialog.cancel();
                     }
                 })
-                .setIcon(android.R.drawable.ic_menu_delete)
+                .setIcon(R.drawable.ic_delete_black_48dp)
                 .show();
     }
 

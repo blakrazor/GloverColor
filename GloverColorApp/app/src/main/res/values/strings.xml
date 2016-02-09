@@ -51,7 +51,7 @@
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="unsaved_changes_dialog">You have unsaved changes. Are you sure you want to leave?</string>
     <string name="share">Share</string>
-    <string name="share_dialog">Copy the text below and share with friends</string>
+    <string name="share_dialog">Copy text and share with friends</string>
     <string name="copy">Copy</string>
     <string name="cancel">Cancel</string>
     <string name="save">SAVE</string>

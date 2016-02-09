@@ -58,7 +58,7 @@ public class GCSavedSetDatabase {
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
-                GCSavedSetEntry.COLUMN_NAME_TITLE + " ASC";
+                GCSavedSetEntry.COLUMN_NAME_TITLE + " COLLATE NOCASE";
 
         Cursor mCursor = mSavedSetDatabase.query(
                 GCSavedSetEntry.TABLE_NAME,  // The table to query

@@ -1,17 +1,16 @@
 package com.achanr.glovercolorapp.activities;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.view.Gravity;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
@@ -44,6 +42,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private EditText mTitleEditText;
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
+    private boolean madeChanges = false;
 
     private boolean isNewSet = false;
 
@@ -167,29 +166,61 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         } else {
             fillDefaultData();
         }
+
         setupColorListeners();
+        mTitleEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkForChanges();
+            }
+        });
+        mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                checkForChanges();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        checkForChanges();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!isNewSet) {
-            menu.add(0, 1, 1, "Share").setIcon(android.R.drawable.ic_menu_share)
+        if (isNewSet) {
+            menu.add(0, 2, 2, "Save").setIcon(R.drawable.ic_save_white_48dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        } else {
+            if (madeChanges) {
+                menu.add(0, 1, 1, "Reset").setIcon(R.drawable.ic_settings_backup_restore_white_48dp)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                menu.add(0, 2, 2, "Save").setIcon(R.drawable.ic_save_white_48dp)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
         }
-        menu.add(0, 2, 2, "Save").setIcon(android.R.drawable.ic_menu_save)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(0, 3, 3, "Reset").setIcon(android.R.drawable.ic_menu_revert)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add(0, 4, 4, "Delete").setIcon(android.R.drawable.ic_menu_delete)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 1: //share
-                showShareDialog();
+            case 1: //revert changes
+                showResetDialog();
                 return true;
             case 2: //Save
                 if (validateFields()) {
@@ -199,15 +230,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         showSaveDialog(mContext.getString(R.string.save_changes), mContext.getString(R.string.save_changes_dialog));
                     }
                 }
-                return true;
-            case 3: //revert changes
-                showResetDialog();
-                return true;
-            case 4: //Delete
-                showDeleteDialog();
-                return true;
-            case android.R.id.home:
-                super.onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -368,6 +390,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 unhideNextColorSpinner(parent);
                 matchColorSpinnerToSwatch();
             }
+            checkForChanges();
         }
 
         @Override
@@ -383,6 +406,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             String currentLevelString = colorSwatchTv.getText().toString();
             EGCPowerLevelEnum currentLevel = GCUtil.getPowerLevelEnum(currentLevelString);
             syncSpinnerAndSwatch(colorSwatchTv, currentLevel);
+            checkForChanges();
         }
     };
 
@@ -529,7 +553,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         dialog.cancel();
                     }
                 })
-                .setIcon(android.R.drawable.ic_menu_save)
+                .setIcon(R.drawable.ic_save_black_48dp)
                 .show();
     }
 
@@ -551,11 +575,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         dialog.cancel();
                     }
                 })
-                .setIcon(android.R.drawable.ic_menu_revert)
+                .setIcon(R.drawable.ic_settings_backup_restore_black_48dp)
                 .show();
     }
 
-    private void showDeleteDialog() {
+    /*private void showDeleteDialog() {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete))
                 .setMessage(mContext.getString(R.string.delete_dialog))
@@ -576,7 +600,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 })
                 .setIcon(android.R.drawable.ic_menu_delete)
                 .show();
-    }
+    }*/
 
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(mContext)
@@ -587,7 +611,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         dialog.dismiss();
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_warning_black_48dp)
                 .show();
     }
 
@@ -607,11 +631,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         dialog.cancel();
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_warning_black_48dp)
                 .show();
     }
 
-    public void showShareDialog() {
+    /*public void showShareDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle(mContext.getString(R.string.share));
         alert.setMessage(mContext.getString(R.string.share_dialog));
@@ -640,9 +664,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         });
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
-    }
+    }*/
 
-    private String getShareString() {
+    /*private String getShareString() {
         String shareString = "";
         String breakCharacter = GCUtil.BREAK_CHARACTER_FOR_SHARING;
 
@@ -662,7 +686,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         shareString += modeEnum.toString();
 
         return shareString;
-    }
+    }*/
 
     public boolean madeChanges() {
         if (mSavedSet == null) {
@@ -695,6 +719,20 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         return false;
+    }
+
+    private void checkForChanges() {
+        if (madeChanges()) {
+            if (!madeChanges) {
+                madeChanges = true;
+                invalidateOptionsMenu();
+            }
+        } else {
+            if (madeChanges) {
+                madeChanges = false;
+                invalidateOptionsMenu();
+            }
+        }
     }
 
     @Override

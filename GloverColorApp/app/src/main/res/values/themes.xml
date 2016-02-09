@@ -3,7 +3,7 @@
     <style name="BlueTheme">
         <item name="colorPrimary">@color/blueThemePrimary</item>
         <item name="colorPrimaryDark">@color/blueThemePrimaryDark</item>
-        <item name="colorPrimaryLight">@color/blueThemePrimaryDark</item>
+        <item name="savedSetListBackground">@color/blueThemePrimaryDark</item>
         <item name="colorAccent">@color/blueThemeAccent</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/blueThemeBackground</item>
@@ -13,7 +13,7 @@
     <style name="PurpleTheme">
         <item name="colorPrimary">@color/purpleThemePrimary</item>
         <item name="colorPrimaryDark">@color/purpleThemePrimaryDark</item>
-        <item name="colorPrimaryLight">@color/blueThemePrimaryDark</item>
+        <item name="savedSetListBackground">@color/purpleThemePrimaryDark</item>
         <item name="colorAccent">@color/purpleThemeAccent</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/purpleThemeBackground</item>
@@ -23,7 +23,7 @@
     <style name="GreenTheme">
         <item name="colorPrimary">@color/greenThemePrimary</item>
         <item name="colorPrimaryDark">@color/greenThemePrimaryDark</item>
-        <item name="colorPrimaryLight">@color/blueThemePrimaryDark</item>
+        <item name="savedSetListBackground">@color/greenThemePrimaryDark</item>
         <item name="colorAccent">@color/greenThemeAccent</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/greenThemeBackground</item>
