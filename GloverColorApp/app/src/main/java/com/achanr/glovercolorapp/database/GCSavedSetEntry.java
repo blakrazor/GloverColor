@@ -13,4 +13,5 @@ public abstract class GCSavedSetEntry implements BaseColumns {
     public static final String COLUMN_NAME_TITLE = "title";
     public static final String COLUMN_NAME_COLORS = "colors";
     public static final String COLUMN_NAME_MODE = "mode";
+    public static final String COLUMN_NAME_CHIP = "chip";
 }

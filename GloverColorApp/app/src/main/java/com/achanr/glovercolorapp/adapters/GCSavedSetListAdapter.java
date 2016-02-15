@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.utility.EGCChipSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 import com.achanr.glovercolorapp.views.GCSavedSetListItemViewHolder;
@@ -66,16 +67,37 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         String title = mSavedSetList.get(position).getTitle();
         String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mSavedSetList.get(position).getColors());
         EGCModeEnum mode = mSavedSetList.get(position).getMode();
+        EGCChipSet chipSet = mSavedSetList.get(position).getChipSet();
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(shortenedColorString);
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText(mode.toString());
+        holder.txtMode.setText("Mode: " + convertToCamelcase(mode.toString()));
+        if (chipSet == EGCChipSet.NONE) {
+            holder.txtChipset.setText("Chip: No preset");
+        } else {
+            holder.txtChipset.setText("Chip: " + convertToCamelcase(chipSet.toString()).replace("_", " "));
+        }
         holder.mSavedSet = mSavedSetList.get(position);
     }
 
     @Override
     public int getItemCount() {
         return mSavedSetList.size();
+    }
+
+    private String convertToCamelcase(String inputString) {
+        if (inputString != null && !inputString.isEmpty()) {
+            if (inputString.length() < 2) {
+                return inputString.toUpperCase();
+            }
+
+            String returnString = "";
+            returnString += inputString.substring(0, 1).toUpperCase();
+            returnString += inputString.substring(1).toLowerCase();
+            return returnString;
+        } else {
+            return "";
+        }
     }
 
 }

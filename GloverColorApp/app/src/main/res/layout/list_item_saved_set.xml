@@ -27,28 +27,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="false"
-                android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@+id/list_item_saved_set_desc_layout"
                 android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Example Title"/>
+                android:maxLines="2"
+                android:text="Example Title With A Long Description"/>
 
             <LinearLayout
                 android:id="@+id/list_item_saved_set_desc_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="right"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/list_item_saved_set_title"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/list_item_saved_set_desc_colors"
+                    android:id="@+id/list_item_saved_set_desc_chipset"
                     style="@style/ListItemSavedSetDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BlReGrYeOr"/>
+                    android:text="Chip: CHROMA_24"/>
 
                 <TextView
                     android:id="@+id/list_item_saved_set_desc_mode"
@@ -56,7 +52,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="STROBE"/>
+                    android:text="Mode: STROBE"/>
+
+                <TextView
+                    android:id="@+id/list_item_saved_set_desc_colors"
+                    style="@style/ListItemSavedSetDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Colors: BlReGrYeOr"/>
 
             </LinearLayout>
 
@@ -71,7 +75,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="left"
             android:orientation="horizontal"
             android:padding="8dp">
 
@@ -79,7 +83,6 @@
                 android:id="@+id/share_card_action"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginLeft="16dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:src="@drawable/ic_share_white_48dp"/>
@@ -93,16 +96,6 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:src="@drawable/ic_mode_edit_white_48dp"/>
-
-            <!--<ImageView
-                android:id="@+id/delete_card_action"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="16dp"
-                android:background="@null"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:src="@drawable/ic_delete_white_48dp"/>-->
 
         </LinearLayout>
 

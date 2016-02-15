@@ -23,13 +23,13 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
     public TextView txtTitle;
     public TextView txtColors;
     public TextView txtMode;
+    public TextView txtChipset;
     public RelativeLayout rlSavedSetItem;
     public GCSavedSet mSavedSet;
     public Context mContext;
 
     public ImageView shareButton;
     public ImageView editButton;
-    //public ImageView deleteButton;
 
     public GCSavedSetListItemViewHolder(Context context, View itemView) {
         super(itemView);
@@ -37,10 +37,10 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         txtTitle = (TextView) itemView.findViewById(R.id.list_item_saved_set_title);
         txtColors = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_colors);
         txtMode = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_mode);
+        txtChipset = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_chipset);
         rlSavedSetItem = (RelativeLayout) itemView.findViewById(R.id.list_item_saved_set_layout);
         shareButton = (ImageView) itemView.findViewById(R.id.share_card_action);
         editButton = (ImageView) itemView.findViewById(R.id.edit_card_action);
-        //deleteButton = (ImageView) itemView.findViewById(R.id.delete_card_action);
 
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override

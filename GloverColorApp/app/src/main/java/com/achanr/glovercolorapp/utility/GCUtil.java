@@ -130,6 +130,7 @@ public class GCUtil {
 
     public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append("Colors: ");
 
         List<String> stringParts = getParts(shortenedColorString, 3);
         for (String colorAbbrev : stringParts) {
@@ -213,18 +214,21 @@ public class GCUtil {
 
     public static String getShareString(GCSavedSet savedSet) {
         String shareString = "";
-        String breakCharacter = BREAK_CHARACTER_FOR_SHARING;
 
         //Get title
         String title = savedSet.getTitle();
         title = title.replace(" ", "_");
         shareString += title;
-        shareString += breakCharacter;
+        shareString += BREAK_CHARACTER_FOR_SHARING;
+
+        //Gte chipset
+        shareString += savedSet.getChipSet();
+        shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get colors
         ArrayList<GCColor> newColorList = savedSet.getColors();
-        shareString += GCUtil.convertColorListToShortenedColorString(newColorList);
-        shareString += breakCharacter;
+        shareString += convertColorListToShortenedColorString(newColorList);
+        shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get mode
         shareString += savedSet.getMode();
@@ -240,7 +244,7 @@ public class GCUtil {
 
         TextView input = new TextView(mContext);
         input.setTextIsSelectable(true);
-        final String shareString = GCUtil.getShareString(savedSet);
+        final String shareString = getShareString(savedSet);
         input.setText(shareString);
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);

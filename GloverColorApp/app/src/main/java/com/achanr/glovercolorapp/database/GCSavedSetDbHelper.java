@@ -19,14 +19,15 @@ public class GCSavedSetDbHelper extends SQLiteOpenHelper {
                     GCSavedSetEntry._ID + " INTEGER PRIMARY KEY," +
                     GCSavedSetEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     GCSavedSetEntry.COLUMN_NAME_COLORS + TEXT_TYPE + COMMA_SEP +
-                    GCSavedSetEntry.COLUMN_NAME_MODE + TEXT_TYPE +
+                    GCSavedSetEntry.COLUMN_NAME_MODE + TEXT_TYPE + COMMA_SEP +
+                    GCSavedSetEntry.COLUMN_NAME_CHIP + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + GCSavedSetEntry.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "SavedSet.db";
 
     public GCSavedSetDbHelper(Context context) {
@@ -40,10 +41,18 @@ public class GCSavedSetDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
+
+        int upgradeTo = oldVersion + 1;
+        while (upgradeTo <= newVersion) {
+            switch (upgradeTo) {
+                case 2: //upgrade from 1 to 2
+                    db.execSQL("ALTER TABLE " + GCSavedSetEntry.TABLE_NAME + " ADD COLUMN " + GCSavedSetEntry.COLUMN_NAME_CHIP + " text;");
+                    break;
+                default: //if case not shown, no changes made
+                    break;
+            }
+            upgradeTo++;
+        }
     }
 
     @Override

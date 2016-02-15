@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.utility.EGCChipSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -38,6 +39,7 @@ public class GCSavedSetDatabase {
         values.put(GCSavedSetEntry.COLUMN_NAME_TITLE, savedSet.getTitle());
         values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
         values.put(GCSavedSetEntry.COLUMN_NAME_MODE, savedSet.getMode().toString());
+        values.put(GCSavedSetEntry.COLUMN_NAME_CHIP, savedSet.getChipSet().toString());
 
         // Insert the new row, returning the primary key value of the new row
         return mSavedSetDatabase.insert(GCSavedSetEntry.TABLE_NAME, null, values);
@@ -53,7 +55,8 @@ public class GCSavedSetDatabase {
                 GCSavedSetEntry._ID,
                 GCSavedSetEntry.COLUMN_NAME_TITLE,
                 GCSavedSetEntry.COLUMN_NAME_COLORS,
-                GCSavedSetEntry.COLUMN_NAME_MODE
+                GCSavedSetEntry.COLUMN_NAME_MODE,
+                GCSavedSetEntry.COLUMN_NAME_CHIP
         };
 
         // How you want the results sorted in the resulting Cursor
@@ -77,9 +80,15 @@ public class GCSavedSetDatabase {
                     String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_TITLE));
                     String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_COLORS));
                     String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_MODE));
+                    String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.COLUMN_NAME_CHIP));
                     savedSet.setTitle(title);
                     savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
                     savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
+                    if (chipString != null) {
+                        savedSet.setChipSet(EGCChipSet.valueOf(chipString.toUpperCase()));
+                    } else {
+                        savedSet.setChipSet(EGCChipSet.NONE);
+                    }
                     savedSetList.add(savedSet);
                 } while (mCursor.moveToNext());
             }
@@ -106,6 +115,7 @@ public class GCSavedSetDatabase {
         values.put(GCSavedSetEntry.COLUMN_NAME_TITLE, newSavedSet.getTitle());
         values.put(GCSavedSetEntry.COLUMN_NAME_COLORS, GCUtil.convertColorListToShortenedColorString(newSavedSet.getColors()));
         values.put(GCSavedSetEntry.COLUMN_NAME_MODE, newSavedSet.getMode().toString());
+        values.put(GCSavedSetEntry.COLUMN_NAME_CHIP, newSavedSet.getChipSet().toString());
 
         // Which row to update, based on the ID
         String selection = GCSavedSetEntry.COLUMN_NAME_TITLE + "=?";

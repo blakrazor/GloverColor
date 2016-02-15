@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.utility.EGCChipSet;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -119,14 +120,17 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         }
 
         String title = splitString[0];
-        String shortenedColorString = splitString[1];
-        String mode = splitString[2];
+        String chipsetString = splitString[1];
+        String shortenedColorString = splitString[2];
+        String mode = splitString[3];
 
         ArrayList<GCColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
+        EGCChipSet chipSet = EGCChipSet.valueOf(chipsetString);
         EGCModeEnum newMode = EGCModeEnum.valueOf(mode);
 
         newSet.setTitle(title);
         newSet.setColors(newColorList);
+        newSet.setChipSet(chipSet);
         newSet.setMode(newMode);
 
         return newSet;
