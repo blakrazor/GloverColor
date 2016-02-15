@@ -209,11 +209,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         } else {
             if (madeChanges) {
                 menu.add(0, 1, 1, "Reset").setIcon(R.drawable.ic_settings_backup_restore_white_48dp)
-                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
                 menu.add(0, 2, 2, "Save").setIcon(R.drawable.ic_save_white_48dp)
                         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
         }
+        menu.add(0, 3, 3, "Delete").setIcon(R.drawable.ic_delete_white_48dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
@@ -231,6 +233,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         showSaveDialog(mContext.getString(R.string.save_changes), mContext.getString(R.string.save_changes_dialog));
                     }
                 }
+                return true;
+            case 3: //delete
+                showDeleteDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -603,6 +608,28 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     }
                 })
                 .setIcon(R.drawable.ic_settings_backup_restore_black_48dp)
+                .show();
+    }
+
+    private void showDeleteDialog() {
+        new AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.delete))
+                .setMessage(mContext.getString(R.string.delete_dialog))
+                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
+                        returnIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setIcon(R.drawable.ic_delete_black_48dp)
                 .show();
     }
 

@@ -141,8 +141,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         );*/
     }
 
-    public void onSavedSetListItemClicked(int position) {
-        GCSavedSet savedSet = mSavedSetList.get(position);
+    public void onSavedSetListItemClicked(GCSavedSet savedSet) {
         Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
         startActivityForResult(intent, UPDATE_SET_REQUEST_CODE);

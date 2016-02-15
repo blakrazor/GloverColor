@@ -1,17 +1,24 @@
 package com.achanr.glovercolorapp.utility;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.view.Gravity;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
@@ -223,5 +230,47 @@ public class GCUtil {
         shareString += savedSet.getMode();
 
         return shareString;
+    }
+
+    public static void showShareDialog(final Context mContext, GCSavedSet savedSet) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+        alert.setTitle(mContext.getString(R.string.share));
+        alert.setMessage(mContext.getString(R.string.share_dialog));
+        alert.setIcon(R.drawable.ic_share_black_48dp);
+
+        TextView input = new TextView(mContext);
+        input.setTextIsSelectable(true);
+        final String shareString = GCUtil.getShareString(savedSet);
+        input.setText(shareString);
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
+        alert.setView(input);
+
+        alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied Text", shareString);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton(mContext.getString(R.string.share), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareString + mContext.getString(R.string.share_body_text));
+                sendIntent.setType("text/plain");
+                mContext.startActivity(Intent.createChooser(sendIntent, "Share gloving set with"));
+            }
+        });
+        alert.setNeutralButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = alert.create();
+        alertDialog.show();
     }
 }
