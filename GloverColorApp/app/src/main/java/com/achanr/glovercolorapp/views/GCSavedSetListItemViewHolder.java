@@ -1,6 +1,8 @@
 package com.achanr.glovercolorapp.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -63,11 +65,9 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         });*/
 
         mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
-
         mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Share");
-
         mPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Edit");
-
+        mPopupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Delete");
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -80,16 +80,39 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
                             ((GCSavedSetListActivity) mContext).onSavedSetListItemClicked(mSavedSet);
                         }
                         return true;
+                    case 3:
+                        if (mContext instanceof GCSavedSetListActivity) {
+                            new AlertDialog.Builder(mContext)
+                                    .setTitle(mContext.getString(R.string.delete))
+                                    .setMessage(mContext.getString(R.string.delete_dialog))
+                                    .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ((GCSavedSetListActivity) mContext).onSetDeleted(mSavedSet);
+                                        }
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .setIcon(R.drawable.ic_delete_black_48dp)
+                                    .show();
+                            return true;
+                        }
                 }
                 return false;
             }
         });
 
-        itemView.findViewById(R.id.saved_set_more_actions).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupMenu.show();
-            }
-        });
+        itemView.findViewById(R.id.saved_set_more_actions).
+
+                setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           mPopupMenu.show();
+                                       }
+                                   }
+
+                );
     }
 }
