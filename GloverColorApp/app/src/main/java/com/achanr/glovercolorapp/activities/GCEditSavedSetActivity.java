@@ -472,7 +472,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
             String colorString = spinnerTv.getText().toString();
-            EGCColorEnum colorEnum = EGCColorEnum.valueOf(colorString);
+            EGCColorEnum colorEnum = EGCColorEnum.valueOf(colorString.replace(" ", "_"));
             if (colorEnum == EGCColorEnum.NONE) {
                 ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
                 hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));

@@ -11,16 +11,39 @@ public enum EGCChipSet {
     CHROMA_24(
             new EGCColorEnum[]{
                     EGCColorEnum.NONE,
+                    EGCColorEnum.WHITE,
                     EGCColorEnum.BLANK,
                     EGCColorEnum.RED,
-                    EGCColorEnum.BLUE,
+                    EGCColorEnum.ORANGE,
+                    EGCColorEnum.BANANA_YELLOW,
+                    EGCColorEnum.YELLOW,
+                    EGCColorEnum.LIME_GREEN,
                     EGCColorEnum.GREEN,
+                    EGCColorEnum.MINT,
+                    EGCColorEnum.TURQUOISE,
+                    EGCColorEnum.LIGHT_BLUE,
+                    EGCColorEnum.SKY_BLUE,
+                    EGCColorEnum.BLUE,
+                    EGCColorEnum.PURPLE,
+                    EGCColorEnum.LAVENDAR,
+                    EGCColorEnum.BLUSH,
+                    EGCColorEnum.LIGHT_PINK,
+                    EGCColorEnum.HOT_PINK,
+                    EGCColorEnum.PEACH,
+                    EGCColorEnum.WARM_WHITE,
+                    EGCColorEnum.SILVER,
+                    EGCColorEnum.LUNA,
             },
             new EGCModeEnum[]{
-                    EGCModeEnum.HYPERSTROBE,
                     EGCModeEnum.STROBE,
-                    EGCModeEnum.TRACER,
-            }),;
+                    EGCModeEnum.HYPERSTROBE,
+                    EGCModeEnum.DOPS,
+                    EGCModeEnum.STROBIE,
+                    EGCModeEnum.CHROMA
+            }),
+
+
+    ;
 
     private EGCColorEnum[] mColorEnums;
     private EGCModeEnum[] mModeEnums;

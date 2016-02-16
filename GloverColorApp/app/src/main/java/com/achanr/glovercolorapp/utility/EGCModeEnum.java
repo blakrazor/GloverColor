@@ -11,5 +11,9 @@ public enum EGCModeEnum {
     HYPERSTROBE,
     SOLID,
     RIBBON,
-    TRACER
+    TRACER,
+    CHROMA,
+    DOPS,
+    STROBIE,
+    BLINK
 }
