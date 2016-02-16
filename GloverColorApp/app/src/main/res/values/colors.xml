@@ -15,8 +15,8 @@
     <color name="greenThemeAccent">#69f0ae</color>
     <color name="greenThemeBackground">#e8f5e9</color>
 
-    <color name="darkThemePrimary">#263238</color>
-    <color name="darkThemePrimaryDark">#455a64</color>
-    <color name="darkThemeAccent">#263238</color>
-    <color name="darkThemeBackground">#607d8b</color>
+    <color name="darkThemePrimary">#607d8b</color>
+    <color name="darkThemePrimaryDark">#263238</color>
+    <color name="darkThemeAccent">#757575</color>
+    <color name="darkThemeBackground">#90a4ae</color>
 </resources>

@@ -56,6 +56,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private EGCChipSet mChipSet;
 
     private boolean isNewSet = false;
+    private boolean wasChangeDialogCanceled = false;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
@@ -335,7 +336,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mChipSetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                retrievePresetColorEnums();
+                if(wasChangeDialogCanceled){
+                    wasChangeDialogCanceled = false;
+                } else {
+                    showChangingChipDialog();
+                }
             }
 
             @Override
@@ -395,6 +400,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             };
             colorSpinnerHolder.getColorSpinner().setAdapter(customAdapter);
             colorSpinnerHolder.setPowerLevelEnum(EGCPowerLevelEnum.HIGH);
+            colorSpinnerHolder.getColorSwatchTextView().setText(EGCPowerLevelEnum.HIGH.getPowerAbbrev());
         }
     }
 
@@ -646,6 +652,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setMessage(mContext.getString(R.string.revert_changes_dialog))
                 .setPositiveButton(mContext.getString(R.string.reset), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        wasChangeDialogCanceled = true;
                         if (mSavedSet == null) {
                             mChipSetSpinner.setSelection(0, false);
                             mChipSet = (EGCChipSet) mChipSetSpinner.getSelectedItem();
@@ -706,6 +713,40 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                    }
+                })
+                .setIcon(R.drawable.ic_warning_black_48dp)
+                .show();
+    }
+
+    public void showChangingChipDialog() {
+        new AlertDialog.Builder(mContext)
+                .setTitle("Changing Preset Chip")
+                .setMessage("Changing the preset chip will clear out your current colors and mode. Do you want to continue?")
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        retrievePresetColorEnums();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        wasChangeDialogCanceled = true;
+                        if (mSavedSet != null) {
+                            EGCChipSet chipSet = mSavedSet.getChipSet();
+                            EGCChipSet[] chipSets = EGCChipSet.values();
+                            int chipsetIndex = 0;
+                            for (EGCChipSet chipSetItem : chipSets) {
+                                if (chipSet == chipSetItem) {
+                                    mChipSetSpinner.setSelection(chipsetIndex, false);
+                                    break;
+                                } else {
+                                    chipsetIndex++;
+                                }
+                            }
+                        } else {
+                            mChipSetSpinner.setSelection(0, false);
+                        }
+                        dialog.cancel();
                     }
                 })
                 .setIcon(R.drawable.ic_warning_black_48dp)
