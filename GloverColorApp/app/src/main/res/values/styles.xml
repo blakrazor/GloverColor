@@ -15,12 +15,12 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="HeaderText">
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="BodyText">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
