@@ -59,6 +59,11 @@ public class GCSettingsActivity extends GCBaseActivity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
 
+            //Setup preferences
+            setupThemePreference();
+        }
+
+        private void setupThemePreference() {
             mListPreference = (ListPreference) findPreference("THEME_PREFERENCE");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
             String oldThemeString = sharedPreferences.getString(GCUtil.THEME_KEY, "does not exist");
