@@ -280,4 +280,19 @@ public class GCUtil {
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
     }
+
+    public static String convertToCamelcase(String inputString) {
+        if (inputString != null && !inputString.isEmpty()) {
+            if (inputString.length() < 2) {
+                return inputString.toUpperCase();
+            }
+
+            String returnString = "";
+            returnString += inputString.substring(0, 1).toUpperCase();
+            returnString += inputString.substring(1).toLowerCase();
+            return returnString;
+        } else {
+            return "";
+        }
+    }
 }

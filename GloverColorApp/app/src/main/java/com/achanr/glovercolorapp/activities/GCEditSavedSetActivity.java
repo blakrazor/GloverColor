@@ -147,7 +147,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mContext = this;
         setupToolbar(getString(R.string.title_edit_set));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.findViewById(R.id.theme_spinner).setVisibility(View.GONE);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

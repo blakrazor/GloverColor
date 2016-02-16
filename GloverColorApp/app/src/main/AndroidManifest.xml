@@ -45,6 +45,12 @@
             android:label="@string/title_edit_set"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".activities.GCSettingsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_settings"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

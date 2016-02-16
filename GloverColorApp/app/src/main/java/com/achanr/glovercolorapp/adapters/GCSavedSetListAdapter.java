@@ -71,11 +71,11 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(shortenedColorString);
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText("Mode: " + convertToCamelcase(mode.toString()));
+        holder.txtMode.setText("Mode: " + GCUtil.convertToCamelcase(mode.toString()));
         if (chipSet == EGCChipSet.NONE) {
             holder.txtChipset.setText("Chip: No preset");
         } else {
-            holder.txtChipset.setText("Chip: " + convertToCamelcase(chipSet.toString()).replace("_", " "));
+            holder.txtChipset.setText("Chip: " + GCUtil.convertToCamelcase(chipSet.toString()).replace("_", " "));
         }
         holder.mSavedSet = mSavedSetList.get(position);
     }
@@ -84,20 +84,4 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     public int getItemCount() {
         return mSavedSetList.size();
     }
-
-    private String convertToCamelcase(String inputString) {
-        if (inputString != null && !inputString.isEmpty()) {
-            if (inputString.length() < 2) {
-                return inputString.toUpperCase();
-            }
-
-            String returnString = "";
-            returnString += inputString.substring(0, 1).toUpperCase();
-            returnString += inputString.substring(1).toLowerCase();
-            return returnString;
-        } else {
-            return "";
-        }
-    }
-
 }

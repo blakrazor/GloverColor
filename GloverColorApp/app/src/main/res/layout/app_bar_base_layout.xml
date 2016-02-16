@@ -24,16 +24,9 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:layout_toLeftOf="@+id/theme_spinner"
                 android:layout_alignParentLeft="true"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/theme_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
 
