@@ -163,7 +163,7 @@ public class GCBaseActivity extends AppCompatActivity
 
     private int getPositionOfStoredThemeEnum(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String themeString = prefs.getString(GCUtil.THEME_KEY, EGCThemeEnum.DARK_THEME.toString());
+        String themeString = prefs.getString(GCUtil.THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
         String[] themeArray = getResources().getStringArray(R.array.themes);
         int position = 0;
         for(String themeItem : themeArray){

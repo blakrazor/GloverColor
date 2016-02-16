@@ -174,12 +174,12 @@ public class GCUtil {
      */
     public static void onActivityCreateSetTheme(Activity activity) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeString = prefs.getString(THEME_KEY, EGCThemeEnum.DARK_THEME.toString());
+        String themeString = prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
 
         switch (EGCThemeEnum.valueOf(themeString)) {
             default:
-            case DARK_THEME:
-                activity.setTheme(R.style.DarkTheme);
+            case DEFAULT_THEME:
+                activity.setTheme(R.style.DefaultTheme);
                 break;
             case BLUE_THEME:
                 activity.setTheme(R.style.BlueTheme);

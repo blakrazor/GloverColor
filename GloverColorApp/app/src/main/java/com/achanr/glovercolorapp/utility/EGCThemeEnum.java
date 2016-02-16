@@ -7,8 +7,8 @@ package com.achanr.glovercolorapp.utility;
  * @created 1/13/16 11:44 AM
  */
 public enum EGCThemeEnum {
+    DEFAULT_THEME,
     BLUE_THEME,
     PURPLE_THEME,
     GREEN_THEME,
-    DARK_THEME
 }

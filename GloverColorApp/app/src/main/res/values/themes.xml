@@ -30,7 +30,7 @@
         <item name="android:windowBackground">?attr/background</item>
     </style>
 
-    <style name="DarkTheme">
+    <style name="DefaultTheme">
         <item name="colorPrimary">@color/darkThemePrimary</item>
         <item name="colorPrimaryDark">@color/darkThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/darkThemePrimaryDark</item>
