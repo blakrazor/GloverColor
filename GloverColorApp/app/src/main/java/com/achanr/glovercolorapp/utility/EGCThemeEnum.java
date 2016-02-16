@@ -9,5 +9,6 @@ package com.achanr.glovercolorapp.utility;
 public enum EGCThemeEnum {
     BLUE_THEME,
     PURPLE_THEME,
-    GREEN_THEME
+    GREEN_THEME,
+    DARK_THEME
 }

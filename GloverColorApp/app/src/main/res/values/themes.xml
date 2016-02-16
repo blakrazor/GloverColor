@@ -29,4 +29,14 @@
         <item name="background">@color/greenThemeBackground</item>
         <item name="android:windowBackground">?attr/background</item>
     </style>
+
+    <style name="DarkTheme">
+        <item name="colorPrimary">@color/darkThemePrimary</item>
+        <item name="colorPrimaryDark">@color/darkThemePrimaryDark</item>
+        <item name="savedSetListBackground">@color/darkThemePrimaryDark</item>
+        <item name="colorAccent">@color/darkThemeAccent</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="background">@color/darkThemeBackground</item>
+        <item name="android:windowBackground">?attr/background</item>
+    </style>
 </resources>

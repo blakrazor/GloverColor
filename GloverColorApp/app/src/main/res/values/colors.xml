@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blueThemePrimary">#2196f3</color>
-    <color name="blueThemePrimaryDark">#1976d2</color>
-    <color name="blueThemeAccent">#448aff</color>
-    <color name="blueThemeBackground">#bbdefb</color>
+    <color name="blueThemePrimary">#2196f3</color> <!--500-->
+    <color name="blueThemePrimaryDark">#1976d2</color> <!--700-->
+    <color name="blueThemeAccent">#448aff</color> <!--A200-->
+    <color name="blueThemeBackground">#e1f5fe</color> <!--50-->
 
     <color name="purpleThemePrimary">#9c27b0</color>
     <color name="purpleThemePrimaryDark">#7b1fa2</color>
     <color name="purpleThemeAccent">#e040fb</color>
-    <color name="purpleThemeBackground">#e1bee7</color>
+    <color name="purpleThemeBackground">#f3e5f5</color>
 
     <color name="greenThemePrimary">#4caf50</color>
     <color name="greenThemePrimaryDark">#388e3c</color>
     <color name="greenThemeAccent">#69f0ae</color>
-    <color name="greenThemeBackground">#c8e6c9</color>
+    <color name="greenThemeBackground">#e8f5e9</color>
+
+    <color name="darkThemePrimary">#263238</color>
+    <color name="darkThemePrimaryDark">#455a64</color>
+    <color name="darkThemeAccent">#263238</color>
+    <color name="darkThemeBackground">#607d8b</color>
 </resources>
