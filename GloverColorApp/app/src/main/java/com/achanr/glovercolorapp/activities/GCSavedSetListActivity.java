@@ -159,20 +159,20 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetDatabase.updateData(oldSet, newSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.update(oldSet, newSet);
-        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT);
+        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
         mSavedSetDatabase.deleteData(savedSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.remove(savedSet);
-        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT);
+        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetAdded(GCSavedSet newSet) {
         mSavedSetDatabase.insertData(newSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
-        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT);
+        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
     }
 }

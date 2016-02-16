@@ -33,9 +33,9 @@
     <string name="enter_code">Enter code</string>
     <string name="error_invalid_code">Invalid code. Try a different code.</string>
     <string name="error">Error</string>
-    <string name="set_added_message">Your set has been updated.</string>
-    <string name="set_deleted_message">Your set has been deleted.</string>
-    <string name="set_updated_message">Your set has been updated.</string>
+    <string name="set_added_message">Set added.</string>
+    <string name="set_deleted_message">Set deleted.</string>
+    <string name="set_updated_message">Set updated.</string>
     <string name="add_new_set">Add New Set</string>
     <string name="add_new_set_dialog">Add new set?</string>
     <string name="save_changes">Save Changes</string>
