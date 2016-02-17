@@ -130,7 +130,7 @@ public class GCUtil {
 
     public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append("Colors: ");
+        //builder.append("Colors: ");
 
         List<String> stringParts = getParts(shortenedColorString, 3);
         for (String colorAbbrev : stringParts) {
@@ -283,6 +283,10 @@ public class GCUtil {
     }
 
     public static String convertToCamelcase(String inputString) {
+        if (inputString.equalsIgnoreCase("DOPs")) {
+            return "DOPs";
+        }
+
         if (inputString != null && !inputString.isEmpty()) {
             if (inputString.length() < 2) {
                 return inputString.toUpperCase();

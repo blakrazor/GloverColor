@@ -3,12 +3,12 @@ package com.achanr.glovercolorapp.views;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,6 +16,8 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.activities.GCSavedSetListActivity;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.GCUtil;
+
+import java.util.HashMap;
 
 /**
  * Glover Color App Project
@@ -33,9 +35,7 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
     public GCSavedSet mSavedSet;
     public Context mContext;
     public PopupMenu mPopupMenu;
-
-    public ImageView shareButton;
-    public ImageView editButton;
+    public CardView mCardView;
 
     public GCSavedSetListItemViewHolder(Context context, View itemView) {
         super(itemView);
@@ -45,24 +45,7 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         txtMode = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_mode);
         txtChipset = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_chipset);
         rlSavedSetItem = (RelativeLayout) itemView.findViewById(R.id.list_item_saved_set_layout);
-        /*shareButton = (ImageView) itemView.findViewById(R.id.share_card_action);
-        editButton = (ImageView) itemView.findViewById(R.id.edit_card_action);
-
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GCUtil.showShareDialog(mContext, mSavedSet);
-            }
-        });
-
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mContext instanceof GCSavedSetListActivity) {
-                    ((GCSavedSetListActivity) mContext).onSavedSetListItemClicked(mSavedSet);
-                }
-            }
-        });*/
+        mCardView = (CardView) itemView;
 
         mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
         mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Share");
@@ -77,7 +60,13 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
                         return true;
                     case 2:
                         if (mContext instanceof GCSavedSetListActivity) {
-                            ((GCSavedSetListActivity) mContext).onSavedSetListItemClicked(mSavedSet);
+                            HashMap<String, View> transitionViews = new HashMap<String, View>();
+                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_title), txtTitle);
+                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_chip), txtChipset);
+                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);
+                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_colors), txtColors);
+                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_cardview), mCardView);
+                            ((GCSavedSetListActivity) mContext).onSavedSetListItemClicked(mSavedSet, transitionViews);
                         }
                         return true;
                     case 3:

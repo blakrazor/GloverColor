@@ -3,6 +3,7 @@ package com.achanr.glovercolorapp.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -84,7 +85,7 @@ public class GCBaseActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             if (mPosition != R.id.nav_home
-                    && mPosition != R.id.nav_settings){
+                    && mPosition != R.id.nav_settings) {
                 Intent intent = new Intent(mContext, GCWelcomeScreenActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -100,9 +101,9 @@ public class GCBaseActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHANGE_SETTINGS_REQUEST_CODE){
+        if (requestCode == CHANGE_SETTINGS_REQUEST_CODE) {
             finish();
-            startActivity(new Intent(this, this.getClass()));
+            startActivityTransition(new Intent(this, this.getClass()));
         }
     }
 
@@ -134,20 +135,17 @@ public class GCBaseActivity extends AppCompatActivity
             mPosition = R.id.nav_home;
             intent = new Intent(mContext, GCWelcomeScreenActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
-            startActivity(intent);
+            startActivityTransition(intent);
         } else if (id == R.id.nav_saved_color_sets && mPosition != R.id.nav_saved_color_sets) {
             mPosition = R.id.nav_saved_color_sets;
             intent = new Intent(mContext, GCSavedSetListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
-            startActivity(intent);
+            startActivityTransition(intent);
         } else if (id == R.id.nav_enter_code && mPosition != R.id.nav_enter_code) {
             mPosition = R.id.nav_enter_code;
             intent = new Intent(mContext, GCEnterCodeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
-            startActivity(intent);
+            startActivityTransition(intent);
         } else if (id == R.id.nav_settings && mPosition != R.id.nav_settings) {
             mPosition = R.id.nav_settings;
             intent = new Intent(mContext, GCSettingsActivity.class);
@@ -176,5 +174,21 @@ public class GCBaseActivity extends AppCompatActivity
                 })
                 .setIcon(R.drawable.ic_warning_black_48dp)
                 .show();
+    }
+
+    private void startActivityTransition(Intent intent) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            /*supportFinishAfterTransition();
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivity(intent, options.toBundle());*/
+            finish();
+            startActivity(intent);
+        } else {
+            // Implement this feature without material design
+            finish();
+            startActivity(intent);
+        }
     }
 }

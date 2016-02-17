@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    card_view:cardCornerRadius="4dp">
+    card_view:cardCornerRadius="4dp"
+    android:transitionName="@string/transition_name_saved_set_cardview">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +31,8 @@
                 android:layout_toLeftOf="@+id/saved_set_more_actions"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Example Title With A Long Description"/>
+                android:text="Example Title With A Long Description"
+                android:transitionName="@string/transition_name_saved_set_title"/>
 
             <LinearLayout
                 android:id="@+id/list_item_saved_set_desc_layout"
@@ -45,7 +47,8 @@
                     style="@style/ListItemSavedSetDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chip: CHROMA_24"/>
+                    android:text="CHROMA_24"
+                    android:transitionName="@string/transition_name_saved_set_chip"/>
 
                 <TextView
                     android:id="@+id/list_item_saved_set_desc_mode"
@@ -53,7 +56,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Mode: STROBE"/>
+                    android:text="STROBE"
+                    android:transitionName="@string/transition_name_saved_set_mode"/>
 
                 <TextView
                     android:id="@+id/list_item_saved_set_desc_colors"
@@ -61,7 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Colors: BlReGrYeOr"/>
+                    android:text="BlReGrYeOr"
+                    android:transitionName="@string/transition_name_saved_set_colors"/>
 
             </LinearLayout>
 

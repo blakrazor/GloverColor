@@ -1,11 +1,14 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,6 +18,8 @@ import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Glover Color App Project
@@ -37,8 +42,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     public static final String OLD_SET_KEY = "old_set_key";
     public static final String IS_DELETE_KEY = "is_delete_key";
 
-    public static final int ADD_NEW_SET_REQUEST_CODE = 1;
-    public static final int UPDATE_SET_REQUEST_CODE = 2;
+    public static final int ADD_NEW_SET_REQUEST_CODE = 1001;
+    public static final int UPDATE_SET_REQUEST_CODE = 1002;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,8 +101,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
                     newIntent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
                     newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
-                    startActivityForResult(newIntent, ADD_NEW_SET_REQUEST_CODE);
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    startAddSetActivityTransition(newIntent);
                 }
             }
         }
@@ -141,18 +145,54 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         );*/
     }
 
-    public void onSavedSetListItemClicked(GCSavedSet savedSet) {
+    public void onSavedSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
         Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
-        startActivityForResult(intent, UPDATE_SET_REQUEST_CODE);
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        startEditSetActivityTransition(intent, transitionViews);
     }
 
     public void onAddSetListItemClicked() {
         Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
-        startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE);
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        startAddSetActivityTransition(intent);
+    }
+
+    private void startAddSetActivityTransition(Intent intent) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        }
+    }
+
+    private void startEditSetActivityTransition(Intent intent, HashMap<String, View> transitionView) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            ArrayList<Pair> pairArrayList = new ArrayList<>();
+            for (Map.Entry<String, View> entry : transitionView.entrySet()) {
+                String key = entry.getKey();
+                View value = entry.getValue();
+                pairArrayList.add(Pair.create(value, key));
+            }
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    this,
+                    pairArrayList.get(0),
+                    pairArrayList.get(1),
+                    pairArrayList.get(2),
+                    pairArrayList.get(3),
+                    pairArrayList.get(4));
+            startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, UPDATE_SET_REQUEST_CODE);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        }
     }
 
     public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<ScrollView
+    android:id="@+id/edit_set_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:transitionName="@string/transition_name_saved_set_cardview">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,52 +36,80 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textSize="22sp"/>
+                android:textSize="22sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/text_view_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Title of Set"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                android:transitionName="@string/transition_name_saved_set_title"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/chip_preset_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/BodyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Preset Chip (optional)"/>
-
-            <TextView
-                style="@style/BodyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Limit selections to a specific chip's modes and colors."
-                android:textSize="12sp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:weightSum="1"
+            android:gravity="bottom">
 
             <LinearLayout
-                android:id="@+id/chip_preset_spinner_layout"
-                android:layout_width="match_parent"
+                android:id="@+id/chip_preset_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:layout_weight="0.45">
 
                 <TextView
-                    style="@style/EditSavedSetColorText"
+                    style="@style/BodyText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chip: "/>
+                    android:text="Preset Chip (optional)"/>
 
                 <Spinner
                     android:id="@+id/chip_preset_spinner"
                     style="@style/EditSavedSetColorText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:transitionName="@string/transition_name_saved_set_chip"/>
 
             </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"/>
+
+            <LinearLayout
+                android:id="@+id/mode_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="0.45">
+
+                <TextView
+                    style="@style/BodyText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode"/>
+
+                <Spinner
+                    android:id="@+id/edit_text_mode"
+                    style="@style/EditSavedSetColorText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:transitionName="@string/transition_name_saved_set_mode"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -86,7 +117,7 @@
             android:id="@+id/color_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:orientation="vertical">
 
             <TextView
@@ -101,6 +132,7 @@
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:transitionName="@string/transition_name_saved_set_colors"
                 android:weightSum="8">
 
                 <RelativeLayout
@@ -283,7 +315,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_set_color_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -335,7 +368,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_set_color_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -386,7 +420,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_set_color_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -437,7 +472,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_set_color_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -488,45 +524,9 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/mode_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/BodyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mode"/>
-
-            <LinearLayout
-                android:id="@+id/mode_spinner_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/EditSavedSetColorText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mode_subtitle"/>
-
-                <Spinner
-                    android:id="@+id/edit_text_mode"
-                    style="@style/EditSavedSetColorText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
         <View
             android:layout_width="match_parent"
-            android:layout_height="18dp"/>
+            android:layout_height="100dp"/>
 
     </LinearLayout>
 </ScrollView>

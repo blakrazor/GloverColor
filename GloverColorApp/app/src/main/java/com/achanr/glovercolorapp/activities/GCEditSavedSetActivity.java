@@ -1,9 +1,13 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -11,16 +15,23 @@ import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.transition.Transition;
+import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -49,12 +60,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private GCSavedSet mSavedSet;
     private GCSavedSet mNewSet;
     private EditText mTitleEditText;
+    private TextView mTitleTextView;
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
     private Spinner mChipSetSpinner;
     private boolean madeChanges = false;
     private EGCChipSet mChipSet;
 
+    private boolean enterFinished = false;
     private boolean isNewSet = false;
     private boolean wasChangeDialogCanceled = false;
 
@@ -163,6 +176,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         }
 
+        mTitleTextView = (TextView) findViewById(R.id.text_view_title);
         mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
         mModeSpinner = (Spinner) findViewById(R.id.edit_text_mode);
@@ -195,6 +209,27 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 checkForChanges();
             }
         });
+        mTitleEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    mTitleTextView.setText(mTitleEditText.getText().toString().trim());
+                    showTitleEditText(false);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+        mTitleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTitleEditText(true);
+                mTitleEditText.requestFocus();
+            }
+        });
+
         mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -207,8 +242,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         });
 
-
         checkForChanges();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setupEnterAnimationListener();
+        }
     }
 
     @Override
@@ -335,7 +372,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mChipSetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(wasChangeDialogCanceled){
+                if (wasChangeDialogCanceled) {
                     wasChangeDialogCanceled = false;
                 } else {
                     showChangingChipDialog();
@@ -409,6 +446,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         EGCModeEnum mode = mSavedSet.getMode();
 
         mTitleEditText.setText(title);
+        mTitleTextView.setText(title);
+        showTitleEditText(false);
 
         int spinnerIndex = 0;
         EGCColorEnum[] colors = mChipSet.getColorEnums();
@@ -442,6 +481,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillDefaultData() {
         mTitleEditText.setText("");
+        showTitleEditText(true);
 
         EGCColorEnum[] colors = mChipSet.getColorEnums();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
@@ -603,14 +643,23 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         if (isNewSet) {
             Intent resultIntent = new Intent();
             resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finishActivityTransition(RESULT_OK, resultIntent);
         } else {
             Intent resultIntent = new Intent();
             resultIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
             resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
-            setResult(RESULT_OK, resultIntent);
+            finishActivityTransition(RESULT_OK, resultIntent);
+        }
+    }
+
+    private void finishActivityTransition(int resultCode, Intent resultIntent) {
+        setResult(resultCode, resultIntent);
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            supportFinishAfterTransition();
+        } else {
+            // Implement this feature without material design
             finish();
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
@@ -692,8 +741,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
                         returnIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
-                        setResult(RESULT_OK, returnIntent);
-                        finish();
+                        finishActivityTransition(RESULT_OK, returnIntent);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -758,9 +806,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setMessage(mContext.getString(R.string.unsaved_changes_dialog))
                 .setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        setResult(RESULT_CANCELED);
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        finishActivityTransition(RESULT_CANCELED, null);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -822,9 +868,97 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         if (madeChanges()) {
             showLeavingDialog();
         } else {
-            setResult(RESULT_CANCELED);
-            finish();
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finishActivityTransition(RESULT_CANCELED, null);
         }
+    }
+
+    private void showTitleEditText(boolean willShow) {
+        if (willShow) {
+            mTitleEditText.setVisibility(View.VISIBLE);
+            mTitleTextView.setVisibility(View.GONE);
+        } else {
+            mTitleTextView.setVisibility(View.VISIBLE);
+            mTitleEditText.setVisibility(View.GONE);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void fadeBackgroundColor() {
+        final ScrollView linearLayout = (ScrollView) findViewById(R.id.edit_set_layout);
+        TypedValue darkColor = new TypedValue();
+        TypedValue lightColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
+        getTheme().resolveAttribute(R.attr.background, lightColor, true);
+        ValueAnimator colorAnimation;
+        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), darkColor.data, lightColor.data);
+        colorAnimation.setInterpolator(new DecelerateInterpolator());
+        colorAnimation.setDuration(1000); // milliseconds
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                linearLayout.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void fadeBackgroundColorReverse() {
+        final ScrollView linearLayout = (ScrollView) findViewById(R.id.edit_set_layout);
+        TypedValue darkColor = new TypedValue();
+        TypedValue lightColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
+        getTheme().resolveAttribute(R.attr.background, lightColor, true);
+        ValueAnimator colorAnimation;
+        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), lightColor.data, darkColor.data);
+        colorAnimation.setInterpolator(new AccelerateInterpolator());
+        colorAnimation.setDuration(500); // milliseconds
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                linearLayout.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupEnterAnimationListener() {
+        getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                if (enterFinished) {
+                    fadeBackgroundColorReverse();
+                    enterFinished = false;
+                } else {
+                    fadeBackgroundColor();
+                    enterFinished = true;
+                }
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
     }
 }

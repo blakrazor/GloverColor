@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="transition_name_saved_set_title">saved_set_title</string>
+    <string name="transition_name_saved_set_chip">saved_set_chip</string>
+    <string name="transition_name_saved_set_mode">saved_set_mode</string>
+    <string name="transition_name_saved_set_colors">saved_set_colors</string>
+    <string name="transition_name_saved_set_cardview">saved_set_cardview</string>
+</resources>
