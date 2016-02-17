@@ -250,6 +250,7 @@ public class GCUtil {
         final String shareString = getShareString(savedSet);
         input.setText(shareString);
         input.setGravity(Gravity.CENTER_HORIZONTAL);
+        input.setPadding(32, 8, 32, 8);
         alert.setView(input);
 
         alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {
