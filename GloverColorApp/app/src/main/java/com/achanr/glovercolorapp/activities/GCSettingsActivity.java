@@ -8,6 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.utility.EGCThemeEnum;
@@ -28,6 +29,13 @@ public class GCSettingsActivity extends GCBaseActivity {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_settings, mFrameLayout);
         setupToolbar(getString(R.string.title_settings));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         mContext = this;
 
         PrefsFragment prefsFragment = new PrefsFragment();

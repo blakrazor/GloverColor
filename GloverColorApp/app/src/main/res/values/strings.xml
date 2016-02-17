@@ -9,7 +9,7 @@
     <string name="glovercolor">GloverColor</string>
     <string name="menu_saved_color_sets">Saved Sets</string>
     <string name="title_your_saved_sets">Saved Sets</string>
-    <string name="title_activity_gcwelcome_screen">Welcome</string>
+    <string name="title_activity_gcwelcome_screen">Home</string>
     <string name="title_edit_set">Edit Set</string>
     <string name="title_add_set">Add Set</string>
     <string name="title_enter_code">Enter Code</string>
