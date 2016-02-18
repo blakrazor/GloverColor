@@ -97,7 +97,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    animFabDisappear(true);
+                    animFabDisappear(null, null);
                 } else {
                     onAddSetListItemClicked();
                 }
@@ -192,7 +192,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            animFabDisappear(false);
             ArrayList<Pair> pairArrayList = new ArrayList<>();
             for (Map.Entry<String, View> entry : transitionView.entrySet()) {
                 String key = entry.getKey();
@@ -206,6 +205,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     pairArrayList.get(2),
                     pairArrayList.get(3),
                     pairArrayList.get(4));
+            animFabDisappear(intent, options);
             startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -261,7 +261,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void animFabDisappear(final boolean isNewSet) {
+    private void animFabDisappear(final Intent intent, final ActivityOptions options) {
         // previously visible view
         final View myView = findViewById(R.id.fab);
 
@@ -282,8 +282,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 myView.setVisibility(View.INVISIBLE);
-                if (isNewSet) {
+                if (intent == null) {
                     onAddSetListItemClicked();
+                } else {
+                    //startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
                 }
             }
         });

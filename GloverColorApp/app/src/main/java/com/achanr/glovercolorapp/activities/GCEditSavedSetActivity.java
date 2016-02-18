@@ -31,7 +31,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -883,43 +882,27 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void fadeBackgroundColor() {
-        final ScrollView linearLayout = (ScrollView) findViewById(R.id.edit_set_layout);
+    private void fadeBackgroundColor(boolean isReverse) {
+        final View parentView = findViewById(R.id.edit_set_layout);
         TypedValue darkColor = new TypedValue();
         TypedValue lightColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
         getTheme().resolveAttribute(R.attr.background, lightColor, true);
         ValueAnimator colorAnimation;
-        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), darkColor.data, lightColor.data);
-        colorAnimation.setInterpolator(new DecelerateInterpolator());
-        colorAnimation.setDuration(1000); // milliseconds
+        if(isReverse) {
+            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), lightColor.data, darkColor.data);
+            colorAnimation.setInterpolator(new AccelerateInterpolator());
+            colorAnimation.setDuration(500); // milliseconds
+        } else {
+            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), darkColor.data, lightColor.data);
+            colorAnimation.setInterpolator(new DecelerateInterpolator());
+            colorAnimation.setDuration(1000); // milliseconds
+        }
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
-                linearLayout.setBackgroundColor((int) animator.getAnimatedValue());
-            }
-
-        });
-        colorAnimation.start();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void fadeBackgroundColorReverse() {
-        final ScrollView linearLayout = (ScrollView) findViewById(R.id.edit_set_layout);
-        TypedValue darkColor = new TypedValue();
-        TypedValue lightColor = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
-        getTheme().resolveAttribute(R.attr.background, lightColor, true);
-        ValueAnimator colorAnimation;
-        colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), lightColor.data, darkColor.data);
-        colorAnimation.setInterpolator(new AccelerateInterpolator());
-        colorAnimation.setDuration(500); // milliseconds
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                linearLayout.setBackgroundColor((int) animator.getAnimatedValue());
+                parentView.setBackgroundColor((int) animator.getAnimatedValue());
             }
 
         });
@@ -933,10 +916,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             public void onTransitionStart(Transition transition) {
                 if (!isNewSet) {
                     if (enterFinished) {
-                        fadeBackgroundColorReverse();
+                        fadeBackgroundColor(true);
                         enterFinished = false;
                     } else {
-                        fadeBackgroundColor();
+                        fadeBackgroundColor(false);
                         enterFinished = true;
                     }
                 }

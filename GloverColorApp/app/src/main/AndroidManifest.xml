@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.achanr.glovercolorapp"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="com.achanr.glovercolorapp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:name=".utility.GloverColorApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -41,9 +43,9 @@
         <activity
             android:name=".activities.GCEditSavedSetActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_edit_set"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".activities.GCSettingsActivity"

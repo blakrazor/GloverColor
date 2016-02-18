@@ -3,7 +3,8 @@
     android:id="@+id/edit_set_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
     android:transitionName="@string/transition_name_saved_set_cardview">
 
     <LinearLayout
@@ -56,17 +57,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            android:weightSum="1"
-            android:gravity="bottom">
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <LinearLayout
                 android:id="@+id/chip_preset_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="0.45">
+                android:layout_weight="0.45"
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/BodyText"
@@ -85,15 +86,15 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="1dp"
                 android:layout_weight="0.1"/>
 
             <LinearLayout
                 android:id="@+id/mode_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="0.45">
+                android:layout_weight="0.45"
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/BodyText"
