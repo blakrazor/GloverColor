@@ -931,12 +931,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
-                if (enterFinished) {
-                    fadeBackgroundColorReverse();
-                    enterFinished = false;
-                } else {
-                    fadeBackgroundColor();
-                    enterFinished = true;
+                if (!isNewSet) {
+                    if (enterFinished) {
+                        fadeBackgroundColorReverse();
+                        enterFinished = false;
+                    } else {
+                        fadeBackgroundColor();
+                        enterFinished = true;
+                    }
                 }
             }
 

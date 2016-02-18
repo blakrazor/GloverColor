@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -180,11 +181,11 @@ public class GCBaseActivity extends AppCompatActivity
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            /*supportFinishAfterTransition();
+            supportFinishAfterTransition();
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-            startActivity(intent, options.toBundle());*/
-            finish();
-            startActivity(intent);
+            startActivity(intent, options.toBundle());
+            /*finish();
+            startActivity(intent);*/
         } else {
             // Implement this feature without material design
             finish();

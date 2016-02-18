@@ -1,5 +1,10 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +13,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
@@ -65,6 +72,9 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 onSetUpdated(oldSet, newSet);
             }
         }
+        if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
+            animFabAppear();
+        }
     }
 
     @Override
@@ -86,11 +96,19 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddSetListItemClicked();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    animFabDisappear(true);
+                } else {
+                    onAddSetListItemClicked();
+                }
             }
         });
 
         setupSavedSetList();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setupEnterAnimationListener();
+        }
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -174,6 +192,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
+            animFabDisappear(false);
             ArrayList<Pair> pairArrayList = new ArrayList<>();
             for (Map.Entry<String, View> entry : transitionView.entrySet()) {
                 String key = entry.getKey();
@@ -214,5 +233,97 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animFabAppear() {
+        // previously invisible view
+        final View myView = findViewById(R.id.fab);
+
+        // get the center for the clipping circle
+        int cx = myView.getMeasuredWidth() / 2;
+        int cy = myView.getMeasuredHeight() / 2;
+
+        // get the final radius for the clipping circle
+        int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
+
+        // create the animator for this view (the start radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+
+        // make the view visible and start the animation
+        myView.setVisibility(View.VISIBLE);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(anim, animator);
+        // start the animation
+        animatorSet.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animFabDisappear(final boolean isNewSet) {
+        // previously visible view
+        final View myView = findViewById(R.id.fab);
+
+        // get the center for the clipping circle
+        final int cx = myView.getMeasuredWidth() / 2;
+        final int cy = myView.getMeasuredHeight() / 2;
+
+        // get the initial radius for the clipping circle
+        int initialRadius = myView.getWidth() / 2;
+
+        // create the animation (the final radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+
+        // make the view invisible when the animation is done
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                myView.setVisibility(View.INVISIBLE);
+                if (isNewSet) {
+                    onAddSetListItemClicked();
+                }
+            }
+        });
+        ObjectAnimator animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(anim, animator);
+        // start the animation
+        animatorSet.start();
+    }
+
+    private Transition.TransitionListener mTransitionListener;
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setupEnterAnimationListener() {
+        mTransitionListener = new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                animFabAppear();
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        };
+        getWindow().getEnterTransition().addListener(mTransitionListener);
     }
 }
