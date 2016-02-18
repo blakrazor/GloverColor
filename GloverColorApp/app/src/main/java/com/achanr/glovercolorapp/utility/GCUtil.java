@@ -156,6 +156,12 @@ public class GCUtil {
         return builder;
     }
 
+    public static void refreshActivity(Activity activity) {
+        activity.finish();
+        activity.startActivity(new Intent(activity, activity.getClass()));
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
     /**
      * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
      */
@@ -164,17 +170,20 @@ public class GCUtil {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(THEME_KEY, themeEnum.toString());
         editor.commit();
-        activity.finish();
-        activity.startActivity(new Intent(activity, activity.getClass()));
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        refreshActivity(activity);
+    }
+
+    public static String getCurrentTheme() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String themeString = prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
+        return themeString;
     }
 
     /**
      * Set the theme of the activity, according to the configuration.
      */
     public static void onActivityCreateSetTheme(Activity activity) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeString = prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
+        String themeString = getCurrentTheme();
 
         switch (EGCThemeEnum.valueOf(themeString)) {
             default:

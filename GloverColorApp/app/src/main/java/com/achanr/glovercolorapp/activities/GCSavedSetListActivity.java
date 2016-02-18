@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Pair;
 import android.view.View;
@@ -179,6 +181,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
+            getWindow().setExitTransition(new Slide());
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE, options.toBundle());
         } else {
@@ -192,6 +195,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
+            getWindow().setExitTransition(new Fade());
             ArrayList<Pair> pairArrayList = new ArrayList<>();
             for (Map.Entry<String, View> entry : transitionView.entrySet()) {
                 String key = entry.getKey();

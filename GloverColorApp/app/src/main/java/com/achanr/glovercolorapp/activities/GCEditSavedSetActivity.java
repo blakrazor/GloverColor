@@ -15,6 +15,8 @@ import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -656,6 +658,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
+            if(isNewSet){
+                getWindow().setExitTransition(new Slide());
+            } else {
+                getWindow().setExitTransition(new Fade());
+            }
             supportFinishAfterTransition();
         } else {
             // Implement this feature without material design

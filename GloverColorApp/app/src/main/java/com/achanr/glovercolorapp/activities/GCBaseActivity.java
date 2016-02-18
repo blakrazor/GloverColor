@@ -13,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -37,8 +39,6 @@ public class GCBaseActivity extends AppCompatActivity
     protected NavigationView mNavigationView;
     private Context mContext;
 
-    protected static final int CHANGE_SETTINGS_REQUEST_CODE = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +51,16 @@ public class GCBaseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        checkIfThemeCorrect();
+    }
+
+    private void checkIfThemeCorrect() {
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.themeName, outValue, true);
+        String themeString = GCUtil.getCurrentTheme();
+        if (!themeString.equals(outValue.string)) {
+            GCUtil.refreshActivity(this);
+        }
     }
 
     protected void setupToolbar(String title) {
@@ -85,13 +95,14 @@ public class GCBaseActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (mPosition != R.id.nav_home
+            /*if (mPosition != R.id.nav_home
                     && mPosition != R.id.nav_settings) {
                 Intent intent = new Intent(mContext, GCWelcomeScreenActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
-            } else if (isTaskRoot()) {
+            } else */
+            if (isTaskRoot()) {
                 showLeavingDialog();
             } else {
                 super.onBackPressed();
@@ -102,10 +113,6 @@ public class GCBaseActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CHANGE_SETTINGS_REQUEST_CODE) {
-            finish();
-            startActivityTransition(new Intent(this, this.getClass()));
-        }
     }
 
     @Override
@@ -150,7 +157,8 @@ public class GCBaseActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings && mPosition != R.id.nav_settings) {
             mPosition = R.id.nav_settings;
             intent = new Intent(mContext, GCSettingsActivity.class);
-            startActivityForResult(intent, CHANGE_SETTINGS_REQUEST_CODE);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -181,14 +189,11 @@ public class GCBaseActivity extends AppCompatActivity
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            supportFinishAfterTransition();
+            getWindow().setExitTransition(new Explode());
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivity(intent, options.toBundle());
-            /*finish();
-            startActivity(intent);*/
         } else {
             // Implement this feature without material design
-            finish();
             startActivity(intent);
         }
     }

@@ -2,12 +2,10 @@ package com.achanr.glovercolorapp.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;
@@ -51,6 +49,12 @@ public class GCSettingsActivity extends GCBaseActivity {
         setPosition(R.id.nav_settings);
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
     public static class PrefsFragment extends PreferenceFragment {
 
         private ListPreference mListPreference;
@@ -73,8 +77,7 @@ public class GCSettingsActivity extends GCBaseActivity {
 
         private void setupThemePreference() {
             mListPreference = (ListPreference) findPreference("THEME_PREFERENCE");
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String oldThemeString = sharedPreferences.getString(GCUtil.THEME_KEY, "does not exist");
+            String oldThemeString = GCUtil.getCurrentTheme();
             String shortThemeString = oldThemeString.substring(0, oldThemeString.indexOf("_THEME"));
             mListPreference.setSummary(GCUtil.convertToCamelcase(shortThemeString));
             mListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
