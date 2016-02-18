@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.utility;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -7,7 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
@@ -16,6 +22,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -308,5 +315,36 @@ public class GCUtil {
         } else {
             return "";
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static RippleDrawable getPressedColorRippleDrawable(int normalColor, int pressedColor) {
+        return new RippleDrawable(getPressedColorSelector(pressedColor), getColorDrawableFromColor(normalColor), null);
+    }
+
+    private static ColorStateList getPressedColorSelector(int pressedColor) {
+        return new ColorStateList(
+                new int[][]{
+                        new int[]{}
+                },
+                new int[]{
+                        pressedColor
+                }
+        );
+    }
+
+    private static ColorDrawable getColorDrawableFromColor(int color) {
+        return new ColorDrawable(color);
+    }
+
+    public static int fetchAttributeColor(Context mContext, int attributeId) {
+        TypedValue typedValue = new TypedValue();
+
+        TypedArray a = mContext.obtainStyledAttributes(typedValue.data, new int[]{attributeId});
+        int color = a.getColor(0, 0);
+
+        a.recycle();
+
+        return color;
     }
 }

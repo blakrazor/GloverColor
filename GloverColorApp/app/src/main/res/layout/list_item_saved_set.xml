@@ -10,6 +10,7 @@
     android:transitionName="@string/transition_name_saved_set_cardview">
 
     <LinearLayout
+        android:id="@+id/linear_layout_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/savedSetListBackground"

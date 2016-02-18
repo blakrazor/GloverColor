@@ -14,7 +14,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Pair;
 import android.view.View;
@@ -75,7 +74,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             }
         }
         if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
-            animFabAppear();
+            animateFab(true, false);
         }
     }
 
@@ -99,7 +98,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    animFabDisappear(null, null);
+                    animateFab(false, true);
                 } else {
                     onAddSetListItemClicked();
                 }
@@ -181,7 +180,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            getWindow().setExitTransition(new Slide());
+            getWindow().setExitTransition(new Fade());
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE, options.toBundle());
         } else {
@@ -209,7 +208,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     pairArrayList.get(2),
                     pairArrayList.get(3),
                     pairArrayList.get(4));
-            animFabDisappear(intent, options);
+            animateFab(false, false);
             startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -240,32 +239,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void animFabAppear() {
-        // previously invisible view
-        final View myView = findViewById(R.id.fab);
-
-        // get the center for the clipping circle
-        int cx = myView.getMeasuredWidth() / 2;
-        int cy = myView.getMeasuredHeight() / 2;
-
-        // get the final radius for the clipping circle
-        int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
-
-        // create the animator for this view (the start radius is zero)
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-
-        // make the view visible and start the animation
-        myView.setVisibility(View.VISIBLE);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(anim, animator);
-        // start the animation
-        animatorSet.start();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void animFabDisappear(final Intent intent, final ActivityOptions options) {
+    private void animateFab(boolean isAppearing, final boolean isNewSet) {
         // previously visible view
         final View myView = findViewById(R.id.fab);
 
@@ -273,27 +247,33 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         final int cx = myView.getMeasuredWidth() / 2;
         final int cy = myView.getMeasuredHeight() / 2;
 
-        // get the initial radius for the clipping circle
-        int initialRadius = myView.getWidth() / 2;
 
         // create the animation (the final radius is zero)
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+        Animator anim;
+        ObjectAnimator animator;
+        if (isAppearing) {
+            int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+            animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
+            myView.setVisibility(View.VISIBLE);
+        } else {
+            int initialRadius = myView.getWidth() / 2;
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
 
-        // make the view invisible when the animation is done
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                myView.setVisibility(View.INVISIBLE);
-                if (intent == null) {
-                    onAddSetListItemClicked();
-                } else {
-                    //startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
+            // make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    myView.setVisibility(View.INVISIBLE);
+                    if (isNewSet) {
+                        onAddSetListItemClicked();
+                    }
                 }
-            }
-        });
-        ObjectAnimator animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+            });
+            animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+        }
+
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(anim, animator);
         // start the animation
@@ -312,7 +292,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
             @Override
             public void onTransitionEnd(Transition transition) {
-                animFabAppear();
+                animateFab(true, false);
             }
 
             @Override

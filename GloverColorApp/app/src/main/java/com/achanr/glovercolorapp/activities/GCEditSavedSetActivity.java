@@ -1,5 +1,8 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -16,7 +19,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -24,8 +26,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -658,12 +662,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            if(isNewSet){
-                getWindow().setExitTransition(new Slide());
+            if (isNewSet) {
+                addSetAnimation(true);
             } else {
                 getWindow().setExitTransition(new Fade());
+                supportFinishAfterTransition();
             }
-            supportFinishAfterTransition();
         } else {
             // Implement this feature without material design
             finish();
@@ -895,17 +899,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         TypedValue lightColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
         getTheme().resolveAttribute(R.attr.background, lightColor, true);
-        ValueAnimator colorAnimation;
-        if(isReverse) {
-            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), lightColor.data, darkColor.data);
-            colorAnimation.setInterpolator(new AccelerateInterpolator());
-            colorAnimation.setDuration(500); // milliseconds
+        ValueAnimator colorAnimator;
+        if (isReverse) {
+            colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), lightColor.data, darkColor.data);
+            colorAnimator.setInterpolator(new AccelerateInterpolator());
+            colorAnimator.setDuration(500); // milliseconds
         } else {
-            colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), darkColor.data, lightColor.data);
-            colorAnimation.setInterpolator(new DecelerateInterpolator());
-            colorAnimation.setDuration(1000); // milliseconds
+            colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), darkColor.data, lightColor.data);
+            colorAnimator.setInterpolator(new DecelerateInterpolator());
+            colorAnimator.setDuration(1000); // milliseconds
         }
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
@@ -913,7 +917,59 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
 
         });
-        colorAnimation.start();
+        colorAnimator.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void addSetAnimation(final boolean isReverse) {
+        // previously invisible view
+        final View myView = findViewById(R.id.edit_set_layout);
+
+        // get the center for the clipping circle
+        int cx = myView.getMeasuredWidth();
+        int cy = myView.getMeasuredHeight();
+        int finalRadius = myView.getHeight()*2;
+        TypedValue startColor = new TypedValue();
+        TypedValue endColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorAccent, startColor, true);
+        getTheme().resolveAttribute(R.attr.background, endColor, true);
+
+        Animator anim;
+        ValueAnimator colorAnimator;
+        if (isReverse) {
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, finalRadius, 0);
+            colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), endColor.data, startColor.data);
+        } else {
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+            myView.setVisibility(View.VISIBLE);
+            colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), startColor.data, endColor.data);
+        }
+
+        colorAnimator.setInterpolator(new LinearInterpolator()); // milliseconds
+        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                myView.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(anim, colorAnimator);
+        animatorSet.setDuration(1000);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (isReverse) {
+                    myView.setVisibility(View.INVISIBLE);
+                    getWindow().setExitTransition(new Fade());
+                    supportFinishAfterTransition();
+                }
+            }
+        });
+        // start the animation
+        animatorSet.start();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -921,14 +977,19 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
-                if (!isNewSet) {
-                    if (enterFinished) {
+                if (enterFinished) {
+                    if (!isNewSet) {
                         fadeBackgroundColor(true);
-                        enterFinished = false;
+                    }
+                    enterFinished = false;
+                } else {
+                    if (isNewSet) {
+                        findViewById(R.id.edit_set_layout).setVisibility(View.INVISIBLE);
+                        addSetAnimation(false);
                     } else {
                         fadeBackgroundColor(false);
-                        enterFinished = true;
                     }
+                    enterFinished = true;
                 }
             }
 
