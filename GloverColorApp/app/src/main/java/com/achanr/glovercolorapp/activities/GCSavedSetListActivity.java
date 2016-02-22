@@ -76,7 +76,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
-                animateFab(true, false);
+                findViewById(R.id.fab).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        animateFab(true, false);
+                    }
+                });
             }
         } else {
             mFab.setVisibility(View.VISIBLE);
@@ -127,7 +132,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
                     newIntent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
                     newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
-                    startAddSetActivityTransition(newIntent);
+                    startActivityForResult(newIntent, ADD_NEW_SET_REQUEST_CODE);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 }
             }
 

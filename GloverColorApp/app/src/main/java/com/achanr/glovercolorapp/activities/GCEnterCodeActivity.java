@@ -99,7 +99,6 @@ public class GCEnterCodeActivity extends GCBaseActivity {
             Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
             intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEnterCodeActivity.class.getName());
             intent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, newSet);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
