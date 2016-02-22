@@ -2,10 +2,14 @@ package com.achanr.glovercolorapp.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;
@@ -52,7 +56,7 @@ public class GCSettingsActivity extends GCBaseActivity {
     @Override
     public void onBackPressed() {
         finish();
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public static class PrefsFragment extends PreferenceFragment {
@@ -73,6 +77,7 @@ public class GCSettingsActivity extends GCBaseActivity {
 
             //Setup preferences
             setupThemePreference();
+            setupVersionNumberPreference();
         }
 
         private void setupThemePreference() {
@@ -89,6 +94,19 @@ public class GCSettingsActivity extends GCBaseActivity {
                     return true;
                 }
             });
+        }
+
+        private void setupVersionNumberPreference() {
+            Preference versionPreference = findPreference("VERSION_NUMBER_PREFERENCE");
+            String version;
+            try {
+                PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+                version = pInfo.versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                version = prefs.getString("VERSION_NUMBER_PREFERENCE", "0.0");
+            }
+            versionPreference.setSummary(version);
         }
     }
 }

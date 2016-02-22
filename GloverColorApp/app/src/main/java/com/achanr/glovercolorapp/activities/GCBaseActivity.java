@@ -158,7 +158,7 @@ public class GCBaseActivity extends AppCompatActivity
             mPosition = R.id.nav_settings;
             intent = new Intent(mContext, GCSettingsActivity.class);
             startActivity(intent);
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
