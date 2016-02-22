@@ -49,6 +49,7 @@ public class GCUtil {
 
     public static final String BREAK_CHARACTER_FOR_SHARING = ":";
     public static final String THEME_KEY = "theme_key";
+    public static final String WAS_REFRESHED = "was_refreshed";
 
     private static Context context = GloverColorApplication.getContext();
 
@@ -165,7 +166,9 @@ public class GCUtil {
 
     public static void refreshActivity(Activity activity) {
         activity.finish();
-        activity.startActivity(new Intent(activity, activity.getClass()));
+        Intent intent = new Intent(activity, activity.getClass());
+        intent.putExtra(WAS_REFRESHED, true);
+        activity.startActivity(intent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 

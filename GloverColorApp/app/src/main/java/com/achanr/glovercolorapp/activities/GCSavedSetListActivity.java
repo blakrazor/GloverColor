@@ -24,6 +24,7 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,8 +74,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 onSetUpdated(oldSet, newSet);
             }
         }
-        if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
-            animateFab(true, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
+                animateFab(true, false);
+            }
+        } else {
+            mFab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -109,6 +114,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimationListener();
+        } else {
+            mFab.setVisibility(View.VISIBLE);
         }
 
         Intent intent = getIntent();
@@ -122,6 +129,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
                     startAddSetActivityTransition(newIntent);
                 }
+            }
+
+            if (intent.getBooleanExtra(GCUtil.WAS_REFRESHED, false)) {
+                mFab.setVisibility(View.VISIBLE);
             }
         }
     }
