@@ -66,7 +66,7 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
                             transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);
                             transitionViews.put(mContext.getString(R.string.transition_name_saved_set_colors), txtColors);
                             transitionViews.put(mContext.getString(R.string.transition_name_saved_set_cardview), mCardView);
-                            ((GCSavedSetListActivity) mContext).onSavedSetListItemClicked(mSavedSet, transitionViews);
+                            ((GCSavedSetListActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
                         }
                         return true;
                     case 3:

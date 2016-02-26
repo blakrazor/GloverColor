@@ -18,13 +18,14 @@
             android:padding="50dp"
             android:src="@drawable/glover_color_logo"/>
 
-        <android.support.v7.widget.RecyclerView
+        <com.achanr.glovercolorapp.views.GridRecyclerView
             android:id="@+id/saved_set_list_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="40dp"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:layoutAnimation="@anim/grid_layout_in_animation"/>
 
     </RelativeLayout>
 

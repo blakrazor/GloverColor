@@ -1,5 +1,7 @@
 package com.achanr.glovercolorapp.activities;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -95,13 +97,6 @@ public class GCBaseActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            /*if (mPosition != R.id.nav_home
-                    && mPosition != R.id.nav_settings) {
-                Intent intent = new Intent(mContext, GCWelcomeScreenActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-            } else */
             if (isTaskRoot()) {
                 showLeavingDialog();
             } else {
@@ -185,13 +180,32 @@ public class GCBaseActivity extends AppCompatActivity
                 .show();
     }
 
-    private void startActivityTransition(Intent intent) {
+    private void startActivityTransition(final Intent intent) {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Call some material design APIs here
-            getWindow().setExitTransition(new Explode());
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-            startActivity(intent, options.toBundle());
+            if (mContext instanceof GCSavedSetListActivity) {
+                ((GCSavedSetListActivity) mContext).animateFab(false, new GCSavedSetListActivity.AnimationCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        ((GCSavedSetListActivity) mContext).animateListView(false, new GCSavedSetListActivity.AnimationCompleteListener() {
+
+                            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                            @Override
+                            public void onComplete() {
+                                // Call some material design APIs here
+                                ((Activity) mContext).getWindow().setExitTransition(new Explode());
+                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext);
+                                mContext.startActivity(intent, options.toBundle());
+                            }
+                        });
+                    }
+                });
+            } else {
+                // Call some material design APIs here
+                getWindow().setExitTransition(new Explode());
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+                startActivity(intent, options.toBundle());
+            }
         } else {
             // Implement this feature without material design
             startActivity(intent);

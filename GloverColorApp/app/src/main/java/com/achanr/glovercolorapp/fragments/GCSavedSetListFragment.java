@@ -131,7 +131,7 @@ public class GCSavedSetListFragment extends Fragment implements View.OnClickList
                             @Override
                             public void onItemClick(View view, int position) {
                                 if (mListener != null) {
-                                    //mListener.onSavedSetListItemClicked(position);
+                                    //mListener.onEditSetListItemClicked(position);
                                 }
                             }
                         })

@@ -11,13 +11,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.transition.Fade;
-import android.transition.Transition;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
@@ -25,6 +27,7 @@ import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.views.GridRecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +44,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private Context mContext;
     private GCSavedSetDatabase mSavedSetDatabase;
     private ArrayList<GCSavedSet> mSavedSetList;
-    private RecyclerView mSavedSetListRecyclerView;
+    private GridRecyclerView mSavedSetListRecyclerView;
     private GCSavedSetListAdapter mSavedSetListAdapter;
-    private RecyclerView.LayoutManager mSavedSetListLayoutManager;
+    private GridLayoutManager mSavedSetListLayoutManager;
     private FloatingActionButton mFab;
+    private boolean isFromEditing = false;
+    private boolean isLeaving = false;
 
     public static final String FROM_NAVIGATION = "from_navigation";
     public static final String NEW_SET_KEY = "new_set_key";
@@ -54,37 +59,34 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     public static final int ADD_NEW_SET_REQUEST_CODE = 1001;
     public static final int UPDATE_SET_REQUEST_CODE = 1002;
 
+    public interface AnimationCompleteListener {
+        void onComplete();
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        isLeaving = false;
         if (requestCode == ADD_NEW_SET_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
             if (!isDeleted) {
                 GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
                 onSetAdded(newSet);
             }
-        } else if (requestCode == UPDATE_SET_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
-            if (isDeleted) {
-                GCSavedSet savedSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
-                onSetDeleted(savedSet);
-            } else {
-                GCSavedSet oldSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
-                GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
-                onSetUpdated(oldSet, newSet);
+        } else if (requestCode == UPDATE_SET_REQUEST_CODE) {
+            isFromEditing = true;
+            if (resultCode == RESULT_OK && data != null) {
+                boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
+                if (isDeleted) {
+                    GCSavedSet savedSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                    onSetDeleted(savedSet);
+                } else {
+                    GCSavedSet oldSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                    GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
+                    onSetUpdated(oldSet, newSet);
+                }
             }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (findViewById(R.id.fab).getVisibility() == View.INVISIBLE) {
-                findViewById(R.id.fab).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        animateFab(true, false);
-                    }
-                });
-            }
-        } else {
-            mFab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -102,13 +104,24 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             findViewById(R.id.icon_background).setVisibility(View.GONE);
         }
 
-        mSavedSetListRecyclerView = (RecyclerView) findViewById(R.id.saved_set_list_recyclerview);
+        mSavedSetListRecyclerView = (GridRecyclerView) findViewById(R.id.saved_set_list_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isFromEditing = false;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    animateFab(false, true);
+                    animateFab(false, new AnimationCompleteListener() {
+                        @Override
+                        public void onComplete() {
+                            animateListView(false, new AnimationCompleteListener() {
+                                @Override
+                                public void onComplete() {
+                                    onAddSetListItemClicked();
+                                }
+                            });
+                        }
+                    });
                 } else {
                     onAddSetListItemClicked();
                 }
@@ -118,7 +131,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         setupSavedSetList();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setupEnterAnimationListener();
+            mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
         } else {
             mFab.setVisibility(View.VISIBLE);
         }
@@ -147,6 +160,19 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_saved_color_sets);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mSavedSetListRecyclerView.getVisibility() != View.VISIBLE) {
+                animateListView(true, new AnimationCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        animateFab(true, null);
+                    }
+                });
+            }
+        } else {
+            mFab.setVisibility(View.VISIBLE);
+            mSavedSetListRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
@@ -163,7 +189,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mSavedSetListLayoutManager = new LinearLayoutManager(mContext);
+        mSavedSetListLayoutManager = new GridLayoutManager(mContext, 1);
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
         mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
@@ -174,20 +200,23 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                             @Override
                             public void onItemClick(View view, int position) {
                                 if (mListener != null) {
-                                    //mListener.onSavedSetListItemClicked(position);
+                                    //mListener.onEditSetListItemClicked(position);
                                 }
                             }
                         })
         );*/
     }
 
-    public void onSavedSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
+    public void onEditSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
+        isFromEditing = true;
+        isLeaving = true;
         Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
         startEditSetActivityTransition(intent, transitionViews);
     }
 
     public void onAddSetListItemClicked() {
+        isLeaving = true;
         Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
         startAddSetActivityTransition(intent);
@@ -225,7 +254,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     pairArrayList.get(2),
                     pairArrayList.get(3),
                     pairArrayList.get(4));
-            animateFab(false, false);
+            animateFab(false, null);
             startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -256,7 +285,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void animateFab(boolean isAppearing, final boolean isNewSet) {
+    public void animateFab(boolean isAppearing, final AnimationCompleteListener animationCompleteListener) {
         // previously visible view
         final View myView = findViewById(R.id.fab);
 
@@ -268,6 +297,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // create the animation (the final radius is zero)
         Animator anim;
         ObjectAnimator animator;
+        AnimatorSet animatorSet = new AnimatorSet();
         if (isAppearing) {
             int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
             anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
@@ -276,57 +306,119 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         } else {
             int initialRadius = myView.getWidth() / 2;
             anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
-
-            // make the view invisible when the animation is done
-            anim.addListener(new AnimatorListenerAdapter() {
+            animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+            animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     myView.setVisibility(View.INVISIBLE);
-                    if (isNewSet) {
-                        onAddSetListItemClicked();
+                    if (animationCompleteListener != null) {
+                        animationCompleteListener.onComplete();
                     }
                 }
             });
-            animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
         }
 
-        AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(anim, animator);
         // start the animation
         animatorSet.start();
     }
 
-    private Transition.TransitionListener mTransitionListener;
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        if (!isLeaving) {
+            if (!isFromEditing) {
+                animateListView(true, new AnimationCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        animateFab(true, null);
+                    }
+                });
+            } else {
+                mSavedSetListRecyclerView.setVisibility(View.VISIBLE);
+                animateFab(true, null);
+            }
+        }
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupEnterAnimationListener() {
-        mTransitionListener = new Transition.TransitionListener() {
-            @Override
-            public void onTransitionStart(Transition transition) {
+    public void animateListView(boolean isEntering, final AnimationCompleteListener animationCompleteListener) {
+        if (isEntering) {
+            isLeaving = false;
+            mSavedSetListRecyclerView.setVisibility(View.VISIBLE);
+            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_in_animation));
+            mSavedSetListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (animationCompleteListener != null) {
+                        animationCompleteListener.onComplete();
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mSavedSetListRecyclerView.scheduleLayoutAnimation();
+        } else {
+            isLeaving = true;
+            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_out_animation));
+            mSavedSetListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
+                    if (animationCompleteListener != null) {
+                        animationCompleteListener.onComplete();
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mSavedSetListRecyclerView.scheduleLayoutAnimation();
+            mSavedSetListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                animateFab(false, new AnimationCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        animateListView(false, new AnimationCompleteListener() {
+                            @Override
+                            public void onComplete() {
+                                completedAnimationBackPressed();
+                            }
+                        });
+                    }
+                });
+            } else {
+                super.onBackPressed();
             }
+        }
+    }
 
-            @Override
-            public void onTransitionEnd(Transition transition) {
-                animateFab(true, false);
-            }
-
-            @Override
-            public void onTransitionCancel(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionPause(Transition transition) {
-
-            }
-
-            @Override
-            public void onTransitionResume(Transition transition) {
-
-            }
-        };
-        getWindow().getEnterTransition().addListener(mTransitionListener);
+    private void completedAnimationBackPressed() {
+        super.onBackPressed();
     }
 }

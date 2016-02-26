@@ -10,7 +10,7 @@ package com.achanr.glovercolorapp.listeners;
  *//*
 
 public interface IGCSavedSetListFragmentListener {
-    void onSavedSetListItemClicked(int position);
+    void onEditSetListItemClicked(int position);
 
     void onAddSetListItemClicked();
 }
