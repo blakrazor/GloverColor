@@ -19,12 +19,14 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-    <style name="BodyText">
+    <style name="BodyText" parent="Widget.Design.TextInputLayout">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-    <style name="EditSavedSetColorText">
+    <style name="EditSavedSetColorText" parent="TextAppearance.Design.Counter"/>
+
+    <style name="EditSavedSetColorSpinner" parent="Base.Widget.AppCompat.Spinner.Underlined">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>

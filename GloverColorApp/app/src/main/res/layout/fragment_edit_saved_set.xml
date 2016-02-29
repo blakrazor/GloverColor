@@ -448,7 +448,7 @@
                 android:text="@string/mode_subtitle"/>
 
             <Spinner
-                android:id="@+id/edit_text_mode"
+                android:id="@+id/mode_spinner"
                 style="@style/EditSavedSetColorText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

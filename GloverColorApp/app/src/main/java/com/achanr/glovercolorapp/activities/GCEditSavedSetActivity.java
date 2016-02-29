@@ -65,7 +65,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private GCSavedSet mSavedSet;
     private GCSavedSet mNewSet;
     private EditText mTitleEditText;
-    private TextView mTitleTextView;
+    //private TextView mTitleTextView;
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
     private Spinner mChipSetSpinner;
@@ -181,10 +181,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         }
 
-        mTitleTextView = (TextView) findViewById(R.id.text_view_title);
+        //mTitleTextView = (TextView) findViewById(R.id.text_view_title);
         mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
-        mModeSpinner = (Spinner) findViewById(R.id.edit_text_mode);
+        mModeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         mChipSetSpinner = (Spinner) findViewById(R.id.chip_preset_spinner);
 
         setupChipSetSpinner();
@@ -218,8 +218,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mTitleTextView.setText(mTitleEditText.getText().toString().trim());
-                    showTitleEditText(false);
+                    //mTitleTextView.setText(mTitleEditText.getText().toString().trim());
+                    //showTitleEditText(false);
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
@@ -227,13 +227,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 return false;
             }
         });
-        mTitleTextView.setOnClickListener(new View.OnClickListener() {
+        /*mTitleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTitleEditText(true);
                 mTitleEditText.requestFocus();
             }
-        });
+        });*/
 
         mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -451,8 +451,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         EGCModeEnum mode = mSavedSet.getMode();
 
         mTitleEditText.setText(title);
-        mTitleTextView.setText(title);
-        showTitleEditText(false);
+        //mTitleTextView.setText(title);
+        //showTitleEditText(false);
 
         int spinnerIndex = 0;
         EGCColorEnum[] colors = mChipSet.getColorEnums();
@@ -486,7 +486,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillDefaultData() {
         mTitleEditText.setText("");
-        showTitleEditText(true);
+        //showTitleEditText(true);
 
         EGCColorEnum[] colors = mChipSet.getColorEnums();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
@@ -882,7 +882,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
     }
 
-    private void showTitleEditText(boolean willShow) {
+    /*private void showTitleEditText(boolean willShow) {
         if (willShow) {
             mTitleEditText.setVisibility(View.VISIBLE);
             mTitleTextView.setVisibility(View.GONE);
@@ -890,7 +890,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             mTitleTextView.setVisibility(View.VISIBLE);
             mTitleEditText.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void fadeBackgroundColor(boolean isReverse) {
