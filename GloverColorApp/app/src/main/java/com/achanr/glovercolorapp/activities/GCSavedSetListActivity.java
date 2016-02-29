@@ -196,18 +196,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
         mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
-
-        /*mSavedSetListRecyclerView.addOnItemTouchListener(
-                new GCSavedSetListItemClickListener(mContext,
-                        new GCSavedSetListItemClickListener.OnSavedSetItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                if (mListener != null) {
-                                    //mListener.onEditSetListItemClicked(position);
-                                }
-                            }
-                        })
-        );*/
     }
 
     public void onEditSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {

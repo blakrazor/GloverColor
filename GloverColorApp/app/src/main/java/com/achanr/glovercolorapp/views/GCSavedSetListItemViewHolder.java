@@ -52,6 +52,13 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
             itemView.findViewById(R.id.linear_layout_background).setBackground(mContext.getDrawable(R.drawable.card_view_ripple));
         }
 
+        itemView.findViewById(R.id.linear_layout_background).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNavigateToEditItem();
+            }
+        });
+
         mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
         mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Share");
         mPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Edit");
@@ -65,48 +72,55 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
                         return true;
                     case 2:
                         if (mContext instanceof GCSavedSetListActivity) {
-                            HashMap<String, View> transitionViews = new HashMap<String, View>();
-                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_title), txtTitle);
-                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_chip), txtChipset);
-                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);
-                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_colors), txtColors);
-                            transitionViews.put(mContext.getString(R.string.transition_name_saved_set_cardview), mCardView);
-                            ((GCSavedSetListActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
+                            onNavigateToEditItem();
                         }
                         return true;
                     case 3:
                         if (mContext instanceof GCSavedSetListActivity) {
-                            new AlertDialog.Builder(mContext)
-                                    .setTitle(mContext.getString(R.string.delete))
-                                    .setMessage(mContext.getString(R.string.delete_dialog))
-                                    .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            ((GCSavedSetListActivity) mContext).onSetDeleted(mSavedSet);
-                                        }
-                                    })
-                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    })
-                                    .setIcon(R.drawable.ic_delete_black_48dp)
-                                    .show();
-                            return true;
+                            showDeleteDialog();
                         }
+                        return true;
                 }
                 return false;
             }
         });
 
-        itemView.findViewById(R.id.saved_set_more_actions).
+        itemView.findViewById(R.id.saved_set_more_actions).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPopupMenu.show();
+                    }
+                }
 
-                setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View v) {
-                                           mPopupMenu.show();
-                                       }
-                                   }
+        );
+    }
 
-                );
+    private void onNavigateToEditItem() {
+        HashMap<String, View> transitionViews = new HashMap<String, View>();
+        transitionViews.put(mContext.getString(R.string.transition_name_saved_set_title), txtTitle);
+        transitionViews.put(mContext.getString(R.string.transition_name_saved_set_chip), txtChipset);
+        transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);
+        transitionViews.put(mContext.getString(R.string.transition_name_saved_set_colors), txtColors);
+        transitionViews.put(mContext.getString(R.string.transition_name_saved_set_cardview), mCardView);
+        ((GCSavedSetListActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
+    }
+
+    private void showDeleteDialog() {
+        new AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.delete))
+                .setMessage(mContext.getString(R.string.delete_dialog))
+                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((GCSavedSetListActivity) mContext).onSetDeleted(mSavedSet);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setIcon(R.drawable.ic_delete_black_48dp)
+                .show();
     }
 }
