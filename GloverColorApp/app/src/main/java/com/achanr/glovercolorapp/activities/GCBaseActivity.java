@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
@@ -97,11 +95,7 @@ public class GCBaseActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (isTaskRoot()) {
-                showLeavingDialog();
-            } else {
-                super.onBackPressed();
-            }
+            super.onBackPressed();
         }
     }
 
@@ -161,7 +155,7 @@ public class GCBaseActivity extends AppCompatActivity
         return true;
     }
 
-    public void showLeavingDialog() {
+    /*public void showLeavingDialog() {
         new AlertDialog.Builder(mContext)
                 .setTitle("Leaving GloverColor")
                 .setMessage("Are you sure you want to exit the application?")
@@ -178,7 +172,7 @@ public class GCBaseActivity extends AppCompatActivity
                 })
                 .setIcon(R.drawable.ic_warning_black_48dp)
                 .show();
-    }
+    }*/
 
     private void startActivityTransition(final Intent intent) {
         // Check if we're running on Android 5.0 or higher

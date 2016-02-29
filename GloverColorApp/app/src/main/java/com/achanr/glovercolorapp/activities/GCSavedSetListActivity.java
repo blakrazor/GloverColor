@@ -168,6 +168,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                         animateFab(true, null);
                     }
                 });
+            } else if (mFab.getVisibility() != View.VISIBLE) {
+                animateFab(true, null);
             }
         } else {
             mFab.setVisibility(View.VISIBLE);
@@ -336,9 +338,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     }
                 });
             } else {
-                mSavedSetListRecyclerView.setVisibility(View.VISIBLE);
-                animateFab(true, null);
+                isFromEditing = false;
             }
+        } else {
+            isLeaving = false;
         }
     }
 
