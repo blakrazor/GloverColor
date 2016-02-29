@@ -6,8 +6,8 @@ package com.achanr.glovercolorapp.utility;
  */
 public enum EGCPowerLevelEnum {
     HIGH("H", (float) 1.0),
-    MEDIUM("M", (float) 0.5),
-    LOW("L", (float) 0.2);
+    MEDIUM("M", (float) 0.7),
+    LOW("L", (float) 0.4);
 
     EGCPowerLevelEnum(String powerAbbrev, float saturationValue){
         mPowerAbbrev = powerAbbrev;

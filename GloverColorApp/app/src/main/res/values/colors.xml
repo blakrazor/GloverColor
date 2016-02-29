@@ -3,20 +3,24 @@
     <color name="blueThemePrimary">#2196f3</color> <!--500-->
     <color name="blueThemePrimaryDark">#1976d2</color> <!--700-->
     <color name="blueThemeAccent">#448aff</color> <!--A200-->
-    <color name="blueThemeBackground">#e1f5fe</color> <!--50-->
+    <color name="blueThemeAccentLight">#82b1ff</color> <!--A100-->
+    <color name="blueThemeBackground">#bbdefb</color> <!--100-->
 
     <color name="purpleThemePrimary">#9c27b0</color>
     <color name="purpleThemePrimaryDark">#7b1fa2</color>
     <color name="purpleThemeAccent">#e040fb</color>
-    <color name="purpleThemeBackground">#f3e5f5</color>
+    <color name="purpleThemeAccentLight">#ea80fc</color>
+    <color name="purpleThemeBackground">#e1bee7</color>
 
     <color name="greenThemePrimary">#4caf50</color>
     <color name="greenThemePrimaryDark">#388e3c</color>
     <color name="greenThemeAccent">#69f0ae</color>
-    <color name="greenThemeBackground">#e8f5e9</color>
+    <color name="greenThemeAccentLight">#b9f6ca</color>
+    <color name="greenThemeBackground">#c8e6c9</color>
 
     <color name="darkThemePrimary">#607d8b</color>
     <color name="darkThemePrimaryDark">#263238</color>
     <color name="darkThemeAccent">#757575</color>
-    <color name="darkThemeBackground">#90a4ae</color>
+    <color name="darkThemeAccentLight">#9e9e9e</color>
+    <color name="darkThemeBackground">#cfd8dc</color>
 </resources>

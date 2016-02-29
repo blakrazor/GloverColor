@@ -132,6 +132,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
+            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
         } else {
             mFab.setVisibility(View.VISIBLE);
         }

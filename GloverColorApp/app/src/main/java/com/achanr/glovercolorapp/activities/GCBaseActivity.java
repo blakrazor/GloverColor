@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.activities;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
+import android.transition.Slide;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -146,7 +146,7 @@ public class GCBaseActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings && mPosition != R.id.nav_settings) {
             mPosition = R.id.nav_settings;
             intent = new Intent(mContext, GCSettingsActivity.class);
-            startActivity(intent);
+            startActivityTransition(intent);
             //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
@@ -183,26 +183,30 @@ public class GCBaseActivity extends AppCompatActivity
                     public void onComplete() {
                         ((GCSavedSetListActivity) mContext).animateListView(false, new GCSavedSetListActivity.AnimationCompleteListener() {
 
-                            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                             @Override
                             public void onComplete() {
-                                // Call some material design APIs here
-                                ((Activity) mContext).getWindow().setExitTransition(new Explode());
-                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext);
-                                mContext.startActivity(intent, options.toBundle());
+                                startActivityMaterialDesignTransition(intent);
                             }
                         });
                     }
                 });
             } else {
-                // Call some material design APIs here
-                getWindow().setExitTransition(new Explode());
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-                startActivity(intent, options.toBundle());
+                startActivityMaterialDesignTransition(intent);
             }
         } else {
             // Implement this feature without material design
             startActivity(intent);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void startActivityMaterialDesignTransition(Intent intent) {
+        if (mPosition == R.id.nav_settings) {
+            getWindow().setExitTransition(new Slide());
+        } else {
+            getWindow().setExitTransition(new Explode());
+        }
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+        startActivity(intent, options.toBundle());
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="savedSetListBackground" format="reference|color"/>
+    <attr name="colorAccentLight" format="reference|color"/>
     <attr name="themeName" format="reference|string"/>
 </resources>

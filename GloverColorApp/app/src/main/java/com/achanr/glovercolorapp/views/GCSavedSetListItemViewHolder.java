@@ -2,6 +2,7 @@ package com.achanr.glovercolorapp.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -46,6 +47,10 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         txtChipset = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_chipset);
         rlSavedSetItem = (RelativeLayout) itemView.findViewById(R.id.list_item_saved_set_layout);
         mCardView = (CardView) itemView;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            itemView.findViewById(R.id.linear_layout_background).setBackground(mContext.getDrawable(R.drawable.card_view_ripple));
+        }
 
         mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
         mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Share");

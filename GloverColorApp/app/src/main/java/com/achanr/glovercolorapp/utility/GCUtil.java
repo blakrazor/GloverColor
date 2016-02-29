@@ -1,6 +1,5 @@
 package com.achanr.glovercolorapp.utility;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -8,12 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.RippleDrawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
@@ -222,9 +217,7 @@ public class GCUtil {
         float[] hsv = new float[3];
         Color.RGBToHSV(originalRgb[0], originalRgb[1], originalRgb[2], hsv);
 
-        if (hsv[1] != 0) {
-            hsv[1] = mPowerLevelEnum.getSaturationValue();
-        }
+        hsv[1] = hsv[1]*mPowerLevelEnum.getSaturationValue();
 
         int outputColor = Color.HSVToColor(hsv);
         newRgbValues[0] = Color.red(outputColor);
@@ -318,26 +311,6 @@ public class GCUtil {
         } else {
             return "";
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static RippleDrawable getPressedColorRippleDrawable(int normalColor, int pressedColor) {
-        return new RippleDrawable(getPressedColorSelector(pressedColor), getColorDrawableFromColor(normalColor), null);
-    }
-
-    private static ColorStateList getPressedColorSelector(int pressedColor) {
-        return new ColorStateList(
-                new int[][]{
-                        new int[]{}
-                },
-                new int[]{
-                        pressedColor
-                }
-        );
-    }
-
-    private static ColorDrawable getColorDrawableFromColor(int color) {
-        return new ColorDrawable(color);
     }
 
     public static int fetchAttributeColor(Context mContext, int attributeId) {

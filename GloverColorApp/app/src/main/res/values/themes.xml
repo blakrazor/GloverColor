@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/blueThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/blueThemePrimaryDark</item>
         <item name="colorAccent">@color/blueThemeAccent</item>
+        <item name="colorAccentLight">@color/blueThemeAccentLight</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/blueThemeBackground</item>
         <item name="android:windowBackground">?attr/background</item>
@@ -17,6 +18,7 @@
         <item name="colorPrimaryDark">@color/purpleThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/purpleThemePrimaryDark</item>
         <item name="colorAccent">@color/purpleThemeAccent</item>
+        <item name="colorAccentLight">@color/purpleThemeAccentLight</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/purpleThemeBackground</item>
         <item name="android:windowBackground">?attr/background</item>
@@ -28,6 +30,7 @@
         <item name="colorPrimaryDark">@color/greenThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/greenThemePrimaryDark</item>
         <item name="colorAccent">@color/greenThemeAccent</item>
+        <item name="colorAccentLight">@color/greenThemeAccentLight</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/greenThemeBackground</item>
         <item name="android:windowBackground">?attr/background</item>
@@ -39,6 +42,7 @@
         <item name="colorPrimaryDark">@color/darkThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/darkThemePrimaryDark</item>
         <item name="colorAccent">@color/darkThemeAccent</item>
+        <item name="colorAccentLight">@color/darkThemeAccentLight</item>
         <item name="colorButtonNormal">?attr/colorPrimary</item>
         <item name="background">@color/darkThemeBackground</item>
         <item name="android:windowBackground">?attr/background</item>

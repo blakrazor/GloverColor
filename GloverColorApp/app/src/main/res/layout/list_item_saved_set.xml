@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/savedSetListBackground"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clickable="true">
 
         <RelativeLayout
             android:id="@+id/list_item_saved_set_layout"
