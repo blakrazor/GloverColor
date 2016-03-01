@@ -26,7 +26,12 @@
 
     <style name="EditSavedSetColorText" parent="TextAppearance.Design.Counter"/>
 
-    <style name="EditSavedSetColorSpinner" parent="Base.Widget.AppCompat.Spinner.Underlined">
+    <style name="EditSavedSetColorSpinner">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="EditSavedSetOtherSpinner" parent="Base.Widget.AppCompat.Spinner.Underlined">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/black</item>
     </style>

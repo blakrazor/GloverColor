@@ -72,15 +72,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="2">
 
             <LinearLayout
                 android:id="@+id/chip_preset_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.475"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -91,23 +91,18 @@
 
                 <Spinner
                     android:id="@+id/chip_preset_spinner"
-                    style="@style/EditSavedSetColorSpinner"
+                    style="@style/EditSavedSetOtherSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:transitionName="@string/transition_name_saved_set_chip"/>
 
             </LinearLayout>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="0.05"/>
-
             <LinearLayout
                 android:id="@+id/mode_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.475"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -118,7 +113,7 @@
 
                 <Spinner
                     android:id="@+id/mode_spinner"
-                    style="@style/EditSavedSetColorSpinner"
+                    style="@style/EditSavedSetOtherSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:transitionName="@string/transition_name_saved_set_mode"/>
