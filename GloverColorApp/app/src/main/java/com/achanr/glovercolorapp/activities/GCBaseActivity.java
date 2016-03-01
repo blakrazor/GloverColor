@@ -130,7 +130,7 @@ public class GCBaseActivity extends AppCompatActivity
         Intent intent = null;
         if (id == R.id.nav_home && mPosition != R.id.nav_home) {
             mPosition = R.id.nav_home;
-            intent = new Intent(mContext, GCWelcomeScreenActivity.class);
+            intent = new Intent(mContext, GCHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
         } else if (id == R.id.nav_saved_color_sets && mPosition != R.id.nav_saved_color_sets) {

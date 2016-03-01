@@ -13,7 +13,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.GCBaseActivity"
-    tools:showIn="@layout/activity_welcome_screen">
+    tools:showIn="@layout/activity_home">
 
     <ImageView
         android:layout_width="144dp"

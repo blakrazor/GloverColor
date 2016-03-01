@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
-import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.GCUtil;
 import com.achanr.glovercolorapp.views.GridRecyclerView;
@@ -42,7 +42,6 @@ import java.util.Map;
 public class GCSavedSetListActivity extends GCBaseActivity {
 
     private Context mContext;
-    private GCSavedSetDatabase mSavedSetDatabase;
     private ArrayList<GCSavedSet> mSavedSetList;
     private GridRecyclerView mSavedSetListRecyclerView;
     private GCSavedSetListAdapter mSavedSetListAdapter;
@@ -97,7 +96,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mContext = this;
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        mSavedSetDatabase = new GCSavedSetDatabase(mContext);
         mSavedSetList = getSavedSetListFromDatabase();
 
         if (mSavedSetList != null && mSavedSetList.size() > 0) {
@@ -179,7 +177,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
-        ArrayList<GCSavedSet> savedSetList = mSavedSetDatabase.readData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.readData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
@@ -255,21 +253,21 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
-        mSavedSetDatabase.updateData(oldSet, newSet);
+        GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.update(oldSet, newSet);
         Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
-        mSavedSetDatabase.deleteData(savedSet);
+        GCDatabaseHelper.SAVED_SET_DATABASE.deleteData(savedSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.remove(savedSet);
         Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetAdded(GCSavedSet newSet) {
-        mSavedSetDatabase.insertData(newSet);
+        GCDatabaseHelper.SAVED_SET_DATABASE.insertData(newSet);
         mSavedSetList = getSavedSetListFromDatabase();
         mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();

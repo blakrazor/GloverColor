@@ -16,7 +16,7 @@
 
         <include layout="@layout/app_bar_base_layout"/>
 
-        <include layout="@layout/content_welcome_screen"/>
+        <include layout="@layout/content_home"/>
 
     </LinearLayout>
 

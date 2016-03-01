@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
+import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -56,19 +57,11 @@ public class GCUtil {
         }
     }
 
-    private static final Map<String, EGCPowerLevelEnum> powerLevelToEnumHashMap = new HashMap<>();
-
-    static {
-        for (final EGCPowerLevelEnum s : EnumSet.allOf(EGCPowerLevelEnum.class)) {
-            powerLevelToEnumHashMap.put(s.getPowerAbbrev(), s);
-        }
-    }
-
     public static String convertColorListToShortenedColorString(ArrayList<GCColor> colorList) {
         String shortenedColorString = "";
         for (GCColor color : colorList) {
             if (color.getColorEnum() != EGCColorEnum.NONE) {
-                shortenedColorString += (color.getColorEnum().getColorAbbrev() + color.getPowerLevelEnum().getPowerAbbrev());
+                shortenedColorString += (color.getColorEnum().getColorAbbrev() + color.getPowerLevel().getAbbreviation());
             }
         }
         return shortenedColorString;
@@ -83,7 +76,7 @@ public class GCUtil {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
             EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
-            EGCPowerLevelEnum powerLevelEnum = powerLevelToEnumHashMap.get(powerString);
+            GCPowerLevel powerLevelEnum = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
             colorList.add(new GCColor(colorEnum, powerLevelEnum));
         }
 
@@ -91,7 +84,7 @@ public class GCUtil {
     }
 
     private static List<String> getParts(String string, int partitionSize) {
-        List<String> parts = new ArrayList<String>();
+        List<String> parts = new ArrayList<>();
         int len = string.length();
         for (int i = 0; i < len; i += partitionSize) {
             parts.add(string.substring(i, Math.min(len, i + partitionSize)));
@@ -140,8 +133,8 @@ public class GCUtil {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
             EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
-            EGCPowerLevelEnum powerLevelEnum = powerLevelToEnumHashMap.get(powerString);
-            int[] rgbValues = convertRgbToPowerLevel(colorEnum.getRgbValues(), powerLevelEnum);
+            GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
+            int[] rgbValues = convertRgbToPowerLevel(colorEnum.getRgbValues(), powerLevel);
 
             if (colorString.equalsIgnoreCase("--")) {
                 SpannableString spannableString = new SpannableString(colorString);
@@ -207,17 +200,13 @@ public class GCUtil {
         }
     }
 
-    public static EGCPowerLevelEnum getPowerLevelEnum(String powerAbbrev) {
-        return powerLevelToEnumHashMap.get(powerAbbrev);
-    }
-
-    public static int[] convertRgbToPowerLevel(int[] originalRgb, EGCPowerLevelEnum mPowerLevelEnum) {
+    public static int[] convertRgbToPowerLevel(int[] originalRgb, GCPowerLevel powerLevel) {
         int[] newRgbValues = new int[3];
 
         float[] hsv = new float[3];
         Color.RGBToHSV(originalRgb[0], originalRgb[1], originalRgb[2], hsv);
 
-        hsv[1] = hsv[1]*mPowerLevelEnum.getSaturationValue();
+        hsv[1] = hsv[1] * powerLevel.getValue();
 
         int outputColor = Color.HSVToColor(hsv);
         newRgbValues[0] = Color.red(outputColor);

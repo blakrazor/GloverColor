@@ -41,13 +41,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.database.GCSavedSetDatabase;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCColor;
+import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.utility.EGCChipSet;
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
 import com.achanr.glovercolorapp.utility.EGCModeEnum;
-import com.achanr.glovercolorapp.utility.EGCPowerLevelEnum;
+import com.achanr.glovercolorapp.utility.GCConstants;
+import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
@@ -113,14 +115,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         private Spinner mColorSpinner;
         private RelativeLayout mColorSwatch;
         private TextView mColorSwatchTextView;
-        private EGCPowerLevelEnum mPowerLevelEnum;
+        private GCPowerLevel mPowerLevel;
 
         public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
             mColorLayout = colorLayout;
             mColorSpinner = colorSpinner;
             mColorSwatch = colorSwatch;
             mColorSwatchTextView = colorSwatchTextView;
-            mPowerLevelEnum = EGCPowerLevelEnum.HIGH;
+            mPowerLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE);
         }
 
         public LinearLayout getColorLayout() {
@@ -139,12 +141,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return mColorSwatchTextView;
         }
 
-        public EGCPowerLevelEnum getPowerLevelEnum() {
-            return mPowerLevelEnum;
+        public GCPowerLevel getPowerLevel() {
+            return mPowerLevel;
         }
 
-        public void setPowerLevelEnum(EGCPowerLevelEnum powerLevelEnum) {
-            mPowerLevelEnum = powerLevelEnum;
+        public void setPowerLevel(GCPowerLevel powerLevel) {
+            mPowerLevel = powerLevel;
         }
     }
 
@@ -394,7 +396,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private void matchColorSpinnerToSwatch() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
-            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevelEnum());
+            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevel());
             colorSpinnerHolder.getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
         }
     }
@@ -440,8 +442,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 }
             };
             colorSpinnerHolder.getColorSpinner().setAdapter(customAdapter);
-            colorSpinnerHolder.setPowerLevelEnum(EGCPowerLevelEnum.HIGH);
-            colorSpinnerHolder.getColorSwatchTextView().setText(EGCPowerLevelEnum.HIGH.getPowerAbbrev());
+            colorSpinnerHolder.setPowerLevel(GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE));
+            colorSpinnerHolder.getColorSwatchTextView().setText(GCConstants.POWER_LEVEL_HIGH_ABBREV);
         }
     }
 
@@ -462,8 +464,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 if (colorItem == color.getColorEnum()) {
                     ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
                     colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
-                    colorSpinnerHolder.setPowerLevelEnum(color.getPowerLevelEnum());
-                    colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevelEnum().getPowerAbbrev());
+                    colorSpinnerHolder.setPowerLevel(color.getPowerLevel());
+                    colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevel().getAbbreviation());
                     break;
                 } else {
                     colorIndex++;
@@ -540,28 +542,26 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         public void onClick(View v) {
             TextView colorSwatchTv = (TextView) v;
             String currentLevelString = colorSwatchTv.getText().toString();
-            EGCPowerLevelEnum currentLevel = GCUtil.getPowerLevelEnum(currentLevelString);
+            GCPowerLevel currentLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(currentLevelString);
             syncSpinnerAndSwatch(colorSwatchTv, currentLevel);
             checkForChanges();
         }
     };
 
-    private void syncSpinnerAndSwatch(TextView colorSwatchTv, EGCPowerLevelEnum currentLevel) {
-        EGCPowerLevelEnum newLevel = null;
-        if (currentLevel == EGCPowerLevelEnum.HIGH) {
-            colorSwatchTv.setText(EGCPowerLevelEnum.MEDIUM.getPowerAbbrev());
-            newLevel = EGCPowerLevelEnum.MEDIUM;
-        } else if (currentLevel == EGCPowerLevelEnum.MEDIUM) {
-            colorSwatchTv.setText(EGCPowerLevelEnum.LOW.getPowerAbbrev());
-            newLevel = EGCPowerLevelEnum.LOW;
-        } else if (currentLevel == EGCPowerLevelEnum.LOW) {
-            colorSwatchTv.setText(EGCPowerLevelEnum.HIGH.getPowerAbbrev());
-            newLevel = EGCPowerLevelEnum.HIGH;
+    private void syncSpinnerAndSwatch(TextView colorSwatchTv, GCPowerLevel currentLevel) {
+        GCPowerLevel newLevel;
+        if (currentLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_HIGH_TITLE)) {
+            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_MEDIUM_TITLE);
+        } else if (currentLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_MEDIUM_TITLE)) {
+            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_LOW_TITLE);
+        } else {
+            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE);
         }
+        colorSwatchTv.setText(newLevel.getAbbreviation());
 
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             if (colorSpinnerHolder.getColorSwatchTextView() == colorSwatchTv) {
-                colorSpinnerHolder.setPowerLevelEnum(newLevel);
+                colorSpinnerHolder.setPowerLevel(newLevel);
                 matchColorSpinnerToSwatch();
                 break;
             }
@@ -618,7 +618,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
             EGCColorEnum color = colors[colorPosition];
-            EGCPowerLevelEnum power = colorSpinnerHolder.getPowerLevelEnum();
+            GCPowerLevel power = colorSpinnerHolder.getPowerLevel();
             GCColor newColor = new GCColor(color, power);
             newColorList.add(newColor);
 
@@ -676,8 +676,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private boolean validateTitleAgainstDatabase(String title) {
-        GCSavedSetDatabase mSavedSetDatabase = new GCSavedSetDatabase(mContext);
-        ArrayList<GCSavedSet> savedSetList = mSavedSetDatabase.readData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.readData();
         for (GCSavedSet savedSet : savedSetList) {
             if (savedSet.getTitle().equals(title)) {
                 return true;
@@ -842,7 +841,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
             if (mSavedSet.getColors().size() > index) {
                 if (colorEnum != mSavedSet.getColors().get(index).getColorEnum()
-                        || colorSpinnerHolder.getPowerLevelEnum() != mSavedSet.getColors().get(index).getPowerLevelEnum()) {
+                        || !colorSpinnerHolder.getPowerLevel().getTitle().equalsIgnoreCase(mSavedSet.getColors().get(index).getPowerLevel().getTitle())) {
                     return true;
                 }
             } else if (colorEnum != EGCColorEnum.NONE) {
@@ -928,7 +927,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         // get the center for the clipping circle
         int cx = myView.getMeasuredWidth();
         int cy = myView.getMeasuredHeight();
-        int finalRadius = myView.getHeight()*2;
+        int finalRadius = myView.getHeight() * 2;
         TypedValue startColor = new TypedValue();
         TypedValue endColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorAccent, startColor, true);

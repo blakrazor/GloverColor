@@ -3,6 +3,8 @@ package com.achanr.glovercolorapp.utility;
 import android.app.Application;
 import android.content.Context;
 
+import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
+
 /**
  * Glover Color App Project
  *
@@ -17,6 +19,8 @@ public class GloverColorApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        GCDatabaseAdapter.getInstance(getApplicationContext());
+        GCPowerLevelUtil.initPowerLevelArrayList();
     }
 
     public static Context getContext(){
