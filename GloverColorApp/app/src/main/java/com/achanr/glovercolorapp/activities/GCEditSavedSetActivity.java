@@ -115,14 +115,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         private Spinner mColorSpinner;
         private RelativeLayout mColorSwatch;
         private TextView mColorSwatchTextView;
-        private GCPowerLevel mPowerLevel;
+        private String mPowerLevel;
 
         public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
             mColorLayout = colorLayout;
             mColorSpinner = colorSpinner;
             mColorSwatch = colorSwatch;
             mColorSwatchTextView = colorSwatchTextView;
-            mPowerLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE);
+            mPowerLevel = GCConstants.POWER_LEVEL_HIGH_TITLE;
         }
 
         public LinearLayout getColorLayout() {
@@ -142,10 +142,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         public GCPowerLevel getPowerLevel() {
-            return mPowerLevel;
+            return GCPowerLevelUtil.getPowerLevelUsingTitle(mPowerLevel);
         }
 
-        public void setPowerLevel(GCPowerLevel powerLevel) {
+        public void setPowerLevel(String powerLevel) {
             mPowerLevel = powerLevel;
         }
     }
@@ -442,7 +442,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 }
             };
             colorSpinnerHolder.getColorSpinner().setAdapter(customAdapter);
-            colorSpinnerHolder.setPowerLevel(GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE));
+            colorSpinnerHolder.setPowerLevel(GCConstants.POWER_LEVEL_HIGH_TITLE);
             colorSpinnerHolder.getColorSwatchTextView().setText(GCConstants.POWER_LEVEL_HIGH_ABBREV);
         }
     }
@@ -464,7 +464,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 if (colorItem == color.getColorEnum()) {
                     ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
                     colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
-                    colorSpinnerHolder.setPowerLevel(color.getPowerLevel());
+                    colorSpinnerHolder.setPowerLevel(color.getPowerLevel().getTitle());
                     colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevel().getAbbreviation());
                     break;
                 } else {
@@ -549,15 +549,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     };
 
     private void syncSpinnerAndSwatch(TextView colorSwatchTv, GCPowerLevel currentLevel) {
-        GCPowerLevel newLevel;
+        String newLevel;
         if (currentLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_HIGH_TITLE)) {
-            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_MEDIUM_TITLE);
+            newLevel = GCConstants.POWER_LEVEL_MEDIUM_TITLE;
+            colorSwatchTv.setText(GCConstants.POWER_LEVEL_MEDIUM_ABBREV);
         } else if (currentLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_MEDIUM_TITLE)) {
-            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_LOW_TITLE);
+            newLevel = GCConstants.POWER_LEVEL_LOW_TITLE;
+            colorSwatchTv.setText(GCConstants.POWER_LEVEL_LOW_ABBREV);
         } else {
-            newLevel = GCPowerLevelUtil.getPowerLevelUsingTitle(GCConstants.POWER_LEVEL_HIGH_TITLE);
+            newLevel = GCConstants.POWER_LEVEL_HIGH_TITLE;
+            colorSwatchTv.setText(GCConstants.POWER_LEVEL_HIGH_ABBREV);
         }
-        colorSwatchTv.setText(newLevel.getAbbreviation());
 
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             if (colorSpinnerHolder.getColorSwatchTextView() == colorSwatchTv) {
@@ -619,7 +621,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
             EGCColorEnum color = colors[colorPosition];
             GCPowerLevel power = colorSpinnerHolder.getPowerLevel();
-            GCColor newColor = new GCColor(color, power);
+            GCColor newColor = new GCColor(color, power.getTitle());
             newColorList.add(newColor);
 
         }

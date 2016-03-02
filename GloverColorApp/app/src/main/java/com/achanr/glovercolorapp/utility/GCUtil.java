@@ -76,8 +76,8 @@ public class GCUtil {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
             EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
-            GCPowerLevel powerLevelEnum = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
-            colorList.add(new GCColor(colorEnum, powerLevelEnum));
+            GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
+            colorList.add(new GCColor(colorEnum, powerLevel.getTitle()));
         }
 
         return colorList;

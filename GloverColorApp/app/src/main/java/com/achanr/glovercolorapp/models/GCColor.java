@@ -1,6 +1,7 @@
 package com.achanr.glovercolorapp.models;
 
 import com.achanr.glovercolorapp.utility.EGCColorEnum;
+import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
 
 import java.io.Serializable;
 
@@ -8,12 +9,12 @@ import java.io.Serializable;
  * @author Andrew Chanrasmi
  * @created 1/20/16 3:46 PM
  */
-public class GCColor implements Serializable{
+public class GCColor implements Serializable {
 
     private EGCColorEnum mColorEnum;
-    private GCPowerLevel mPowerLevel;
+    private String mPowerLevel;
 
-    public GCColor(EGCColorEnum colorEnum, GCPowerLevel powerLevel) {
+    public GCColor(EGCColorEnum colorEnum, String powerLevel) {
         mColorEnum = colorEnum;
         mPowerLevel = powerLevel;
     }
@@ -27,10 +28,10 @@ public class GCColor implements Serializable{
     }
 
     public GCPowerLevel getPowerLevel() {
-        return mPowerLevel;
+        return GCPowerLevelUtil.getPowerLevelUsingTitle(mPowerLevel);
     }
 
-    public void setPowerLevel(GCPowerLevel powerLevel) {
+    public void setPowerLevel(String powerLevel) {
         mPowerLevel = powerLevel;
     }
 }
