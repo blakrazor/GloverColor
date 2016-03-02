@@ -13,8 +13,14 @@ import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.utility.EGCThemeEnum;
+import com.achanr.glovercolorapp.utility.GCConstants;
+import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
 import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.views.GCPowerLevelPreference;
+
+import java.util.ArrayList;
 
 /**
  * Glover Color App Project
@@ -78,6 +84,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             //Setup preferences
             setupThemePreference();
             setupVersionNumberPreference();
+            setupPowerLevelPreference();
         }
 
         private void setupThemePreference() {
@@ -107,6 +114,34 @@ public class GCSettingsActivity extends GCBaseActivity {
                 version = prefs.getString("VERSION_NUMBER_PREFERENCE", "0.0");
             }
             versionPreference.setSummary(version);
+        }
+
+        private void setupPowerLevelPreference() {
+            final GCPowerLevelPreference powerLevelPreference = (GCPowerLevelPreference) findPreference("POWER_LEVEL_PREFERENCE");
+            powerLevelPreference.setPowerLevelCallback(new GCPowerLevelPreference.PowerLevelCallback() {
+                @Override
+                public void onPowerLevelChanged() {
+                    ArrayList<GCPowerLevel> powerLevelArrayList = GCPowerLevelUtil.getPowerLevelArrayList();
+                    String powerLevelString = "";
+                    for (GCPowerLevel powerLevel : powerLevelArrayList) {
+                        powerLevelString += powerLevel.convertValueToInt();
+                        if (!powerLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_LOW_TITLE)) {
+                            powerLevelString += " - ";
+                        }
+                    }
+                    powerLevelPreference.setSummary(powerLevelString);
+                }
+            });
+
+            ArrayList<GCPowerLevel> powerLevelArrayList = GCPowerLevelUtil.getPowerLevelArrayList();
+            String powerLevelString = "";
+            for (GCPowerLevel powerLevel : powerLevelArrayList) {
+                powerLevelString += powerLevel.convertValueToInt();
+                if (!powerLevel.getTitle().equalsIgnoreCase(GCConstants.POWER_LEVEL_LOW_TITLE)) {
+                    powerLevelString += " - ";
+                }
+            }
+            powerLevelPreference.setSummary(powerLevelString);
         }
     }
 }

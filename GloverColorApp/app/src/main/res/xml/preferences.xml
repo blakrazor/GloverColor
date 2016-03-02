@@ -5,12 +5,17 @@
         android:title="Application Settings">
 
         <ListPreference
-            android:key="THEME_PREFERENCE"
-            android:title="Theme"
+            android:defaultValue="Default Theme"
+            android:dialogTitle="Choose Theme"
             android:entries="@array/themes"
             android:entryValues="@array/themes"
-            android:dialogTitle="Choose Theme"
-            android:defaultValue="Default Theme"/>
+            android:key="THEME_PREFERENCE"
+            android:title="Theme"/>
+
+        <com.achanr.glovercolorapp.views.GCPowerLevelPreference
+            android:dialogTitle="Configure Power Levels"
+            android:key="POWER_LEVEL_PREFERENCE"
+            android:title="Power Levels"/>
 
     </PreferenceCategory>
 
@@ -18,10 +23,10 @@
         android:title="About">
 
         <Preference
-            android:key="VERSION_NUMBER_PREFERENCE"
-            android:title="Version"
             android:clickable="false"
-            android:defaultValue="0.0"/>
+            android:defaultValue="0.0"
+            android:key="VERSION_NUMBER_PREFERENCE"
+            android:title="Version"/>
 
     </PreferenceCategory>
 

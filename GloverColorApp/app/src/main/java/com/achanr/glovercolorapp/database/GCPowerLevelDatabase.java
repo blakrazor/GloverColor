@@ -130,13 +130,13 @@ public class GCPowerLevelDatabase extends GCAbstractDatabase {
         return db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs) > 0;
     }
 
-    public int updateData(GCPowerLevel oldPowerLevel, GCPowerLevel newPowerLevel) {
+    public int updateData(GCPowerLevel oldPowerLevel, float newPowerValue) {
 
         // New value for one column
         ContentValues values = new ContentValues();
-        values.put(GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY, newPowerLevel.getTitle());
-        values.put(GCPowerLevelEntry.POWER_LEVEL_ABBREV_KEY, newPowerLevel.getAbbreviation());
-        values.put(GCPowerLevelEntry.POWER_LEVEL_VALUE_KEY, newPowerLevel.convertValueToInt());
+        values.put(GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY, oldPowerLevel.getTitle());
+        values.put(GCPowerLevelEntry.POWER_LEVEL_ABBREV_KEY, oldPowerLevel.getAbbreviation());
+        values.put(GCPowerLevelEntry.POWER_LEVEL_VALUE_KEY, (int) (newPowerValue * 100));
 
         // Which row to update, based on the ID
         String selection = GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY + "=?";

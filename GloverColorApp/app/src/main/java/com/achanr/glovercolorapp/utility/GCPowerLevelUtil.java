@@ -52,10 +52,11 @@ public class GCPowerLevelUtil {
         }
     }
 
-    public static void updatePowerLevelValue(GCPowerLevel newPowerLevel) {
-        GCPowerLevel oldPowerLevel = getPowerLevelUsingTitle(newPowerLevel.getTitle());
+    public static void updatePowerLevelValue(String powerLevelTitle, float newPowerValue) {
+        GCPowerLevel oldPowerLevel = getPowerLevelUsingTitle(powerLevelTitle);
         if (oldPowerLevel != null) {
-            GCDatabaseHelper.POWER_LEVEL_DATABASE.updateData(oldPowerLevel, newPowerLevel);
+            GCDatabaseHelper.POWER_LEVEL_DATABASE.updateData(oldPowerLevel, newPowerValue);
+            initPowerLevelArrayList();
         } else {
             Log.e(GCPowerLevelUtil.class.getSimpleName(), "power level does not exist in array");
         }
@@ -81,5 +82,9 @@ public class GCPowerLevelUtil {
             }
         }
         return powerLevel;
+    }
+
+    public static ArrayList<GCPowerLevel> getPowerLevelArrayList() {
+        return mPowerLevelArrayList;
     }
 }

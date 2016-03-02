@@ -126,7 +126,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             }
         });
 
-        setupSavedSetList();
+        //setupSavedSetList();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
@@ -159,6 +159,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_saved_color_sets);
+        setupSavedSetList();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mSavedSetListRecyclerView.getVisibility() != View.VISIBLE) {
                 animateListView(true, new AnimationCompleteListener() {
