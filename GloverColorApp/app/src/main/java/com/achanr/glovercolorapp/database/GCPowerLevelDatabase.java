@@ -102,7 +102,7 @@ public class GCPowerLevelDatabase extends GCAbstractDatabase {
 
                         powerLevel.setTitle(title);
                         powerLevel.setAbbreviation(abbrev);
-                        powerLevel.setValue((float) (value / 100));
+                        powerLevel.setValue((float) value / 100);
 
                         powerLevelArrayList.add(powerLevel);
                     } while (mCursor.moveToNext());
