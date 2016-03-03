@@ -8,8 +8,10 @@ import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,6 +28,7 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.utility.GCConstants;
 import com.achanr.glovercolorapp.utility.GCUtil;
 import com.achanr.glovercolorapp.views.GridRecyclerView;
 
@@ -126,7 +129,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             }
         });
 
-        //setupSavedSetList();
+        setupSavedSetList();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
@@ -159,7 +162,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_saved_color_sets);
-        setupSavedSetList();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (prefs.getBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false)) {
+            setupSavedSetList();
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mSavedSetListRecyclerView.getVisibility() != View.VISIBLE) {
                 animateListView(true, new AnimationCompleteListener() {

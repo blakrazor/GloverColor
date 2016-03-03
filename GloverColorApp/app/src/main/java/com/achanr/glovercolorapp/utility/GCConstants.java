@@ -18,4 +18,7 @@ public class GCConstants {
     public static final String POWER_LEVEL_LOW_TITLE = "LOW";
     public static final String POWER_LEVEL_LOW_ABBREV = "L";
     public static final float POWER_LEVEL_LOW_VALUE = (float) 0.4;
+
+    //Preferences Constants
+    public static final String WAS_POWER_LEVELS_CHANGED_KEY = "was_power_levels_changed_key";
 }

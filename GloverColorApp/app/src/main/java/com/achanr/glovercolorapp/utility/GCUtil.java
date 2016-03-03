@@ -167,14 +167,13 @@ public class GCUtil {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(THEME_KEY, themeEnum.toString());
-        editor.commit();
+        editor.apply();
         refreshActivity(activity);
     }
 
     public static String getCurrentTheme() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeString = prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
-        return themeString;
+        return prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
     }
 
     /**

@@ -130,6 +130,11 @@ public class GCSettingsActivity extends GCBaseActivity {
                         }
                     }
                     powerLevelPreference.setSummary(powerLevelString);
+
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, true);
+                    editor.apply();
                 }
             });
 
