@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="theme_preference">THEME_PREFERENCE</string>
+    <string name="version_number_preference">VERSION_NUMBER_PREFERENCE</string>
+    <string name="power_level_preference">POWER_LEVEL_PREFERENCE</string>
+</resources>

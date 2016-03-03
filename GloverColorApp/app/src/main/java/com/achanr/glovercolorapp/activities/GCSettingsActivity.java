@@ -88,7 +88,7 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupThemePreference() {
-            mListPreference = (ListPreference) findPreference("THEME_PREFERENCE");
+            mListPreference = (ListPreference) findPreference(mContext.getString(R.string.theme_preference));
             String oldThemeString = GCUtil.getCurrentTheme();
             String shortThemeString = oldThemeString.substring(0, oldThemeString.indexOf("_THEME"));
             mListPreference.setSummary(GCUtil.convertToCamelcase(shortThemeString));
@@ -104,20 +104,20 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupVersionNumberPreference() {
-            Preference versionPreference = findPreference("VERSION_NUMBER_PREFERENCE");
+            Preference versionPreference = findPreference(mContext.getString(R.string.version_number_preference));
             String version;
             try {
                 PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
                 version = pInfo.versionName;
             } catch (PackageManager.NameNotFoundException e) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                version = prefs.getString("VERSION_NUMBER_PREFERENCE", "0.0");
+                version = prefs.getString(mContext.getString(R.string.version_number_preference), "0.0");
             }
             versionPreference.setSummary(version);
         }
 
         private void setupPowerLevelPreference() {
-            final GCPowerLevelPreference powerLevelPreference = (GCPowerLevelPreference) findPreference("POWER_LEVEL_PREFERENCE");
+            final GCPowerLevelPreference powerLevelPreference = (GCPowerLevelPreference) findPreference(mContext.getString(R.string.power_level_preference));
             powerLevelPreference.setPowerLevelCallback(new GCPowerLevelPreference.PowerLevelCallback() {
                 @Override
                 public void onPowerLevelChanged() {

@@ -779,8 +779,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     public void showChangingChipDialog() {
         new AlertDialog.Builder(mContext)
-                .setTitle("Changing Preset Chip")
-                .setMessage("Changing the preset chip will clear out your current colors and mode. Do you want to continue?")
+                .setTitle(getString(R.string.changing_preset_chip))
+                .setMessage(getString(R.string.changing_preset_chip_desc))
                 .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         retrievePresetColorEnums();

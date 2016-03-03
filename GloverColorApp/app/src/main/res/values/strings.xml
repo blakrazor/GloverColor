@@ -62,4 +62,6 @@
     <string name="share_body_text">\n\nEnter the code above on the GloverColor mobile app to view and save this gloving set.</string>
     <string name="preset_chip_hint">Preset chip (optional)</string>
     <string name="share_code">Share Code</string>
+    <string name="changing_preset_chip">Changing Preset Chip</string>
+    <string name="changing_preset_chip_desc">Changing the preset chip will clear out your current colors and mode. Do you want to continue?</string>
 </resources>
