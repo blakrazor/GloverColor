@@ -241,8 +241,7 @@ public class GCUtil {
 
     public static void showShareDialog(final Context mContext, GCSavedSet savedSet) {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-        alert.setTitle(mContext.getString(R.string.share));
-        alert.setMessage(mContext.getString(R.string.share_dialog));
+        alert.setTitle(mContext.getString(R.string.share_code));
         alert.setIcon(R.drawable.ic_share_black_48dp);
 
         TextView input = new TextView(mContext);
@@ -250,7 +249,7 @@ public class GCUtil {
         final String shareString = getShareString(savedSet);
         input.setText(shareString);
         input.setGravity(Gravity.CENTER_HORIZONTAL);
-        input.setPadding(32, 8, 32, 8);
+        input.setPadding(64, 32, 64, 32);
         alert.setView(input);
 
         alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {

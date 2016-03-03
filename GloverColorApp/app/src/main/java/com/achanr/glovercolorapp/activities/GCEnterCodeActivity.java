@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class GCEnterCodeActivity extends GCBaseActivity {
 
-    private EditText mEnterCodeEditText;
+    private TextInputLayout mEnterCodeEditText;
     private Button mSubmitCodeButton;
     private Context mContext;
 
@@ -38,12 +38,12 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         setupToolbar(getString(R.string.title_enter_code));
         mContext = this;
 
-        mEnterCodeEditText = (EditText) findViewById(R.id.edit_text_enter_code);
+        mEnterCodeEditText = (TextInputLayout) findViewById(R.id.edit_text_enter_code);
         mSubmitCodeButton = (Button) findViewById(R.id.submit_code_button);
 
         updateButton();
 
-        mEnterCodeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEnterCodeEditText.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE && isTextEntered) {
@@ -54,7 +54,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
             }
         });
 
-        mEnterCodeEditText.addTextChangedListener(new TextWatcher() {
+        mEnterCodeEditText.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -93,7 +93,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
     }
 
     private void submitAction() {
-        String setString = mEnterCodeEditText.getText().toString().trim();
+        String setString = mEnterCodeEditText.getEditText().getText().toString().trim();
         GCSavedSet newSet = convertStringToSavedSet(setString);
         if (newSet != null) {
             Intent intent = new Intent(mContext, GCSavedSetListActivity.class);

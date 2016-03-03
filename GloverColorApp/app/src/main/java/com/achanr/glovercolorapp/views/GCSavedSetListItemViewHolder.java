@@ -60,20 +60,20 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
-        mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Share");
-        mPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Edit");
+        mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Edit");
+        mPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Share");
         mPopupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Delete");
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case 1:
-                        GCUtil.showShareDialog(mContext, mSavedSet);
-                        return true;
-                    case 2:
                         if (mContext instanceof GCSavedSetListActivity) {
                             onNavigateToEditItem();
                         }
+                        return true;
+                    case 2:
+                        GCUtil.showShareDialog(mContext, mSavedSet);
                         return true;
                     case 3:
                         if (mContext instanceof GCSavedSetListActivity) {
