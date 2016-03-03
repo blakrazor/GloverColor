@@ -166,6 +166,9 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (prefs.getBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false)) {
             setupSavedSetList();
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false);
+            editor.apply();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -327,12 +330,16 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         super.onEnterAnimationComplete();
         if (!isLeaving) {
             if (!isFromEditing) {
-                animateListView(true, new AnimationCompleteListener() {
-                    @Override
-                    public void onComplete() {
-                        animateFab(true, null);
-                    }
-                });
+                if (mSavedSetListRecyclerView.getVisibility() != View.VISIBLE) {
+                    animateListView(true, new AnimationCompleteListener() {
+                        @Override
+                        public void onComplete() {
+                            if (mFab.getVisibility() != View.VISIBLE) {
+                                animateFab(true, null);
+                            }
+                        }
+                    });
+                }
             } else {
                 isFromEditing = false;
             }
