@@ -1,11 +1,11 @@
-package com.achanr.glovercolorapp.utility;
+/*package com.achanr.glovercolorapp.utility;
 
-/**
+*//**
  * Glover Color App Project
  *
  * @author Andrew Chanrasmi
  * @date 1/8/16 12:32 PM
- */
+ *//*
 public enum EGCColorEnum {
     NONE("", new int[]{0,0,0}),
     BLANK("--", new int[]{0,0,0}),
@@ -54,4 +54,4 @@ public enum EGCColorEnum {
     public String toString() {
         return super.toString().replace("_", " ");
     }
-}
+}*/

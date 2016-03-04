@@ -21,4 +21,9 @@ public class GCConstants {
 
     //Preferences Constants
     public static final String WAS_POWER_LEVELS_CHANGED_KEY = "was_power_levels_changed_key";
+
+    //Important color constants
+    public static final String COLOR_NONE = "NONE";
+    public static final String COLOR_BLANK = "BLANK";
+    public static final String COLOR_WHITE = "WHITE";
 }

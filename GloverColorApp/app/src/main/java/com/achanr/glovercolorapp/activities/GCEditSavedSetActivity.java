@@ -42,13 +42,16 @@ import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCColor;
+import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
+import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.EGCChipSet;
-import com.achanr.glovercolorapp.utility.EGCColorEnum;
-import com.achanr.glovercolorapp.utility.EGCModeEnum;
+import com.achanr.glovercolorapp.utility.GCChipUtil;
+import com.achanr.glovercolorapp.utility.GCColorUtil;
 import com.achanr.glovercolorapp.utility.GCConstants;
+import com.achanr.glovercolorapp.utility.GCModeUtil;
 import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
@@ -72,7 +75,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private Spinner mModeSpinner;
     private Spinner mChipSetSpinner;
     private boolean madeChanges = false;
-    private EGCChipSet mChipSet;
+    private GCChip mChipSet;
 
     private boolean enterFinished = false;
     private boolean isNewSet = false;
@@ -308,9 +311,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         int colorCount = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
-            if (colorEnum != EGCColorEnum.BLANK
-                    && colorEnum != EGCColorEnum.NONE) {
+            String color = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+            if (!color.equalsIgnoreCase(GCConstants.COLOR_BLANK)
+                    && !color.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                 colorCount++;
             }
         }
@@ -359,23 +362,15 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void setupChipSetSpinner() {
-        mChipSetSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, EGCChipSet.values()));
+        mChipSetSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, GCChipUtil.getAllChipTitles()));
         if (mSavedSet != null) {
-            EGCChipSet chipSet = mSavedSet.getChipSet();
-            EGCChipSet[] chipSets = EGCChipSet.values();
-            int chipsetIndex = 0;
-            for (EGCChipSet chipSetItem : chipSets) {
-                if (chipSet == chipSetItem) {
-                    mChipSetSpinner.setSelection(chipsetIndex, false);
-                    break;
-                } else {
-                    chipsetIndex++;
-                }
-            }
+            GCChip chipSet = mSavedSet.getChipSet();
+            int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
+            mChipSetSpinner.setSelection(chipsetIndex, false);
         } else {
             mChipSetSpinner.setSelection(0, false);
         }
-        mChipSet = (EGCChipSet) mChipSetSpinner.getSelectedItem();
+        mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
         mChipSetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -395,23 +390,23 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void matchColorSpinnerToSwatch() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
-            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRgbValues(), colorSpinnerHolder.getPowerLevel());
+            GCColor colorEnum = GCColorUtil.getColorUsingTitle((String) colorSpinnerHolder.getColorSpinner().getSelectedItem());
+            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRGBValues(), colorSpinnerHolder.getPowerLevel());
             colorSpinnerHolder.getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
         }
     }
 
     private void retrievePresetColorEnums() {
-        mChipSet = (EGCChipSet) mChipSetSpinner.getSelectedItem();
-        fillSpinnersWithEnums(mChipSet.getColorEnums(), mChipSet.getModeEnums());
+        mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
+        fillSpinnersWithEnums(mChipSet.getColors(), mChipSet.getModes());
     }
 
-    private void fillSpinnersWithEnums(EGCColorEnum[] colorEnums, EGCModeEnum[] modeEnums) {
+    private void fillSpinnersWithEnums(final ArrayList<String> colorArray, ArrayList<String> modeArray) {
 
-        mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, modeEnums));
+        mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, modeArray));
 
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            ArrayAdapter<EGCColorEnum> customAdapter = new ArrayAdapter<EGCColorEnum>(mContext, R.layout.spinner_color_item, colorEnums) {
+            ArrayAdapter<String> customAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_color_item, colorArray) {
                 @Override
                 public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                     View v = convertView;
@@ -423,19 +418,19 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     }
                     // The text view of the spinner list view
                     TextView tv = (TextView) v.findViewById(R.id.spinner_color_dropdown_item_title);
-                    EGCColorEnum colorEnum = mChipSet.getColorEnums()[position];
-                    tv.setText(colorEnum.toString());
-                    if (colorEnum == EGCColorEnum.BLANK) {
+                    GCColor color = GCColorUtil.getColorUsingTitle(colorArray.get(position));
+                    tv.setText(color.getTitle());
+                    if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_BLANK)) {
                         tv.setTextColor(Color.WHITE);
                     } else {
                         tv.setTextColor(Color.BLACK);
                     }
 
                     RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
-                    if (colorEnum == EGCColorEnum.NONE) {
+                    if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                         dropdownItemBackground.setBackgroundColor(Color.WHITE);
                     } else {
-                        int[] rgbValues = colorEnum.getRgbValues();
+                        int[] rgbValues = color.getRGBValues();
                         dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
                     }
                     return v;
@@ -449,19 +444,19 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillExistingData() {
         String title = mSavedSet.getTitle();
-        ArrayList<GCColor> colorList = mSavedSet.getColors();
-        EGCModeEnum mode = mSavedSet.getMode();
+        ArrayList<GCPoweredColor> colorList = mSavedSet.getColors();
+        GCMode mode = mSavedSet.getMode();
 
         mTitleEditText.setText(title);
         //mTitleTextView.setText(title);
         //showTitleEditText(false);
 
         int spinnerIndex = 0;
-        EGCColorEnum[] colors = mChipSet.getColorEnums();
-        for (GCColor color : colorList) {
+        ArrayList<String> colors = mChipSet.getColors();
+        for (GCPoweredColor color : colorList) {
             int colorIndex = 0;
-            for (EGCColorEnum colorItem : colors) {
-                if (colorItem == color.getColorEnum()) {
+            for (String colorItem : colors) {
+                if (colorItem.equalsIgnoreCase(color.getColor().getTitle())) {
                     ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
                     colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
                     colorSpinnerHolder.setPowerLevel(color.getPowerLevel().getTitle());
@@ -474,10 +469,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             spinnerIndex++;
         }
 
-        EGCModeEnum[] modes = mChipSet.getModeEnums();
+        ArrayList<String> modes = mChipSet.getModes();
         int modeIndex = 0;
-        for (EGCModeEnum modeItem : modes) {
-            if (mode == modeItem) {
+        for (String modeItem : modes) {
+            if (mode.getTitle().equalsIgnoreCase(modeItem)) {
                 mModeSpinner.setSelection(modeIndex);
                 break;
             } else {
@@ -490,11 +485,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mTitleEditText.setText("");
         //showTitleEditText(true);
 
-        EGCColorEnum[] colors = mChipSet.getColorEnums();
+        ArrayList<String> colors = mChipSet.getColors();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorIndex = 0;
-            for (EGCColorEnum colorItem : colors) {
-                if (colorItem == EGCColorEnum.NONE) {
+            for (String colorItem : colors) {
+                if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                     colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
                     break;
                 } else {
@@ -518,12 +513,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
             String colorString = spinnerTv.getText().toString();
-            EGCColorEnum colorEnum = EGCColorEnum.valueOf(colorString.replace(" ", "_"));
-            if (colorEnum == EGCColorEnum.NONE) {
+            GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
+            if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                 ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
                 hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
             } else {
-                int[] rgbValues = colorEnum.getRgbValues();
+                int[] rgbValues = colorEnum.getRGBValues();
                 spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
                 unhideNextColorSpinner(parent);
                 matchColorSpinnerToSwatch();
@@ -580,11 +575,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void hideColorSpinnersAfterPosition(int position) {
-        EGCColorEnum[] colors = mChipSet.getColorEnums();
+        ArrayList<String> colors = mChipSet.getColors();
         for (int i = position + 1; i < mColorSpinnerHolders.size(); i++) {
             int colorIndex = 0;
-            for (EGCColorEnum colorItem : colors) {
-                if (colorItem == EGCColorEnum.NONE) {
+            for (String colorItem : colors) {
+                if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                     mColorSpinnerHolders.get(i).getColorSpinner().setSelection(colorIndex);
                     break;
                 } else {
@@ -614,14 +609,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mColorSpinnerHolders.get(selectedSpinner).getColorSwatch().setVisibility(View.VISIBLE);
     }
 
-    private ArrayList<GCColor> getNewColorList() {
-        EGCColorEnum[] colors = mChipSet.getColorEnums();
-        ArrayList<GCColor> newColorList = new ArrayList<>();
+    private ArrayList<GCPoweredColor> getNewColorList() {
+        ArrayList<String> colors = mChipSet.getColors();
+        ArrayList<GCPoweredColor> newColorList = new ArrayList<>();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             int colorPosition = colorSpinnerHolder.getColorSpinner().getSelectedItemPosition();
-            EGCColorEnum color = colors[colorPosition];
+            GCColor color = GCColorUtil.getColorUsingTitle(colors.get(colorPosition));
             GCPowerLevel power = colorSpinnerHolder.getPowerLevel();
-            GCColor newColor = new GCColor(color, power.getTitle());
+            GCPoweredColor newColor = new GCPoweredColor(color, power.getTitle());
             newColorList.add(newColor);
 
         }
@@ -635,11 +630,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return;
         }
 
-        ArrayList<GCColor> newColorList = getNewColorList();
+        ArrayList<GCPoweredColor> newColorList = getNewColorList();
 
-        EGCModeEnum[] modes = mChipSet.getModeEnums();
+        ArrayList<String> modes = mChipSet.getModes();
         int modePosition = mModeSpinner.getSelectedItemPosition();
-        EGCModeEnum newMode = modes[modePosition];
+        GCMode newMode = GCModeUtil.getModeUsingTitle(modes.get(modePosition));
 
         mNewSet = new GCSavedSet();
         mNewSet.setTitle(newTitle);
@@ -678,7 +673,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private boolean validateTitleAgainstDatabase(String title) {
-        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.readData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
         for (GCSavedSet savedSet : savedSetList) {
             if (savedSet.getTitle().equals(title)) {
                 return true;
@@ -714,22 +709,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                         wasChangeDialogCanceled = true;
                         if (mSavedSet == null) {
                             mChipSetSpinner.setSelection(0, false);
-                            mChipSet = (EGCChipSet) mChipSetSpinner.getSelectedItem();
+                            mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
                             retrievePresetColorEnums();
                             fillDefaultData();
                         } else {
-                            EGCChipSet chipSet = mSavedSet.getChipSet();
-                            EGCChipSet[] chipSets = EGCChipSet.values();
-                            int chipsetIndex = 0;
-                            for (EGCChipSet chipSetItem : chipSets) {
-                                if (chipSet == chipSetItem) {
-                                    mChipSetSpinner.setSelection(chipsetIndex, false);
-                                    retrievePresetColorEnums();
-                                    break;
-                                } else {
-                                    chipsetIndex++;
-                                }
-                            }
+                            GCChip chipSet = mSavedSet.getChipSet();
+                            int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
+                            mChipSetSpinner.setSelection(chipsetIndex, false);
+                            retrievePresetColorEnums();
                             fillExistingData();
                         }
                     }
@@ -790,17 +777,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         wasChangeDialogCanceled = true;
                         if (mSavedSet != null) {
-                            EGCChipSet chipSet = mSavedSet.getChipSet();
-                            EGCChipSet[] chipSets = EGCChipSet.values();
-                            int chipsetIndex = 0;
-                            for (EGCChipSet chipSetItem : chipSets) {
-                                if (chipSet == chipSetItem) {
-                                    mChipSetSpinner.setSelection(chipsetIndex, false);
-                                    break;
-                                } else {
-                                    chipsetIndex++;
-                                }
-                            }
+                            GCChip chipSet = mSavedSet.getChipSet();
+                            int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
+                            mChipSetSpinner.setSelection(chipsetIndex, false);
                         } else {
                             mChipSetSpinner.setSelection(0, false);
                         }
@@ -840,20 +819,20 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            EGCColorEnum colorEnum = (EGCColorEnum) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+            String colorEnum = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
             if (mSavedSet.getColors().size() > index) {
-                if (colorEnum != mSavedSet.getColors().get(index).getColorEnum()
+                if (!colorEnum.equalsIgnoreCase(mSavedSet.getColors().get(index).getColor().getTitle())
                         || !colorSpinnerHolder.getPowerLevel().getTitle().equalsIgnoreCase(mSavedSet.getColors().get(index).getPowerLevel().getTitle())) {
                     return true;
                 }
-            } else if (colorEnum != EGCColorEnum.NONE) {
+            } else if (!colorEnum.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                 return true;
             }
             index++;
         }
 
-        EGCModeEnum modeEnum = (EGCModeEnum) mModeSpinner.getSelectedItem();
-        if (modeEnum != mSavedSet.getMode()) {
+        String modeEnum = (String) mModeSpinner.getSelectedItem();
+        if (!modeEnum.equalsIgnoreCase(mSavedSet.getMode().getTitle())) {
             return true;
         }
 

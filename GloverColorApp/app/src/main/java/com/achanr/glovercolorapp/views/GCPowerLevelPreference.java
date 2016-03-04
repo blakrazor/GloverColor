@@ -12,8 +12,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
-import com.achanr.glovercolorapp.utility.EGCColorEnum;
+import com.achanr.glovercolorapp.utility.GCColorUtil;
 import com.achanr.glovercolorapp.utility.GCConstants;
 import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
 
@@ -41,7 +42,7 @@ public class GCPowerLevelPreference extends DialogPreference {
     private TextView mTextViewMedium;
     private TextView mTextViewLow;
 
-    private final EGCColorEnum PREFERENCE_COLOR = EGCColorEnum.RED;
+    private final GCColor PREFERENCE_COLOR = GCColorUtil.getColorUsingTitle("RED");
 
     private enum PowerEnum {HIGH, MEDIUM, LOW}
 
@@ -210,7 +211,7 @@ public class GCPowerLevelPreference extends DialogPreference {
     }
 
     private void convertSwatchToProgress(RelativeLayout colorSwatch, float powerValue) {
-        int[] originalRgb = PREFERENCE_COLOR.getRgbValues();
+        int[] originalRgb = PREFERENCE_COLOR.getRGBValues();
         int[] newRgbValues = new int[3];
 
         float[] hsv = new float[3];

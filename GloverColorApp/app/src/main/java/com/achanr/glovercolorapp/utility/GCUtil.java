@@ -25,16 +25,11 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
+import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Glover Color App Project
@@ -49,35 +44,27 @@ public class GCUtil {
 
     private static Context context = GloverColorApplication.getContext();
 
-    private static final Map<String, EGCColorEnum> colorAbbrevToEnumHashMap = new HashMap<>();
-
-    static {
-        for (final EGCColorEnum s : EnumSet.allOf(EGCColorEnum.class)) {
-            colorAbbrevToEnumHashMap.put(s.getColorAbbrev(), s);
-        }
-    }
-
-    public static String convertColorListToShortenedColorString(ArrayList<GCColor> colorList) {
+    public static String convertColorListToShortenedColorString(ArrayList<GCPoweredColor> colorList) {
         String shortenedColorString = "";
-        for (GCColor color : colorList) {
-            if (color.getColorEnum() != EGCColorEnum.NONE) {
-                shortenedColorString += (color.getColorEnum().getColorAbbrev() + color.getPowerLevel().getAbbreviation());
+        for (GCPoweredColor color : colorList) {
+            if (!color.getColor().getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                shortenedColorString += (color.getColor().getAbbreviation() + color.getPowerLevel().getAbbreviation());
             }
         }
         return shortenedColorString;
     }
 
-    public static ArrayList<GCColor> convertShortenedColorStringToColorList(String shortenedColorString) {
-        ArrayList<GCColor> colorList = new ArrayList<>();
+    public static ArrayList<GCPoweredColor> convertShortenedColorStringToColorList(String shortenedColorString) {
+        ArrayList<GCPoweredColor> colorList = new ArrayList<>();
 
         List<String> stringParts = getParts(shortenedColorString, 3);
 
         for (String colorAbbrev : stringParts) {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
-            EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
+            GCColor color = GCColorUtil.getColorUsingAbbrev(colorString);
             GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
-            colorList.add(new GCColor(colorEnum, powerLevel.getTitle()));
+            colorList.add(new GCPoweredColor(color, powerLevel.getTitle()));
         }
 
         return colorList;
@@ -92,7 +79,7 @@ public class GCUtil {
         return parts;
     }
 
-    public static String randomTitle(ArrayList<GCSavedSet> savedSetList) {
+    /*public static String randomTitle(ArrayList<GCSavedSet> savedSetList) {
         String newTitle = randomString();
         for (GCSavedSet savedSet : savedSetList) {
             if (savedSet.getTitle().equals(newTitle)) {
@@ -122,7 +109,7 @@ public class GCUtil {
     public static EGCModeEnum randomMode() {
         List<EGCModeEnum> modeValues = Collections.unmodifiableList(Arrays.asList(EGCModeEnum.values()));
         return modeValues.get((new Random()).nextInt(modeValues.size()));
-    }
+    }*/
 
     public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -132,9 +119,9 @@ public class GCUtil {
         for (String colorAbbrev : stringParts) {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
-            EGCColorEnum colorEnum = colorAbbrevToEnumHashMap.get(colorString);
+            GCColor color = GCColorUtil.getColorUsingAbbrev(colorString);
             GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
-            int[] rgbValues = convertRgbToPowerLevel(colorEnum.getRgbValues(), powerLevel);
+            int[] rgbValues = convertRgbToPowerLevel(color.getRGBValues(), powerLevel);
 
             if (colorString.equalsIgnoreCase("--")) {
                 SpannableString spannableString = new SpannableString(colorString);
@@ -225,16 +212,16 @@ public class GCUtil {
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Gte chipset
-        shareString += savedSet.getChipSet();
+        shareString += savedSet.getChipSet().getTitle();
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get colors
-        ArrayList<GCColor> newColorList = savedSet.getColors();
+        ArrayList<GCPoweredColor> newColorList = savedSet.getColors();
         shareString += convertColorListToShortenedColorString(newColorList);
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get mode
-        shareString += savedSet.getMode();
+        shareString += savedSet.getMode().getTitle();
 
         return shareString;
     }

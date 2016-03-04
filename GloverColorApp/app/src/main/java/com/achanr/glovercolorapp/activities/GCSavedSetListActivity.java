@@ -52,6 +52,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private FloatingActionButton mFab;
     private boolean isFromEditing = false;
     private boolean isLeaving = false;
+    private boolean isFromEnterCode = false;
 
     public static final String FROM_NAVIGATION = "from_navigation";
     public static final String NEW_SET_KEY = "new_set_key";
@@ -143,6 +144,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             String fromNavigation = intent.getStringExtra(FROM_NAVIGATION);
             if (fromNavigation != null) {
                 if (fromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
+                    isFromEnterCode = true;
                     GCSavedSet newSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
                     Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
                     newIntent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
@@ -179,8 +181,11 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                         animateFab(true, null);
                     }
                 });
-            } else if (mFab.getVisibility() != View.VISIBLE) {
+            } else if (mFab.getVisibility() != View.VISIBLE
+                    && !isFromEnterCode) {
                 animateFab(true, null);
+            } else {
+                isFromEnterCode = false;
             }
         } else {
             mFab.setVisibility(View.VISIBLE);
@@ -189,7 +194,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
-        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.readData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }

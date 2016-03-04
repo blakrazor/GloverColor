@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "SavedSet.db";
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INT";
@@ -23,6 +23,9 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     public static GCSavedSetDatabase SAVED_SET_DATABASE;
     public static GCPowerLevelDatabase POWER_LEVEL_DATABASE;
+    public static GCColorDatabase COLOR_DATABASE;
+    public static GCChipDatabase CHIP_DATABASE;
+    public static GCModeDatabase MODE_DATABASE;
 
     public GCDatabaseHelper(Context context, String name,
                             SQLiteDatabase.CursorFactory factory, int version, GCDatabaseAdapter dbAdapter) {
@@ -35,6 +38,9 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
     private void initializeTable(GCDatabaseAdapter db_adapter) {
         SAVED_SET_DATABASE = new GCSavedSetDatabase(mContext, db_adapter);
         POWER_LEVEL_DATABASE = new GCPowerLevelDatabase(mContext, db_adapter);
+        COLOR_DATABASE = new GCColorDatabase(mContext, db_adapter);
+        CHIP_DATABASE = new GCChipDatabase(mContext, db_adapter);
+        MODE_DATABASE = new GCModeDatabase(mContext, db_adapter);
     }
 
     @Override
@@ -42,6 +48,9 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
         //db.execSQL(SQL_CREATE_ENTRIES);
         SAVED_SET_DATABASE.createTable(db);
         POWER_LEVEL_DATABASE.createTable(db);
+        COLOR_DATABASE.createTable(db);
+        CHIP_DATABASE.createTable(db);
+        MODE_DATABASE.createTable(db);
     }
 
     @Override
@@ -56,6 +65,11 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
                     break;
                 case 3: //upgrade from 2 to 3
                     POWER_LEVEL_DATABASE.createTable(db);
+                    break;
+                case 4: //upgrade from 3 to 4
+                    COLOR_DATABASE.createTable(db);
+                    CHIP_DATABASE.createTable(db);
+                    MODE_DATABASE.createTable(db);
                     break;
                 default: //if case not shown, no changes made
                     break;

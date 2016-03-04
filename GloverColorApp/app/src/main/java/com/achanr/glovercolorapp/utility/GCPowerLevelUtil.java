@@ -18,7 +18,7 @@ public class GCPowerLevelUtil {
     private static ArrayList<GCPowerLevel> mPowerLevelArrayList;
 
     public static void initPowerLevelArrayList() {
-        mPowerLevelArrayList = GCDatabaseHelper.POWER_LEVEL_DATABASE.readData();
+        mPowerLevelArrayList = GCDatabaseHelper.POWER_LEVEL_DATABASE.getAllData();
         if (mPowerLevelArrayList == null || mPowerLevelArrayList.isEmpty()) {
             createDefaultPowerLevels();
         }

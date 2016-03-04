@@ -63,7 +63,7 @@ public class GCPowerLevelDatabase extends GCAbstractDatabase {
         db_adapter.clearTable(TABLE_NAME);
     }
 
-    public ArrayList<GCPowerLevel> readData() {
+    public ArrayList<GCPowerLevel> getAllData() {
         ArrayList<GCPowerLevel> powerLevelArrayList = new ArrayList<>();
 
         // Define a projection that specifies which columns from the database

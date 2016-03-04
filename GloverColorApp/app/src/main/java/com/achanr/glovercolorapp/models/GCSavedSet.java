@@ -1,7 +1,5 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.EGCChipSet;
-import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.io.Serializable;
@@ -15,9 +13,9 @@ import java.util.ArrayList;
 public class GCSavedSet implements Serializable {
 
     private String mTitle;
-    private ArrayList<GCColor> mColors;
-    private EGCModeEnum mMode;
-    private EGCChipSet mChipSet;
+    private ArrayList<GCPoweredColor> mColors;
+    private GCMode mMode;
+    private GCChip mChipSet;
 
     public String getTitle() {
         return mTitle = mTitle.replace("_", " ");
@@ -27,27 +25,27 @@ public class GCSavedSet implements Serializable {
         mTitle = title.replace(" ", "_");
     }
 
-    public ArrayList<GCColor> getColors() {
+    public ArrayList<GCPoweredColor> getColors() {
         return mColors;
     }
 
-    public void setColors(ArrayList<GCColor> colors) {
+    public void setColors(ArrayList<GCPoweredColor> colors) {
         mColors = colors;
     }
 
-    public EGCModeEnum getMode() {
+    public GCMode getMode() {
         return mMode;
     }
 
-    public void setMode(EGCModeEnum mode) {
+    public void setMode(GCMode mode) {
         mMode = mode;
     }
 
-    public EGCChipSet getChipSet() {
+    public GCChip getChipSet() {
         return mChipSet;
     }
 
-    public void setChipSet(EGCChipSet chipSet) {
+    public void setChipSet(GCChip chipSet) {
         mChipSet = chipSet;
     }
 

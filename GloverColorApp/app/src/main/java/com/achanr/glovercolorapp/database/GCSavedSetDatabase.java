@@ -8,8 +8,8 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.EGCChipSet;
-import com.achanr.glovercolorapp.utility.EGCModeEnum;
+import com.achanr.glovercolorapp.utility.GCChipUtil;
+import com.achanr.glovercolorapp.utility.GCModeUtil;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.SAVED_SET_TITLE, savedSet.getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
-        values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().toString());
-        values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().toString());
+        values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
 
         return db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -69,7 +69,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         db_adapter.clearTable(TABLE_NAME);
     }
 
-    public ArrayList<GCSavedSet> readData() {
+    public ArrayList<GCSavedSet> getAllData() {
         ArrayList<GCSavedSet> savedSetList = new ArrayList<>();
 
         // Define a projection that specifies which columns from the database
@@ -110,11 +110,11 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
 
                         savedSet.setTitle(title);
                         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-                        savedSet.setMode(EGCModeEnum.valueOf(modeString.toUpperCase()));
+                        savedSet.setMode(GCModeUtil.getModeUsingTitle(modeString.toUpperCase()));
                         if (chipString != null) {
-                            savedSet.setChipSet(EGCChipSet.valueOf(chipString.toUpperCase()));
+                            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
                         } else {
-                            savedSet.setChipSet(EGCChipSet.NONE);
+                            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
                         }
 
                         savedSetList.add(savedSet);
@@ -149,8 +149,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.SAVED_SET_TITLE, newSavedSet.getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(newSavedSet.getColors()));
-        values.put(GCSavedSetEntry.SAVED_SET_MODE, newSavedSet.getMode().toString());
-        values.put(GCSavedSetEntry.SAVED_SET_CHIP, newSavedSet.getChipSet().toString());
+        values.put(GCSavedSetEntry.SAVED_SET_MODE, newSavedSet.getMode().getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_CHIP, newSavedSet.getChipSet().getTitle());
 
         // Which row to update, based on the ID
         String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";

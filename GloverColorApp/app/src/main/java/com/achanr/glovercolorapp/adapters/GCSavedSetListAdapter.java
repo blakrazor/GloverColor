@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.models.GCChip;
+import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.EGCChipSet;
-import com.achanr.glovercolorapp.utility.EGCModeEnum;
 import com.achanr.glovercolorapp.utility.GCUtil;
 import com.achanr.glovercolorapp.views.GCSavedSetListItemViewHolder;
 
@@ -66,16 +66,16 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         // - replace the contents of the view with that element
         String title = mSavedSetList.get(position).getTitle();
         String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mSavedSetList.get(position).getColors());
-        EGCModeEnum mode = mSavedSetList.get(position).getMode();
-        EGCChipSet chipSet = mSavedSetList.get(position).getChipSet();
+        GCMode mode = mSavedSetList.get(position).getMode();
+        GCChip chipSet = mSavedSetList.get(position).getChipSet();
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(shortenedColorString);
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText(GCUtil.convertToCamelcase(mode.toString()));
-        if (chipSet == EGCChipSet.NONE) {
+        holder.txtMode.setText(GCUtil.convertToCamelcase(mode.getTitle().toString()));
+        if (chipSet.getTitle().equalsIgnoreCase("NONE")) {
             holder.txtChipset.setText("No preset");
         } else {
-            holder.txtChipset.setText(GCUtil.convertToCamelcase(chipSet.toString()).replace("_", " "));
+            holder.txtChipset.setText(GCUtil.convertToCamelcase(chipSet.getTitle().toString()));
         }
         holder.mSavedSet = mSavedSetList.get(position);
     }

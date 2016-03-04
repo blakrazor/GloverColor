@@ -1,39 +1,16 @@
-package com.achanr.glovercolorapp.utility;
+/*package com.achanr.glovercolorapp.utility;
 
-/**
+import java.util.ArrayList;
+
+*//**
  * Glover Color App Project
  *
  * @author Andrew Chanrasmi
  * @created 2/15/16 1:33 PM
- */
+ *//*
 public enum EGCChipSet {
     NONE(null, null),
-    CHROMA_24(
-            new EGCColorEnum[]{
-                    EGCColorEnum.NONE,
-                    EGCColorEnum.WHITE,
-                    EGCColorEnum.BLANK,
-                    EGCColorEnum.RED,
-                    EGCColorEnum.ORANGE,
-                    EGCColorEnum.BANANA_YELLOW,
-                    EGCColorEnum.YELLOW,
-                    EGCColorEnum.LIME_GREEN,
-                    EGCColorEnum.GREEN,
-                    EGCColorEnum.MINT,
-                    EGCColorEnum.TURQUOISE,
-                    EGCColorEnum.LIGHT_BLUE,
-                    EGCColorEnum.SKY_BLUE,
-                    EGCColorEnum.BLUE,
-                    EGCColorEnum.PURPLE,
-                    EGCColorEnum.LAVENDAR,
-                    EGCColorEnum.BLUSH,
-                    EGCColorEnum.LIGHT_PINK,
-                    EGCColorEnum.HOT_PINK,
-                    EGCColorEnum.PEACH,
-                    EGCColorEnum.WARM_WHITE,
-                    EGCColorEnum.SILVER,
-                    EGCColorEnum.LUNA,
-            },
+    CHROMA_24(,
             new EGCModeEnum[]{
                     EGCModeEnum.STROBE,
                     EGCModeEnum.HYPERSTROBE,
@@ -45,19 +22,19 @@ public enum EGCChipSet {
 
     ;
 
-    private EGCColorEnum[] mColorEnums;
+    private ArrayList<String> mColorStrings;
     private EGCModeEnum[] mModeEnums;
 
-    EGCChipSet(EGCColorEnum[] colorEnums, EGCModeEnum[] modeEnums) {
-        mColorEnums = colorEnums;
+    EGCChipSet(ArrayList<String> colorStrings, EGCModeEnum[] modeEnums) {
+        mColorStrings = colorStrings;
         mModeEnums = modeEnums;
     }
 
-    public EGCColorEnum[] getColorEnums() {
-        return mColorEnums != null ? mColorEnums : EGCColorEnum.values();
+    public ArrayList<String> getColorStrings() {
+        return mColorStrings != null ? mColorStrings : EGCColorEnum.values();
     }
 
     public EGCModeEnum[] getModeEnums() {
         return mModeEnums != null ? mModeEnums : EGCModeEnum.values();
     }
-}
+}*/

@@ -15,10 +15,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.models.GCColor;
+import com.achanr.glovercolorapp.models.GCChip;
+import com.achanr.glovercolorapp.models.GCMode;
+import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.EGCChipSet;
-import com.achanr.glovercolorapp.utility.EGCModeEnum;
+import com.achanr.glovercolorapp.utility.GCChipUtil;
+import com.achanr.glovercolorapp.utility.GCModeUtil;
 import com.achanr.glovercolorapp.utility.GCUtil;
 
 import java.util.ArrayList;
@@ -96,6 +98,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         String setString = mEnterCodeEditText.getEditText().getText().toString().trim();
         GCSavedSet newSet = convertStringToSavedSet(setString);
         if (newSet != null) {
+            mEnterCodeEditText.getEditText().setText("");
             Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
             intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEnterCodeActivity.class.getName());
             intent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, newSet);
@@ -123,9 +126,9 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         String shortenedColorString = splitString[2];
         String mode = splitString[3];
 
-        ArrayList<GCColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
-        EGCChipSet chipSet = EGCChipSet.valueOf(chipsetString);
-        EGCModeEnum newMode = EGCModeEnum.valueOf(mode);
+        ArrayList<GCPoweredColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
+        GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString);
+        GCMode newMode = GCModeUtil.getModeUsingTitle(mode);
 
         newSet.setTitle(title);
         newSet.setColors(newColorList);

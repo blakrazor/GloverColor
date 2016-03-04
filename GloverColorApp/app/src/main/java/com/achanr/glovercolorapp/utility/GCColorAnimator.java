@@ -1,3 +1,4 @@
+/*
 package com.achanr.glovercolorapp.utility;
 
 import android.os.AsyncTask;
@@ -6,11 +7,13 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+*/
 /**
  * Copyright (c) 2015 Miami HEAT. All rights reserved
  *
  * @author SapientNitro
- */
+ *//*
+
 public class GCColorAnimator {
 
     private View mView;
@@ -63,3 +66,4 @@ public class GCColorAnimator {
     }
 
 }
+*/

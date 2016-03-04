@@ -6,4 +6,42 @@
         <item>Purple Theme</item>
         <item>Green Theme</item>
     </string-array>
+
+    <string-array name="default_colors">
+        <item>NONE</item>
+        <item>WHITE</item>
+        <item>BLANK</item>
+        <item>RED</item>
+        <item>ORANGE</item>
+        <item>BANANA YELLOW</item>
+        <item>YELLOW</item>
+        <item>LIME GREEN</item>
+        <item>GREEN</item>
+        <item>MINT</item>
+        <item>TURQUOISE</item>
+        <item>LIGHT BLUE</item>
+        <item>SKY BLUE</item>
+        <item>BLUE</item>
+        <item>PURPLE</item>
+        <item>LAVENDAR</item>
+        <item>BLUSH</item>
+        <item>LIGHT PINK</item>
+        <item>HOT PINK</item>
+        <item>PEACH</item>
+        <item>WARM WHITE</item>
+        <item>SILVER</item>
+        <item>LUNA</item>
+    </string-array>
+
+    <string-array name="default_modes">
+        <item>STROBE</item>
+        <item>HYPERSTROBE</item>
+        <item>SOLID</item>
+        <item>RIBBON</item>
+        <item>TRACER</item>
+        <item>CHROMA</item>
+        <item>DOPS</item>
+        <item>STROBIE</item>
+        <item>BLINK</item>
+    </string-array>
 </resources>

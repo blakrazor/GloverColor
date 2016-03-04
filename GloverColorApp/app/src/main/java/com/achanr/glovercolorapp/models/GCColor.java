@@ -1,37 +1,44 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.EGCColorEnum;
-import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
-
 import java.io.Serializable;
 
 /**
  * @author Andrew Chanrasmi
- * @created 1/20/16 3:46 PM
+ * @created 3/3/16 2:08 PM
  */
 public class GCColor implements Serializable {
 
-    private EGCColorEnum mColorEnum;
-    private String mPowerLevel;
+    private String mTitle;
+    private String mAbbreviation;
+    private int[] mRGBValues;
 
-    public GCColor(EGCColorEnum colorEnum, String powerLevel) {
-        mColorEnum = colorEnum;
-        mPowerLevel = powerLevel;
+    public GCColor(String title, String abbreviation, int[] RGBValues){
+        mTitle = title;
+        mAbbreviation = abbreviation;
+        mRGBValues = RGBValues;
     }
 
-    public EGCColorEnum getColorEnum() {
-        return mColorEnum;
+    public String getTitle() {
+        return mTitle;
     }
 
-    public void setColorEnum(EGCColorEnum colorEnum) {
-        mColorEnum = colorEnum;
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
-    public GCPowerLevel getPowerLevel() {
-        return GCPowerLevelUtil.getPowerLevelUsingTitle(mPowerLevel);
+    public String getAbbreviation() {
+        return mAbbreviation;
     }
 
-    public void setPowerLevel(String powerLevel) {
-        mPowerLevel = powerLevel;
+    public void setAbbreviation(String abbreviation) {
+        mAbbreviation = abbreviation;
+    }
+
+    public int[] getRGBValues() {
+        return mRGBValues;
+    }
+
+    public void setRGBValues(int[] RGBValues) {
+        mRGBValues = RGBValues;
     }
 }

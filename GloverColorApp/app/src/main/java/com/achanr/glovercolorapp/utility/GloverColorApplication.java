@@ -20,7 +20,10 @@ public class GloverColorApplication extends Application {
         super.onCreate();
         mContext = this;
         GCDatabaseAdapter.getInstance(getApplicationContext());
+        GCColorUtil.initColorArrayList();
         GCPowerLevelUtil.initPowerLevelArrayList();
+        GCChipUtil.initChipArrayList();
+        GCModeUtil.initModeArrayList();
     }
 
     public static Context getContext(){
