@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.adapters;
+package com.achanr.glovercolorapp.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +12,8 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCUtil;
-import com.achanr.glovercolorapp.views.GCSavedSetListItemViewHolder;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.ui.views.GCSavedSetListItemViewHolder;
 
 import java.util.ArrayList;
 

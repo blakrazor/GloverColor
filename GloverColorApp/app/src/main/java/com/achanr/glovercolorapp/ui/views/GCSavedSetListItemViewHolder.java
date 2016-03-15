@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.views;
+package com.achanr.glovercolorapp.ui.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.activities.GCSavedSetListActivity;
+import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.HashMap;
 

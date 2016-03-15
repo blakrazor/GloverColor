@@ -1,6 +1,7 @@
-package com.achanr.glovercolorapp.utility;
+package com.achanr.glovercolorapp.common;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCMode;
 

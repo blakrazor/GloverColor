@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.activities;
+package com.achanr.glovercolorapp.ui.activities;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -21,7 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 
 /**
  * Glover Color App Project

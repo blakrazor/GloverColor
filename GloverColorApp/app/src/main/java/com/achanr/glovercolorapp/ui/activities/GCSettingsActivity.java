@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.activities;
+package com.achanr.glovercolorapp.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,11 +14,11 @@ import android.view.View;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
-import com.achanr.glovercolorapp.utility.EGCThemeEnum;
-import com.achanr.glovercolorapp.utility.GCConstants;
-import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
-import com.achanr.glovercolorapp.utility.GCUtil;
-import com.achanr.glovercolorapp.views.GCPowerLevelPreference;
+import com.achanr.glovercolorapp.common.EGCThemeEnum;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.ui.views.GCPowerLevelPreference;
 
 import java.util.ArrayList;
 

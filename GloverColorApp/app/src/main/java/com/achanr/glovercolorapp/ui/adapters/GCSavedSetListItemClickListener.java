@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.adapters;
+package com.achanr.glovercolorapp.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

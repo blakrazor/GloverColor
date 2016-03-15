@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.activities;
+package com.achanr.glovercolorapp.ui.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,12 +48,12 @@ import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCChipUtil;
-import com.achanr.glovercolorapp.utility.GCColorUtil;
-import com.achanr.glovercolorapp.utility.GCConstants;
-import com.achanr.glovercolorapp.utility.GCModeUtil;
-import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
-import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCColorUtil;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.ArrayList;
 

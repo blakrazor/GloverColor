@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.activities;
+package com.achanr.glovercolorapp.ui.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +19,9 @@ import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCChipUtil;
-import com.achanr.glovercolorapp.utility.GCModeUtil;
-import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.ArrayList;
 

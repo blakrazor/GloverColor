@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.activities;
+package com.achanr.glovercolorapp.ui.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -25,12 +25,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.adapters.GCSavedSetListAdapter;
+import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCConstants;
-import com.achanr.glovercolorapp.utility.GCUtil;
-import com.achanr.glovercolorapp.views.GridRecyclerView;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;

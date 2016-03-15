@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/background"
     android:fitsSystemWindows="true"
-    tools:context=".activities.GCSettingsActivity">
+    tools:context=".ui.activities.GCSettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

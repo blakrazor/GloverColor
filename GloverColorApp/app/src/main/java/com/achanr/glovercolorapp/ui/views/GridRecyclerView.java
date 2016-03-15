@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.views;
+package com.achanr.glovercolorapp.ui.views;
 /*
  * Copyright (C) 2014 Freddie (Musenkishi) Lust-Hed
  *

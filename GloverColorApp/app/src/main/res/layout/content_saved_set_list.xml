@@ -18,7 +18,7 @@
             android:padding="50dp"
             android:src="@drawable/glover_color_logo"/>
 
-        <com.achanr.glovercolorapp.views.GridRecyclerView
+        <com.achanr.glovercolorapp.ui.views.GridRecyclerView
             android:id="@+id/saved_set_list_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

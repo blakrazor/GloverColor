@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.utility;
+package com.achanr.glovercolorapp.common;
 
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCColor;

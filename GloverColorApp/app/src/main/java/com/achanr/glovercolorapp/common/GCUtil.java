@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.utility;
+package com.achanr.glovercolorapp.common;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;

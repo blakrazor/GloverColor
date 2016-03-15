@@ -8,9 +8,9 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.utility.GCChipUtil;
-import com.achanr.glovercolorapp.utility.GCModeUtil;
-import com.achanr.glovercolorapp.utility.GCUtil;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.ArrayList;
 

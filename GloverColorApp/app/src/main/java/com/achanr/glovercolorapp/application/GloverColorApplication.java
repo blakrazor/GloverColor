@@ -1,9 +1,13 @@
-package com.achanr.glovercolorapp.utility;
+package com.achanr.glovercolorapp.application;
 
 import android.app.Application;
 import android.content.Context;
 
 import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCColorUtil;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
 
 /**
  * Glover Color App Project

@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.models;
 
-import com.achanr.glovercolorapp.utility.GCConstants;
+import com.achanr.glovercolorapp.common.GCConstants;
 
 import java.io.Serializable;
 

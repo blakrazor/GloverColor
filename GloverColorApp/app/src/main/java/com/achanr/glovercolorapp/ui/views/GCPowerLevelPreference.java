@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.views;
+package com.achanr.glovercolorapp.ui.views;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
-import com.achanr.glovercolorapp.utility.GCColorUtil;
-import com.achanr.glovercolorapp.utility.GCConstants;
-import com.achanr.glovercolorapp.utility.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.common.GCColorUtil;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
 
 /**
  * Glover Color App Project

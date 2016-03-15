@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.utility;
+package com.achanr.glovercolorapp.common;
 
 import android.util.Log;
 

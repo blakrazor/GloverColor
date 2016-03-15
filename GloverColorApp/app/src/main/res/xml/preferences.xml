@@ -12,7 +12,7 @@
             android:key="@string/theme_preference"
             android:title="Theme"/>
 
-        <com.achanr.glovercolorapp.views.GCPowerLevelPreference
+        <com.achanr.glovercolorapp.ui.views.GCPowerLevelPreference
             android:dialogTitle="Configure Power Levels"
             android:key="@string/power_level_preference"
             android:title="Power Levels"/>
