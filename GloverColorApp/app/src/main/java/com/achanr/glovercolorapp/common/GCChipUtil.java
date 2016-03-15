@@ -1,5 +1,7 @@
 package com.achanr.glovercolorapp.common;
 
+import android.content.Context;
+
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 public class GCChipUtil {
 
     private static ArrayList<GCChip> mChipArrayList;
+    private static Context mContext = GloverColorApplication.getContext();
 
     public static void initChipArrayList() {
         mChipArrayList = GCDatabaseHelper.CHIP_DATABASE.getAllData();
@@ -26,19 +29,41 @@ public class GCChipUtil {
     private static void createDefaultChips() {
         mChipArrayList = new ArrayList<>();
 
-        String[] defaultColorStringArray = GloverColorApplication.getContext().getResources().getStringArray(R.array.default_colors);
-        String[] defaultModeStringArray = GloverColorApplication.getContext().getResources().getStringArray(R.array.default_modes);
-        GCChip noneChip = new GCChip("NONE",
-                new ArrayList(Arrays.asList(defaultColorStringArray)),
-                new ArrayList(Arrays.asList(defaultModeStringArray)));
-        mChipArrayList.add(noneChip);
-
-        //String[] defaultColorStringArray = GloverColorApplication.getContext().getResources().getStringArray(R.array.default_colors);
-        //String[] defaultModeStringArray = GloverColorApplication.getContext().getResources().getStringArray(R.array.default_modes);
-        GCChip chroma24Chip = new GCChip("CHROMA 24",
-                new ArrayList(Arrays.asList(defaultColorStringArray)),
-                new ArrayList(Arrays.asList(defaultModeStringArray)));
-        mChipArrayList.add(chroma24Chip);
+        String[] allChipsStringArray = mContext.getResources().getStringArray(R.array.all_chips);
+        for (String chipItem : allChipsStringArray) {
+            String[] colorStringArray = new String[]{};
+            String[] modeStringArray = new String[]{};
+            if (chipItem.equalsIgnoreCase(mContext.getString(R.string.NO_CHIP))) {
+                //Default colors and modes (all colors and modes)
+                colorStringArray = mContext.getResources().getStringArray(R.array.default_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.default_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.CHROMA_24))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.chroma24_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.chroma24_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ENOVA))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.enova_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.enova_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.EZLITE_2))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.ezlite_2_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.ezlite_2_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.FLOW))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.flow_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.flow_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.CHROMA_CTRL))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.chroma_ctrl_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.chroma_ctrl_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ELEMENT_V2))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.element_v2_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.element_v2_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.MATRIX))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.matrix_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.matrix_modes);
+            }
+            GCChip chip = new GCChip(chipItem,
+                    new ArrayList(Arrays.asList(colorStringArray)),
+                    new ArrayList(Arrays.asList(modeStringArray)));
+            mChipArrayList.add(chip);
+        }
 
         //Clear database and save default values
         GCDatabaseHelper.CHIP_DATABASE.clearTable();

@@ -7,41 +7,370 @@
         <item>Green Theme</item>
     </string-array>
 
-    <string-array name="default_colors">
-        <item>NONE</item>
-        <item>WHITE</item>
-        <item>BLANK</item>
-        <item>RED</item>
-        <item>ORANGE</item>
-        <item>BANANA YELLOW</item>
-        <item>YELLOW</item>
-        <item>LIME GREEN</item>
-        <item>GREEN</item>
-        <item>MINT</item>
-        <item>TURQUOISE</item>
-        <item>LIGHT BLUE</item>
-        <item>SKY BLUE</item>
-        <item>BLUE</item>
-        <item>PURPLE</item>
-        <item>LAVENDAR</item>
-        <item>BLUSH</item>
-        <item>LIGHT PINK</item>
-        <item>HOT PINK</item>
-        <item>PEACH</item>
-        <item>WARM WHITE</item>
-        <item>SILVER</item>
-        <item>LUNA</item>
+    <string-array name="all_chips">
+        <item>@string/NO_CHIP</item>
+        <item>@string/CHROMA_24</item>
+        <item>@string/CHROMA_CTRL</item>
+        <item>@string/ELEMENT_V2</item>
+        <item>@string/ENOVA</item>
+        <item>@string/EZLITE_2</item>
+        <item>@string/FLOW</item>
+        <item>@string/MATRIX</item>
     </string-array>
 
+    <!-- ALL COLORS HERE -->
+    <string-array name="default_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/GOLDEN_HOUR</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/COSMIC_OWL</item>
+        <item>@string/LIME</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/CHAOS_EMERALD</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/CYAN</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/LENS_FLARE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/BUBBLEGUM</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/MEW</item>
+        <item>@string/PEACH</item>
+        <item>@string/SNARF</item>
+        <item>@string/OFF_WHITE</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+        <item>@string/FROST</item>
+        <item>@string/TOMBSTONE</item>
+        <item>@string/SPACE_GHOST</item>
+    </string-array>
+
+    <!-- ALL MODES HERE -->
     <string-array name="default_modes">
-        <item>STROBE</item>
-        <item>HYPERSTROBE</item>
-        <item>SOLID</item>
-        <item>RIBBON</item>
-        <item>TRACER</item>
-        <item>CHROMA</item>
-        <item>DOPS</item>
-        <item>STROBIE</item>
-        <item>BLINK</item>
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/SOLID</item>
+        <item>@string/RIBBON</item>
+        <item>@string/TRACER</item>
+        <item>@string/CHROMA</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/BLINK</item>
+        <item>@string/FLICKER</item>
+        <item>@string/SHAPE_SHIFTER</item>
+        <item>@string/VEX</item>
+        <item>@string/KRUSH</item>
+        <item>@string/BLINK_E</item>
+        <item>@string/RIBBON_FADE</item>
+        <item>@string/PULSE</item>
+        <item>@string/DASH_MORPH</item>
+        <item>@string/STROBE_FADE</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/KANDI_MODE</item>
+        <item>@string/SHADOW</item>
+        <item>@string/CENTERPOINT</item>
+        <item>@string/ULTRA_DOPS</item>
+        <item>@string/CANDY_STROBE</item>
+        <item>@string/X_CHANGE</item>
+        <item>@string/TRIBBON</item>
+        <item>@string/X_MORPH</item>
+        <item>@string/HEART_BEAT</item>
+        <item>@string/DASH_DOT</item>
+    </string-array>
+
+    <!-- CHROMA COLORS HERE -->
+    <string-array name="chroma24_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PEACH</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+    </string-array>
+
+    <!-- CHROMA MODES HERE -->
+    <string-array name="chroma24_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/CHROMA</item>
+    </string-array>
+
+    <!-- EZLITE COLORS HERE -->
+    <string-array name="ezlite_2_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+    </string-array>
+
+    <!-- EZLITE MODES HERE -->
+    <string-array name="ezlite_2_modes">
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/STROBE</item>
+        <item>@string/STROBIE</item>
+    </string-array>
+
+    <!-- ENOVA COLORS HERE -->
+    <string-array name="enova_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SILVER</item>
+        <item>@string/MINT</item>
+        <item>@string/OFF_WHITE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/BLUSH</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/TURQUOISE</item>
+    </string-array>
+
+    <!-- ENOVA MODES HERE -->
+    <string-array name="enova_modes">
+        <item>@string/SOLID</item>
+        <item>@string/DOPS</item>
+        <item>@string/BLINK</item>
+    </string-array>
+
+    <!-- FLOW COLORS HERE -->
+    <string-array name="flow_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SILVER</item>
+        <item>@string/MINT</item>
+        <item>@string/OFF_WHITE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/BLUSH</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/TURQUOISE</item>
+    </string-array>
+
+    <!-- FLOW MODES HERE -->
+    <string-array name="flow_modes">
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/RIBBON_FADE</item>
+        <item>@string/PULSE</item>
+        <item>@string/RIBBON</item>
+        <item>@string/DASH_MORPH</item>
+        <item>@string/STROBE_FADE</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/KANDI_MODE</item>
+    </string-array>
+
+    <!-- CHROMA CTRL COLORS HERE -->
+    <string-array name="chroma_ctrl_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/GOLDEN_HOUR</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/CHAOS_EMERALD</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/PINK</item>
+        <item>@string/BUBBLEGUM</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/MEW</item>
+        <item>@string/PEACH</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+        <item>@string/FROST</item>
+        <item>@string/SPACE_GHOST</item>
+    </string-array>
+
+    <!-- CHROMA CTRL MODES HERE -->
+    <string-array name="chroma_ctrl_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/FLICKER</item>
+        <item>@string/CHROMA</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/SHAPE_SHIFTER</item>
+        <item>@string/VEX</item>
+        <item>@string/KRUSH</item>
+        <item>@string/BLINK_E</item>
+    </string-array>
+
+    <!-- ELEMENT V2 COLORS HERE -->
+    <string-array name="element_v2_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/COSMIC_OWL</item>
+        <item>@string/LIME</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/CYAN</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/LENS_FLARE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PEACH</item>
+        <item>@string/SNARF</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+        <item>@string/TOMBSTONE</item>
+        <item>@string/SPACE_GHOST</item>
+    </string-array>
+
+    <!-- ELEMENT V2 MODES HERE -->
+    <string-array name="element_v2_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/SHADOW</item>
+        <item>@string/STROBIE</item>
+        <item>@string/FLICKER</item>
+        <item>@string/CHROMA</item>
+        <item>@string/TRACER</item>
+        <item>@string/CENTERPOINT</item>
+        <item>@string/BLINK_E</item>
+        <item>@string/ULTRA_DOPS</item>
+        <item>@string/BLINK</item>
+    </string-array>
+
+    <!-- MATRIX COLORS HERE -->
+    <string-array name="matrix_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SILVER</item>
+        <item>@string/MINT</item>
+        <item>@string/OFF_WHITE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/BLUSH</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/PEACH</item>
+        <item>@string/TURQUOISE</item>
+    </string-array>
+
+    <!-- MATRIX MODES HERE -->
+    <string-array name="matrix_modes">
+        <item>@string/STROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/PULSE</item>
+        <item>@string/RIBBON</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/CANDY_STROBE</item>
+        <item>@string/X_CHANGE</item>
+        <item>@string/TRIBBON</item>
+        <item>@string/X_MORPH</item>
+        <item>@string/HEART_BEAT</item>
+        <item>@string/DASH_DOT</item>
+        <item>@string/TRACER</item>
     </string-array>
 </resources>

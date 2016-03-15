@@ -63,5 +63,6 @@
     <string name="preset_chip_hint">Preset chip (optional)</string>
     <string name="share_code">Share Code</string>
     <string name="changing_preset_chip">Changing Preset Chip</string>
-    <string name="changing_preset_chip_desc">Changing the preset chip will clear out your current colors and mode. Do you want to continue?</string>
+    <string name="changing_preset_chip_desc">Changing the preset chip will reset your current colors and pattern. Do you want to continue?</string>
+    <string name="pattern">Pattern</string>
 </resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ALL COLOR STRINGS -->
+    <string name="NONE">NONE</string>
+    <string name="WHITE">WHITE</string>
+    <string name="BLANK">BLANK</string>
+    <string name="RED">RED</string>
+    <string name="ORANGE">ORANGE</string>
+    <string name="BANANA_YELLOW">BANANA YELLOW</string>
+    <string name="YELLOW">YELLOW</string>
+    <string name="LIME_GREEN">LIME GREEN</string>
+    <string name="GREEN">GREEN</string>
+    <string name="MINT">MINT</string>
+    <string name="TURQUOISE">TURQUOISE</string>
+    <string name="LIGHT_BLUE">LIGHT BLUE</string>
+    <string name="SKY_BLUE">SKY BLUE</string>
+    <string name="BLUE">BLUE</string>
+    <string name="PURPLE">PURPLE</string>
+    <string name="LAVENDAR">LAVENDAR</string>
+    <string name="BLUSH">BLUSH</string>
+    <string name="LIGHT_PINK">LIGHT PINK</string>
+    <string name="PINK">PINK</string>
+    <string name="HOT_PINK">HOT PINK</string>
+    <string name="PEACH">PEACH</string>
+    <string name="OFF_WHITE">OFF WHITE</string>
+    <string name="WARM_WHITE">WARM WHITE</string>
+    <string name="SILVER">SILVER</string>
+    <string name="LUNA">LUNA</string>
+    <string name="GOLDEN_HOUR">GOLDEN HOUR</string>
+    <string name="CHAOS_EMERALD">CHAOS EMERALD</string>
+    <string name="SEAFOAM">SEAFOAM</string>
+    <string name="BUBBLEGUM">BUBBLEGUM</string>
+    <string name="MEW">MEW</string>
+    <string name="FROST">FROST</string>
+    <string name="SPACE_GHOST">SPACE GHOST</string>
+    <string name="COSMIC_OWL">COSMIC OWL</string>
+    <string name="LIME">LIME</string>
+    <string name="CYAN">CYAN</string>
+    <string name="LENS_FLARE">LENS FLARE</string>
+    <string name="SNARF">SNARF</string>
+    <string name="TOMBSTONE">TOMBSTONE</string>
+
+    <!-- ALL MODE STRINGS -->
+    <string name="STROBE">STROBE</string>
+    <string name="HYPERSTROBE">HYPERSTROBE</string>
+    <string name="SOLID">SOLID</string>
+    <string name="RIBBON">RIBBON</string>
+    <string name="TRACER">TRACER</string>
+    <string name="CHROMA">CHROMA</string>
+    <string name="DOPS">DOPS</string>
+    <string name="STROBIE">STROBIE</string>
+    <string name="BLINK">BLINK</string>
+    <string name="RIBBON_FADE">RIBBON FADE</string>
+    <string name="PULSE">PULSE</string>
+    <string name="DASH_MORPH">DASH MORPH</string>
+    <string name="STROBE_FADE">STROBE FADE</string>
+    <string name="STROBE_MORPH">STROBE MORPH</string>
+    <string name="KANDI_MODE">KANDI MODE</string>
+    <string name="FLICKER">FLICKER</string>
+    <string name="SHAPE_SHIFTER">SHAPE SHIFTER</string>
+    <string name="VEX">VEX</string>
+    <string name="KRUSH">KRUSH</string>
+    <string name="BLINK_E">BLINK-E</string>
+    <string name="SHADOW">SHADOW</string>
+    <string name="CENTERPOINT">CENTERPOINT</string>
+    <string name="ULTRA_DOPS">ULTRA DOPS</string>
+    <string name="CANDY_STROBE">CANDY STROBE</string>
+    <string name="X_CHANGE">X CHANGE</string>
+    <string name="TRIBBON">TRIBBON</string>
+    <string name="X_MORPH">X MORPH</string>
+    <string name="HEART_BEAT">HEART BEAT</string>
+    <string name="DASH_DOT">DASH DOT</string>
+
+    <!-- ALL CHIP STRINGS -->
+    <string name="NO_CHIP">NONE</string>
+    <string name="CHROMA_24">CHROMA 24</string>
+    <string name="EZLITE_2">EZLITE 2.0</string>
+    <string name="ENOVA">ENOVA</string>
+    <string name="FLOW">FLOW</string>
+    <string name="CHROMA_CTRL">CHROMA CTRL</string>
+    <string name="ELEMENT_V2">ELEMENT V2</string>
+    <string name="MATRIX">MATRIX</string>
+</resources>

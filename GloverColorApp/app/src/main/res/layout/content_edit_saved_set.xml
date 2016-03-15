@@ -109,7 +109,7 @@
                     style="@style/EditSavedSetColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mode"/>
+                    android:text="@string/pattern"/>
 
                 <Spinner
                     android:id="@+id/mode_spinner"
