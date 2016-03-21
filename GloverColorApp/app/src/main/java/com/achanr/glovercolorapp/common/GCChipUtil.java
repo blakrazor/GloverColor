@@ -58,6 +58,27 @@ public class GCChipUtil {
             } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.MATRIX))) {
                 colorStringArray = mContext.getResources().getStringArray(R.array.matrix_colors);
                 modeStringArray = mContext.getResources().getStringArray(R.array.matrix_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.AURORA))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.aurora_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.FLUX))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.aurora_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.PULSAR))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.pulsar_simplex_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SIMPLEX))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.pulsar_simplex_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_INTENSITY))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_SIMPLICITY))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_simplicity_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_GALAXY))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_galaxy_modes);
             }
             GCChip chip = new GCChip(chipItem,
                     new ArrayList(Arrays.asList(colorStringArray)),

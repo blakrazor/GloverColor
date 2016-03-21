@@ -16,6 +16,13 @@
         <item>@string/EZLITE_2</item>
         <item>@string/FLOW</item>
         <item>@string/MATRIX</item>
+        <item>@string/AURORA</item>
+        <item>@string/FLUX</item>
+        <item>@string/PULSAR</item>
+        <item>@string/SIMPLEX</item>
+        <item>@string/ARCLITE_INTENSITY</item>
+        <item>@string/ARCLITE_SIMPLICITY</item>
+        <item>@string/ARCLITE_GALAXY</item>
     </string-array>
 
     <!-- ALL COLORS HERE -->
@@ -24,36 +31,54 @@
         <item>@string/WHITE</item>
         <item>@string/BLANK</item>
         <item>@string/RED</item>
+        <item>@string/BLOOD_ORANGE</item>
         <item>@string/ORANGE</item>
+        <item>@string/TANGERINE</item>
         <item>@string/GOLDEN_HOUR</item>
         <item>@string/BANANA_YELLOW</item>
         <item>@string/YELLOW</item>
         <item>@string/COSMIC_OWL</item>
         <item>@string/LIME</item>
         <item>@string/LIME_GREEN</item>
+        <item>@string/AQUA_GREEN</item>
         <item>@string/GREEN</item>
         <item>@string/MINT</item>
         <item>@string/CHAOS_EMERALD</item>
         <item>@string/SEAFOAM</item>
         <item>@string/TURQUOISE</item>
+        <item>@string/OCEAN</item>
+        <item>@string/WINTER</item>
+        <item>@string/NEBULA</item>
         <item>@string/CYAN</item>
         <item>@string/LIGHT_BLUE</item>
         <item>@string/SKY_BLUE</item>
         <item>@string/BLUE</item>
+        <item>@string/DEEP_BLUE</item>
+        <item>@string/COBALT</item>
         <item>@string/LENS_FLARE</item>
         <item>@string/PURPLE</item>
         <item>@string/LAVENDAR</item>
+        <item>@string/VIOLET</item>
+        <item>@string/PLUM</item>
+        <item>@string/SALMON</item>
         <item>@string/BLUSH</item>
         <item>@string/LIGHT_PINK</item>
         <item>@string/PINK</item>
         <item>@string/BUBBLEGUM</item>
         <item>@string/HOT_PINK</item>
+        <item>@string/ROSE</item>
+        <item>@string/MAGENTA</item>
         <item>@string/MEW</item>
         <item>@string/PEACH</item>
         <item>@string/SNARF</item>
         <item>@string/OFF_WHITE</item>
         <item>@string/WARM_WHITE</item>
         <item>@string/SILVER</item>
+        <item>@string/GOLD</item>
+        <item>@string/SUN</item>
+        <item>@string/SUNSET</item>
+        <item>@string/SUNKIST</item>
+        <item>@string/MOON</item>
         <item>@string/LUNA</item>
         <item>@string/FROST</item>
         <item>@string/TOMBSTONE</item>
@@ -91,9 +116,50 @@
         <item>@string/X_MORPH</item>
         <item>@string/HEART_BEAT</item>
         <item>@string/DASH_DOT</item>
+        <item>@string/SHORT_STROBE_V1</item>
+        <item>@string/SHORT_STROBE_V2</item>
+        <item>@string/SHORT_STROBE_V3</item>
+        <item>@string/SHORT_STROBE_V4</item>
+        <item>@string/LONG_STROBE_V1</item>
+        <item>@string/LONG_STROBE_V2</item>
+        <item>@string/LONG_STROBE_V3</item>
+        <item>@string/LONG_STROBE_V4</item>
+        <item>@string/EVEN_STROBE_V1</item>
+        <item>@string/EVEN_STROBE_V2</item>
+        <item>@string/EVEN_STROBE_V3</item>
+        <item>@string/EVEN_STROBE_V4</item>
+        <item>@string/TWO_COLOR_WHEEL_V1</item>
+        <item>@string/TWO_COLOR_WHEEL_V2</item>
+        <item>@string/TWO_COLOR_WHEEL_V3</item>
+        <item>@string/TWO_COLOR_WHEEL_V4</item>
+        <item>@string/PULSE_V1</item>
+        <item>@string/PULSE_V2</item>
+        <item>@string/PULSE_V3</item>
+        <item>@string/PULSE_V4</item>
+        <item>@string/COMET_V1</item>
+        <item>@string/COMET_V2</item>
+        <item>@string/COMET_V3</item>
+        <item>@string/COMET_V4</item>
+        <item>@string/METEOR_V1</item>
+        <item>@string/METEOR_V2</item>
+        <item>@string/METEOR_V3</item>
+        <item>@string/METEOR_V4</item>
+        <item>@string/SATURATION_V1</item>
+        <item>@string/SATURATION_V2</item>
+        <item>@string/SATURATION_V3</item>
+        <item>@string/SATURATION_V4</item>
+        <item>@string/RIBBON_V1</item>
+        <item>@string/RIBBON_V2</item>
+        <item>@string/RIBBON_V3</item>
+        <item>@string/RIBBON_V4</item>
+        <item>@string/FADE</item>
+        <item>@string/SANDBOX</item>
+        <item>@string/SLOW_FADE</item>
+        <item>@string/RAINBOW_STROBE</item>
+        <item>@string/RAINBOW_RIBBON</item>
     </string-array>
 
-    <!-- CHROMA COLORS HERE -->
+    <!-- CHROMA CHIP HERE -->
     <string-array name="chroma24_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -119,8 +185,6 @@
         <item>@string/SILVER</item>
         <item>@string/LUNA</item>
     </string-array>
-
-    <!-- CHROMA MODES HERE -->
     <string-array name="chroma24_modes">
         <item>@string/STROBE</item>
         <item>@string/HYPERSTROBE</item>
@@ -129,7 +193,7 @@
         <item>@string/CHROMA</item>
     </string-array>
 
-    <!-- EZLITE COLORS HERE -->
+    <!-- EZLITE CHIP HERE -->
     <string-array name="ezlite_2_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -153,15 +217,13 @@
         <item>@string/WARM_WHITE</item>
         <item>@string/SILVER</item>
     </string-array>
-
-    <!-- EZLITE MODES HERE -->
     <string-array name="ezlite_2_modes">
         <item>@string/HYPERSTROBE</item>
         <item>@string/STROBE</item>
         <item>@string/STROBIE</item>
     </string-array>
 
-    <!-- ENOVA COLORS HERE -->
+    <!-- ENOVA CHIP HERE -->
     <string-array name="enova_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -185,15 +247,13 @@
         <item>@string/WARM_WHITE</item>
         <item>@string/TURQUOISE</item>
     </string-array>
-
-    <!-- ENOVA MODES HERE -->
     <string-array name="enova_modes">
         <item>@string/SOLID</item>
         <item>@string/DOPS</item>
         <item>@string/BLINK</item>
     </string-array>
 
-    <!-- FLOW COLORS HERE -->
+    <!-- FLOW CHIP HERE -->
     <string-array name="flow_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -217,8 +277,6 @@
         <item>@string/WARM_WHITE</item>
         <item>@string/TURQUOISE</item>
     </string-array>
-
-    <!-- FLOW MODES HERE -->
     <string-array name="flow_modes">
         <item>@string/HYPERSTROBE</item>
         <item>@string/RIBBON_FADE</item>
@@ -230,7 +288,7 @@
         <item>@string/KANDI_MODE</item>
     </string-array>
 
-    <!-- CHROMA CTRL COLORS HERE -->
+    <!-- CHROMA CTRL CHIP HERE -->
     <string-array name="chroma_ctrl_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -264,8 +322,6 @@
         <item>@string/FROST</item>
         <item>@string/SPACE_GHOST</item>
     </string-array>
-
-    <!-- CHROMA CTRL MODES HERE -->
     <string-array name="chroma_ctrl_modes">
         <item>@string/STROBE</item>
         <item>@string/HYPERSTROBE</item>
@@ -280,7 +336,7 @@
         <item>@string/BLINK_E</item>
     </string-array>
 
-    <!-- ELEMENT V2 COLORS HERE -->
+    <!-- ELEMENT V2 CHIP HERE -->
     <string-array name="element_v2_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -315,8 +371,6 @@
         <item>@string/TOMBSTONE</item>
         <item>@string/SPACE_GHOST</item>
     </string-array>
-
-    <!-- ELEMENT V2 MODES HERE -->
     <string-array name="element_v2_modes">
         <item>@string/STROBE</item>
         <item>@string/HYPERSTROBE</item>
@@ -332,7 +386,7 @@
         <item>@string/BLINK</item>
     </string-array>
 
-    <!-- MATRIX COLORS HERE -->
+    <!-- MATRIX CHIP -->
     <string-array name="matrix_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -356,8 +410,6 @@
         <item>@string/PEACH</item>
         <item>@string/TURQUOISE</item>
     </string-array>
-
-    <!-- MATRIX MODES HERE -->
     <string-array name="matrix_modes">
         <item>@string/STROBE</item>
         <item>@string/DOPS</item>
@@ -372,5 +424,139 @@
         <item>@string/HEART_BEAT</item>
         <item>@string/DASH_DOT</item>
         <item>@string/TRACER</item>
+    </string-array>
+
+    <!-- AURORA CHIP HERE -->
+    <string-array name="aurora_colors">
+        <item>@string/NONE</item>
+        <item>@string/BLANK</item>
+        <item>@string/WHITE</item>
+        <item>@string/RED</item>
+        <item>@string/BLOOD_ORANGE</item>
+        <item>@string/ORANGE</item>
+        <item>@string/GOLD</item>
+        <item>@string/YELLOW</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/COBALT</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/PLUM</item>
+        <item>@string/SALMON</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PEACH</item>
+        <item>@string/SUN</item>
+        <item>@string/MOON</item>
+    </string-array>
+    <string-array name="aurora_modes">
+        <item>@string/SHORT_STROBE_V1</item>
+        <item>@string/SHORT_STROBE_V2</item>
+        <item>@string/SHORT_STROBE_V3</item>
+        <item>@string/SHORT_STROBE_V4</item>
+        <item>@string/LONG_STROBE_V1</item>
+        <item>@string/LONG_STROBE_V2</item>
+        <item>@string/LONG_STROBE_V3</item>
+        <item>@string/LONG_STROBE_V4</item>
+        <item>@string/EVEN_STROBE_V1</item>
+        <item>@string/EVEN_STROBE_V2</item>
+        <item>@string/EVEN_STROBE_V3</item>
+        <item>@string/EVEN_STROBE_V4</item>
+        <item>@string/TWO_COLOR_WHEEL_V1</item>
+        <item>@string/TWO_COLOR_WHEEL_V2</item>
+        <item>@string/TWO_COLOR_WHEEL_V3</item>
+        <item>@string/TWO_COLOR_WHEEL_V4</item>
+        <item>@string/PULSE_V1</item>
+        <item>@string/PULSE_V2</item>
+        <item>@string/PULSE_V3</item>
+        <item>@string/PULSE_V4</item>
+        <item>@string/COMET_V1</item>
+        <item>@string/COMET_V2</item>
+        <item>@string/COMET_V3</item>
+        <item>@string/COMET_V4</item>
+        <item>@string/METEOR_V1</item>
+        <item>@string/METEOR_V2</item>
+        <item>@string/METEOR_V3</item>
+        <item>@string/METEOR_V4</item>
+        <item>@string/SATURATION_V1</item>
+        <item>@string/SATURATION_V2</item>
+        <item>@string/SATURATION_V3</item>
+        <item>@string/SATURATION_V4</item>
+        <item>@string/RIBBON_V1</item>
+        <item>@string/RIBBON_V2</item>
+        <item>@string/RIBBON_V3</item>
+        <item>@string/RIBBON_V4</item>
+    </string-array>
+
+    <!-- PULSAR/SIMPLEX MODES -->
+    <string-array name="pulsar_simplex_modes">
+        <item>@string/EVEN_STROBE_V1</item>
+        <item>@string/LONG_STROBE_V1</item>
+        <item>@string/SHORT_STROBE_V1</item>
+    </string-array>
+
+    <!-- ARCLITE INTENSITY CHIP -->
+    <string-array name="arclite_intensity_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/BLUE</item>
+        <item>@string/GREEN</item>
+        <item>@string/ORANGE</item>
+        <item>@string/TANGERINE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/AQUA_GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/OCEAN</item>
+        <item>@string/WINTER</item>
+        <item>@string/NEBULA</item>
+        <item>@string/DEEP_BLUE</item>
+        <item>@string/VIOLET</item>
+        <item>@string/BLUSH</item>
+        <item>@string/ROSE</item>
+        <item>@string/PEACH</item>
+        <item>@string/MAGENTA</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/SUNSET</item>
+        <item>@string/SUNKIST</item>
+    </string-array>
+    <string-array name="arclite_intensity_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/RIBBON</item>
+        <item>@string/TRACER</item>
+        <item>@string/DOPS</item>
+        <item>@string/BLINK</item>
+        <item>@string/DASH_DOT</item>
+        <item>@string/FADE</item>
+    </string-array>
+
+    <!-- ARCLITE SIMPLICITY MODES -->
+    <string-array name="arclite_simplicity_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/TRACER</item>
+    </string-array>
+
+    <!-- ARCLITE GALAXY MODES -->
+    <string-array name="arclite_galaxy_modes">
+        <item>@string/SANDBOX</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/RIBBON</item>
+        <item>@string/TRACER</item>
+        <item>@string/DOPS</item>
+        <item>@string/DASH_DOT</item>
+        <item>@string/SLOW_FADE</item>
+        <item>@string/RAINBOW_STROBE</item>
+        <item>@string/RAINBOW_RIBBON</item>
     </string-array>
 </resources>
