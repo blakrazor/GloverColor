@@ -220,7 +220,7 @@ public class GCUtil {
         shareString += title;
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
-        //Gte chipset
+        //Get chipset
         shareString += savedSet.getChipSet().getTitle();
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
@@ -231,6 +231,10 @@ public class GCUtil {
 
         //Get mode
         shareString += savedSet.getMode().getTitle();
+        shareString += BREAK_CHARACTER_FOR_SHARING;
+
+        //Get custom colors
+        shareString += getCustomColorShareString(savedSet);
 
         return shareString;
     }
@@ -327,6 +331,51 @@ public class GCUtil {
             rgbValues[1] = Integer.parseInt(customColor.substring(firstIndex + 1, secondIndex));
             rgbValues[2] = Integer.parseInt(customColor.substring(secondIndex + 1));
             customColorArray.add(rgbValues);
+        }
+        return customColorArray;
+    }
+
+    public static String getCustomColorShareString(GCSavedSet savedSet) {
+        ArrayList<Integer> indexList = new ArrayList<>();
+        String customColorString = "";
+        int index = 0;
+        for (GCPoweredColor poweredColor : savedSet.getColors()) {
+            if (poweredColor.getColor().getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+                indexList.add(index);
+            }
+            index++;
+        }
+        for (int i = 0; i < indexList.size(); i++) {
+            int[] rgbValues = savedSet.getCustomColors().get(indexList.get(i));
+            customColorString += "(" + Integer.toString(indexList.get(i)) + "," +
+                    rgbValues[0] + "-" + rgbValues[1] + "-" + rgbValues[2] + ")";
+        }
+        return customColorString;
+    }
+
+    public static ArrayList<int[]> parseCustomColorShareString(String customColorString) {
+        ArrayList<int[]> customColorArray = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            customColorArray.add(new int[]{255, 255, 255});
+        }
+
+        String[] customColorParts = customColorString.split("\\(");
+        for (String customColor : customColorParts) {
+            if (!customColor.isEmpty()) {
+                int index = Integer.parseInt(customColor.substring(0, customColor.indexOf(",")));
+
+                int[] rgbValues = new int[3];
+                int firstIndex = customColor.indexOf("-");
+                int secondIndex = customColor.indexOf("-", firstIndex + 1);
+                rgbValues[0] = Integer.parseInt(customColor.substring(customColor.indexOf(",") + 1, firstIndex));
+                rgbValues[1] = Integer.parseInt(customColor.substring(firstIndex + 1, secondIndex));
+                rgbValues[2] = Integer.parseInt(customColor.substring(secondIndex + 1, customColor.indexOf(")")));
+
+                int[] oldRgbValues = customColorArray.get(index);
+                oldRgbValues[0] = rgbValues[0];
+                oldRgbValues[1] = rgbValues[1];
+                oldRgbValues[2] = rgbValues[2];
+            }
         }
         return customColorArray;
     }

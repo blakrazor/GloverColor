@@ -15,13 +15,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.common.GCChipUtil;
-import com.achanr.glovercolorapp.common.GCModeUtil;
-import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.ArrayList;
 
@@ -117,7 +117,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         }
 
         String[] splitString = setString.split(GCUtil.BREAK_CHARACTER_FOR_SHARING);
-        if (splitString.length < 3) {
+        if (splitString.length < 4) {
             return null;
         }
 
@@ -129,6 +129,12 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         ArrayList<GCPoweredColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
         GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString);
         GCMode newMode = GCModeUtil.getModeUsingTitle(mode);
+
+        String customColorString = "";
+        if (splitString.length > 4) {
+            customColorString += splitString[4];
+            newSet.setCustomColors(GCUtil.parseCustomColorShareString(customColorString));
+        }
 
         newSet.setTitle(title);
         newSet.setColors(newColorList);
