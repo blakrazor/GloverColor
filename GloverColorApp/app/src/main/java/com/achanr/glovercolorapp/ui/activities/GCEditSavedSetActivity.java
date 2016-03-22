@@ -41,7 +41,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCChipUtil;
@@ -547,12 +546,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (spinnerSelectionCount >= 8) {
+            if (spinnerSelectionCount <= 0) {
                 colorSpinnerSelectedFunction(view, parent, false);
                 checkForChanges();
             } else {
-                spinnerSelectionCount++;
+                spinnerSelectionCount--;
                 colorSpinnerSelectedFunction(view, parent, true);
+                checkForChanges();
             }
         }
 
@@ -691,12 +691,23 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         int modePosition = mModeSpinner.getSelectedItemPosition();
         GCMode newMode = GCModeUtil.getModeUsingTitle(modes.get(modePosition));
 
+        ArrayList<int[]> customColorArray = new ArrayList<>();
+        int index = getActualColorCountFromList(newColorList);
+        for (int[] item : mCustomColorArrayList) {
+            if (index > 0) {
+                customColorArray.add(item.clone());
+                index--;
+            } else {
+                customColorArray.add(new int[]{255, 255, 255});
+            }
+        }
+
         mNewSet = new GCSavedSet();
         mNewSet.setTitle(newTitle);
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
         mNewSet.setChipSet(mChipSet);
-        mNewSet.setCustomColors(mCustomColorArrayList);
+        mNewSet.setCustomColors(customColorArray);
 
         if (isNewSet) {
             Intent resultIntent = new Intent();
@@ -708,6 +719,16 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
             finishActivityTransition(RESULT_OK, resultIntent);
         }
+    }
+
+    private int getActualColorCountFromList(ArrayList<GCPoweredColor> poweredColors) {
+        int count = 0;
+        for (GCPoweredColor poweredColor : poweredColors) {
+            if (!poweredColor.getColor().getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void finishActivityTransition(int resultCode, Intent resultIntent) {
@@ -763,7 +784,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setPositiveButton(mContext.getString(R.string.reset), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         wasChangeDialogCanceled = true;
-                        spinnerSelectionCount = 0;
+                        spinnerSelectionCount = getActualColorCountFromList(mSavedSet.getColors());
                         if (mSavedSet == null) {
                             mChipSetSpinner.setSelection(0, false);
                             mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
@@ -979,10 +1000,21 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         builder.setOnKeyListener(new Dialog.OnKeyListener() {
 
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
+            public boolean onKey(DialogInterface dialog, int keyCode,
                                  KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    Toast.makeText(mContext, "You must set the custom color to continue.", Toast.LENGTH_SHORT).show();
+                    int redValue = redValueSeekBar.getProgress();
+                    int greenValue = greenValueSeekBar.getProgress();
+                    int blueValue = blueValueSeekBar.getProgress();
+                    int[] rgbValues = new int[]{redValue, greenValue, blueValue};
+                    oldValues[0] = rgbValues[0];
+                    oldValues[1] = rgbValues[1];
+                    oldValues[2] = rgbValues[2];
+                    spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                    unhideNextColorSpinner(parent);
+                    matchColorSpinnerToSwatch();
+                    checkForChanges();
+                    dialog.dismiss();
                 }
                 return true;
             }
