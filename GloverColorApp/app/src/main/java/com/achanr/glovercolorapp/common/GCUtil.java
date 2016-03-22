@@ -112,17 +112,24 @@ public class GCUtil {
         return modeValues.get((new Random()).nextInt(modeValues.size()));
     }*/
 
-    public static SpannableStringBuilder generateMultiColoredString(String shortenedColorString) {
+    public static SpannableStringBuilder generateMultiColoredString(GCSavedSet savedSet) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        //builder.append("Colors: ");
+
+        String shortenedColorString = convertColorListToShortenedColorString(savedSet.getColors());
 
         List<String> stringParts = getParts(shortenedColorString, 3);
+        int index = 0;
         for (String colorAbbrev : stringParts) {
             String colorString = colorAbbrev.substring(0, 2);
             String powerString = colorAbbrev.substring(2, 3);
             GCColor color = GCColorUtil.getColorUsingAbbrev(colorString);
             GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
-            int[] rgbValues = convertRgbToPowerLevel(color.getRGBValues(), powerLevel);
+            int[] rgbValues;
+            if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+                rgbValues = convertRgbToPowerLevel(savedSet.getCustomColors().get(index), powerLevel);
+            } else {
+                rgbValues = convertRgbToPowerLevel(color.getRGBValues(), powerLevel);
+            }
 
             if (colorString.equalsIgnoreCase("--")) {
                 SpannableString spannableString = new SpannableString(colorString);
@@ -135,6 +142,7 @@ public class GCUtil {
                 spannableString.setSpan(new RelativeSizeSpan(0.75f), colorAbbrev.length() - 1, colorAbbrev.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append(spannableString);
             }
+            index++;
         }
 
         return builder;
@@ -297,5 +305,29 @@ public class GCUtil {
         a.recycle();
 
         return color;
+    }
+
+    public static String convertCustomColorArrayToString(ArrayList<int[]> customColorArray) {
+        String customColorString = "";
+        for (int[] rgbValues : customColorArray) {
+            customColorString += rgbValues[0] + "-" + rgbValues[1] + "-" + rgbValues[2];
+            customColorString += ",";
+        }
+        return customColorString;
+    }
+
+    public static ArrayList<int[]> convertStringToCustomColorArray(String customColorString) {
+        ArrayList<int[]> customColorArray = new ArrayList<>();
+        String[] customColorParts = customColorString.split(",");
+        for (String customColor : customColorParts) {
+            int[] rgbValues = new int[3];
+            int firstIndex = customColor.indexOf("-");
+            int secondIndex = customColor.indexOf("-", firstIndex + 1);
+            rgbValues[0] = Integer.parseInt(customColor.substring(0, firstIndex));
+            rgbValues[1] = Integer.parseInt(customColor.substring(firstIndex + 1, secondIndex));
+            rgbValues[2] = Integer.parseInt(customColor.substring(secondIndex + 1));
+            customColorArray.add(rgbValues);
+        }
+        return customColorArray;
     }
 }

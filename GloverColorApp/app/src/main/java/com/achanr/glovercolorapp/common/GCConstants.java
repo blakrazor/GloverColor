@@ -26,4 +26,8 @@ public class GCConstants {
     public static final String COLOR_NONE = "NONE";
     public static final String COLOR_BLANK = "BLANK";
     public static final String COLOR_WHITE = "WHITE";
+    public static final String COLOR_CUSTOM = "CUSTOM";
+
+    //Other constants
+    public static final String CUSTOM_PREFIX = "C?";
 }

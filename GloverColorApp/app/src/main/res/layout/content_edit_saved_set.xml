@@ -344,7 +344,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_1_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_1"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -366,7 +366,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_5_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_5"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -397,7 +397,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_2_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_2"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -419,7 +419,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_6_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_6"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -449,7 +449,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_3_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_3"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -471,7 +471,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_7_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_7"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -501,7 +501,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_4_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_4"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"
@@ -523,7 +523,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/color_8_subtitle"/>
 
-                    <Spinner
+                    <com.achanr.glovercolorapp.ui.views.GCCustomSpinner
                         android:id="@+id/spinner_color_8"
                         style="@style/EditSavedSetColorSpinner"
                         android:layout_width="match_parent"

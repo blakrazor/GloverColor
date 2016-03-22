@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,10 +38,19 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCColorUtil;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCModeUtil;
+import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.common.InputFilterMinMax;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCColor;
@@ -48,12 +58,6 @@ import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.common.GCChipUtil;
-import com.achanr.glovercolorapp.common.GCColorUtil;
-import com.achanr.glovercolorapp.common.GCConstants;
-import com.achanr.glovercolorapp.common.GCModeUtil;
-import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
-import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.util.ArrayList;
 
@@ -76,15 +80,20 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private Spinner mChipSetSpinner;
     private boolean madeChanges = false;
     private GCChip mChipSet;
-
+    private ArrayList<int[]> mCustomColorArrayList;
     private boolean enterFinished = false;
     private boolean isNewSet = false;
     private boolean wasChangeDialogCanceled = false;
+    private int spinnerSelectionCount = 0;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
 
     public static final int MAX_TITLE_LENGTH = 100;
+
+    private interface CustomColorCallback {
+        void valueChanged();
+    }
 
     private InputFilter titleFilter = new InputFilter() {
         @Override
@@ -191,6 +200,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
         mModeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         mChipSetSpinner = (Spinner) findViewById(R.id.chip_preset_spinner);
+        mCustomColorArrayList = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            mCustomColorArrayList.add(new int[]{255, 255, 255});
+        }
 
         setupChipSetSpinner();
         setupColorSpinnerHolders();
@@ -389,10 +402,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void matchColorSpinnerToSwatch() {
+        int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             GCColor colorEnum = GCColorUtil.getColorUsingTitle((String) colorSpinnerHolder.getColorSpinner().getSelectedItem());
-            int[] rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRGBValues(), colorSpinnerHolder.getPowerLevel());
+            int[] rgbValues;
+            if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+                rgbValues = GCUtil.convertRgbToPowerLevel(mCustomColorArrayList.get(index), colorSpinnerHolder.getPowerLevel());
+            } else {
+                rgbValues = GCUtil.convertRgbToPowerLevel(colorEnum.getRGBValues(), colorSpinnerHolder.getPowerLevel());
+            }
             colorSpinnerHolder.getColorSwatch().setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+            index++;
         }
     }
 
@@ -418,20 +438,27 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     }
                     // The text view of the spinner list view
                     TextView tv = (TextView) v.findViewById(R.id.spinner_color_dropdown_item_title);
-                    GCColor color = GCColorUtil.getColorUsingTitle(colorArray.get(position));
-                    tv.setText(color.getTitle());
-                    if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_BLANK)) {
-                        tv.setTextColor(Color.WHITE);
-                    } else {
-                        tv.setTextColor(Color.BLACK);
-                    }
-
                     RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
-                    if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
-                        dropdownItemBackground.setBackgroundColor(Color.WHITE);
-                    } else {
-                        int[] rgbValues = color.getRGBValues();
+                    if (colorArray.get(position).equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+                        tv.setText(GCConstants.COLOR_CUSTOM);
+                        tv.setTextColor(Color.BLACK);
+                        int[] rgbValues = new int[]{255, 255, 255};
                         dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                    } else {
+                        GCColor color = GCColorUtil.getColorUsingTitle(colorArray.get(position));
+                        tv.setText(color.getTitle());
+                        if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_BLANK)) {
+                            tv.setTextColor(Color.WHITE);
+                        } else {
+                            tv.setTextColor(Color.BLACK);
+                        }
+
+                        if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                            dropdownItemBackground.setBackgroundColor(Color.WHITE);
+                        } else {
+                            int[] rgbValues = color.getRGBValues();
+                            dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                        }
                     }
                     return v;
                 }
@@ -446,6 +473,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         String title = mSavedSet.getTitle();
         ArrayList<GCPoweredColor> colorList = mSavedSet.getColors();
         GCMode mode = mSavedSet.getMode();
+        ArrayList<int[]> customColorArray = mSavedSet.getCustomColors();
+        mCustomColorArrayList = new ArrayList<>();
+        for (int[] item : customColorArray) {
+            mCustomColorArrayList.add(item.clone());
+        }
 
         mTitleEditText.setText(title);
         //mTitleTextView.setText(title);
@@ -458,9 +490,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             for (String colorItem : colors) {
                 if (colorItem.equalsIgnoreCase(color.getColor().getTitle())) {
                     ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
-                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
+                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex, false);
                     colorSpinnerHolder.setPowerLevel(color.getPowerLevel().getTitle());
                     colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevel().getAbbreviation());
+                    colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
+                            colorSpinnerHolder.getColorSpinner(),
+                            true);
                     break;
                 } else {
                     colorIndex++;
@@ -508,22 +543,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
     }
 
+
     private AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
-            String colorString = spinnerTv.getText().toString();
-            GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
-            if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
-                ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
-                hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+            if (spinnerSelectionCount >= 8) {
+                colorSpinnerSelectedFunction(view, parent, false);
+                checkForChanges();
             } else {
-                int[] rgbValues = colorEnum.getRGBValues();
-                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
-                unhideNextColorSpinner(parent);
-                matchColorSpinnerToSwatch();
+                spinnerSelectionCount++;
+                colorSpinnerSelectedFunction(view, parent, true);
             }
-            checkForChanges();
         }
 
         @Override
@@ -531,6 +561,31 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         }
     };
+
+    private void colorSpinnerSelectedFunction(View view, View parent, boolean isFirstTime) {
+        TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
+        String colorString = spinnerTv.getText().toString();
+        GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
+        if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+            ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
+            hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+        } else if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+            if (isFirstTime) {
+                ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
+                int[] rgbValues = mCustomColorArrayList.get(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                unhideNextColorSpinner(parent);
+                matchColorSpinnerToSwatch();
+            } else {
+                showCustomColorDialog(spinnerTv, parent);
+            }
+        } else {
+            int[] rgbValues = colorEnum.getRGBValues();
+            spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+            unhideNextColorSpinner(parent);
+            matchColorSpinnerToSwatch();
+        }
+    }
 
     private View.OnClickListener mColorSwatchClickListener = new View.OnClickListener() {
         @Override
@@ -641,6 +696,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
         mNewSet.setChipSet(mChipSet);
+        mNewSet.setCustomColors(mCustomColorArrayList);
 
         if (isNewSet) {
             Intent resultIntent = new Intent();
@@ -707,6 +763,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setPositiveButton(mContext.getString(R.string.reset), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         wasChangeDialogCanceled = true;
+                        spinnerSelectionCount = 0;
                         if (mSavedSet == null) {
                             mChipSetSpinner.setSelection(0, false);
                             mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
@@ -718,6 +775,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                             mChipSetSpinner.setSelection(chipsetIndex, false);
                             retrievePresetColorEnums();
                             fillExistingData();
+                            setupColorListeners();
                         }
                     }
                 })
@@ -836,6 +894,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return true;
         }
 
+        for (int i = 0; i < mCustomColorArrayList.size(); i++) {
+            int[] oldRgbValues = mSavedSet.getCustomColors().get(i);
+            int[] newRgbValues = mCustomColorArrayList.get(i);
+            if (oldRgbValues[0] != newRgbValues[0] || oldRgbValues[1] != newRgbValues[1] || oldRgbValues[2] != newRgbValues[2]) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -851,6 +917,148 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 invalidateOptionsMenu();
             }
         }
+    }
+
+    private void showCustomColorDialog(final TextView spinnerTv, final View parent) {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialoglayout = inflater.inflate(R.layout.dialog_custom_color, null);
+        final View colorPreview = dialoglayout.findViewById(R.id.custom_color_preview);
+        EditText redValueEditText = (EditText) dialoglayout.findViewById(R.id.red_value_edittext);
+        redValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
+        EditText greenValueEditText = (EditText) dialoglayout.findViewById(R.id.green_value_edittext);
+        greenValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
+        EditText blueValueEditText = (EditText) dialoglayout.findViewById(R.id.blue_value_edittext);
+        blueValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
+        final SeekBar redValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_red);
+        final SeekBar greenValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_green);
+        final SeekBar blueValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_blue);
+
+        CustomColorCallback customColorCallback = new CustomColorCallback() {
+            @Override
+            public void valueChanged() {
+                int redValue = redValueSeekBar.getProgress();
+                int greenValue = greenValueSeekBar.getProgress();
+                int blueValue = blueValueSeekBar.getProgress();
+                colorPreview.setBackgroundColor(Color.argb(255, redValue, greenValue, blueValue));
+            }
+        };
+        connectSeekBarAndEditText(redValueSeekBar, redValueEditText, customColorCallback);
+        connectSeekBarAndEditText(blueValueSeekBar, blueValueEditText, customColorCallback);
+        connectSeekBarAndEditText(greenValueSeekBar, greenValueEditText, customColorCallback);
+
+        ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
+        final int position = mColorSpinnerHolders.indexOf(colorSpinnerHolder);
+        final int[] oldValues = mCustomColorArrayList.get(position);
+        redValueSeekBar.setProgress(oldValues[0]);
+        redValueEditText.setText(Integer.toString(oldValues[0]));
+        greenValueSeekBar.setProgress(oldValues[1]);
+        greenValueEditText.setText(Integer.toString(oldValues[1]));
+        blueValueSeekBar.setProgress(oldValues[2]);
+        blueValueEditText.setText(Integer.toString(oldValues[2]));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setView(dialoglayout);
+        builder.setTitle("Set Custom Color");
+        builder.setMessage("Set custom color based on RGB values");
+        builder.setPositiveButton("SET COLOR", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                int redValue = redValueSeekBar.getProgress();
+                int greenValue = greenValueSeekBar.getProgress();
+                int blueValue = blueValueSeekBar.getProgress();
+                int[] rgbValues = new int[]{redValue, greenValue, blueValue};
+                oldValues[0] = rgbValues[0];
+                oldValues[1] = rgbValues[1];
+                oldValues[2] = rgbValues[2];
+                spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                unhideNextColorSpinner(parent);
+                matchColorSpinnerToSwatch();
+                checkForChanges();
+                dialog.dismiss();
+            }
+        });
+        builder.setOnKeyListener(new Dialog.OnKeyListener() {
+
+            @Override
+            public boolean onKey(DialogInterface arg0, int keyCode,
+                                 KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    Toast.makeText(mContext, "You must set the custom color to continue.", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+        builder.setIcon(R.drawable.ic_settings_black_48dp);
+        builder.show();
+    }
+
+    private void connectSeekBarAndEditText(final SeekBar seekBar, final EditText editText, final CustomColorCallback callback) {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    editText.setText(Integer.toString(progress));
+                    callback.valueChanged();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputText = s.toString();
+                if (inputText.isEmpty()) {
+                    inputText = Integer.toString(0);
+                }
+                int progress = Integer.parseInt(inputText);
+                seekBar.setProgress(progress);
+                callback.valueChanged();
+            }
+        });
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (editText.getText().toString().isEmpty()) {
+                        String inputText = Integer.toString(0);
+                        editText.setText(inputText);
+                        callback.valueChanged();
+                    }
+                }
+            }
+        });
     }
 
     @Override

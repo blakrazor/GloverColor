@@ -16,6 +16,18 @@ public class GCSavedSet implements Serializable {
     private ArrayList<GCPoweredColor> mColors;
     private GCMode mMode;
     private GCChip mChipSet;
+    private ArrayList<int[]> mCustomColors;
+
+    public GCSavedSet() {
+        initializeCustomColorArray();
+    }
+
+    private void initializeCustomColorArray() {
+        mCustomColors = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            mCustomColors.add(new int[]{255, 255, 255});
+        }
+    }
 
     public String getTitle() {
         return mTitle = mTitle.replace("_", " ");
@@ -47,6 +59,17 @@ public class GCSavedSet implements Serializable {
 
     public void setChipSet(GCChip chipSet) {
         mChipSet = chipSet;
+    }
+
+    public ArrayList<int[]> getCustomColors() {
+        if (mCustomColors == null || mCustomColors.isEmpty()) {
+            initializeCustomColorArray();
+        }
+        return mCustomColors;
+    }
+
+    public void setCustomColors(ArrayList<int[]> customColors) {
+        mCustomColors = customColors;
     }
 
     @Override

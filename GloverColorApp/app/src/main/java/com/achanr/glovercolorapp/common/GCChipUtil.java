@@ -20,10 +20,10 @@ public class GCChipUtil {
     private static Context mContext = GloverColorApplication.getContext();
 
     public static void initChipArrayList() {
-        mChipArrayList = GCDatabaseHelper.CHIP_DATABASE.getAllData();
-        if (mChipArrayList == null || mChipArrayList.isEmpty()) {
+//        mChipArrayList = GCDatabaseHelper.CHIP_DATABASE.getAllData();
+//        if (mChipArrayList == null || mChipArrayList.isEmpty()) {
             createDefaultChips();
-        }
+//        }
     }
 
     private static void createDefaultChips() {

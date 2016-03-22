@@ -2,6 +2,7 @@
 <resources>
     <!-- ALL COLOR STRINGS -->
     <string name="NONE">NONE</string>
+    <string name="CUSTOM">CUSTOM</string>
     <string name="WHITE">WHITE</string>
     <string name="BLANK">BLANK</string>
     <string name="RED">RED</string>

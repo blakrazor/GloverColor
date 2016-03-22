@@ -7,10 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                     GCSavedSetEntry.SAVED_SET_TITLE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_COLORS + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_MODE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCSavedSetEntry.SAVED_SET_CHIP + GCDatabaseHelper.TEXT_TYPE +
+                    GCSavedSetEntry.SAVED_SET_CHIP + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + GCDatabaseHelper.TEXT_TYPE +
                     " );";
 
     private Context mContext;
@@ -40,6 +41,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         public static final String SAVED_SET_COLORS = "colors";
         public static final String SAVED_SET_MODE = "mode";
         public static final String SAVED_SET_CHIP = "chip";
+        public static final String SAVED_SET_CUSTOM_COLORS = "custom_colors";
     }
 
     public GCSavedSetDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
@@ -61,6 +63,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
         values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
 
         return db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -79,7 +82,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                 GCSavedSetEntry.SAVED_SET_TITLE,
                 GCSavedSetEntry.SAVED_SET_COLORS,
                 GCSavedSetEntry.SAVED_SET_MODE,
-                GCSavedSetEntry.SAVED_SET_CHIP
+                GCSavedSetEntry.SAVED_SET_CHIP,
+                GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS
         };
 
         // How you want the results sorted in the resulting Cursor
@@ -107,10 +111,20 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                         String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
                         String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
                         String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
+                        String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
 
                         savedSet.setTitle(title);
                         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
                         savedSet.setMode(GCModeUtil.getModeUsingTitle(modeString.toUpperCase()));
+                        if (customColorString != null) {
+                            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
+                        } else {
+                            ArrayList<int[]> customColors = new ArrayList<>();
+                            for (int i = 0; i < 8; i++) {
+                                customColors.add(new int[]{255, 255, 255});
+                            }
+                            savedSet.setCustomColors(customColors);
+                        }
                         if (chipString != null) {
                             savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
                         } else {
@@ -151,6 +165,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(newSavedSet.getColors()));
         values.put(GCSavedSetEntry.SAVED_SET_MODE, newSavedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, newSavedSet.getChipSet().getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(newSavedSet.getCustomColors()));
 
         // Which row to update, based on the ID
         String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";

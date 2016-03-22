@@ -19,10 +19,10 @@ public class GCColorUtil {
     private static Context mContext = GloverColorApplication.getContext();
 
     public static void initColorArrayList() {
-        mColorArrayList = GCDatabaseHelper.COLOR_DATABASE.getAllData();
-        if (mColorArrayList == null || mColorArrayList.isEmpty()) {
+//        mColorArrayList = GCDatabaseHelper.COLOR_DATABASE.getAllData();
+//        if (mColorArrayList == null || mColorArrayList.isEmpty()) {
             createDefaultColors();
-        }
+//        }
     }
 
     private static void createDefaultColors() {
@@ -35,6 +35,9 @@ public class GCColorUtil {
             if (colorItem.equalsIgnoreCase(mContext.getString(R.string.NONE))) {
                 colorAbbrev = "";
                 rgbValues = new int[]{0, 0, 0};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CUSTOM))) {
+                colorAbbrev = "??";
+                rgbValues = new int[]{255, 255, 255};
             } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.BLANK))) {
                 colorAbbrev = "--";
                 rgbValues = new int[]{0, 0, 0};

@@ -28,6 +28,7 @@
     <!-- ALL COLORS HERE -->
     <string-array name="default_colors">
         <item>@string/NONE</item>
+        <item>@string/CUSTOM</item>
         <item>@string/WHITE</item>
         <item>@string/BLANK</item>
         <item>@string/RED</item>
@@ -157,6 +158,7 @@
         <item>@string/SLOW_FADE</item>
         <item>@string/RAINBOW_STROBE</item>
         <item>@string/RAINBOW_RIBBON</item>
+        <item>@string/CUSTOM</item>
     </string-array>
 
     <!-- CHROMA CHIP HERE -->

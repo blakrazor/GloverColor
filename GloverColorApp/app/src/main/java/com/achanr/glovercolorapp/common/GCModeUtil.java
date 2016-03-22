@@ -16,10 +16,10 @@ public class GCModeUtil {
     private static ArrayList<GCMode> mModeArrayList;
 
     public static void initModeArrayList() {
-        mModeArrayList = GCDatabaseHelper.MODE_DATABASE.getAllData();
-        if (mModeArrayList == null || mModeArrayList.isEmpty()) {
+//        mModeArrayList = GCDatabaseHelper.MODE_DATABASE.getAllData();
+//        if (mModeArrayList == null || mModeArrayList.isEmpty()) {
             createDefaultModes();
-        }
+//        }
     }
 
     private static void createDefaultModes() {

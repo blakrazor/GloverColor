@@ -65,10 +65,9 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
         String title = mSavedSetList.get(position).getTitle();
-        String shortenedColorString = GCUtil.convertColorListToShortenedColorString(mSavedSetList.get(position).getColors());
         GCMode mode = mSavedSetList.get(position).getMode();
         GCChip chipSet = mSavedSetList.get(position).getChipSet();
-        SpannableStringBuilder builder = GCUtil.generateMultiColoredString(shortenedColorString);
+        SpannableStringBuilder builder = GCUtil.generateMultiColoredString(mSavedSetList.get(position));
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
         holder.txtMode.setText(GCUtil.convertToCamelcase(mode.getTitle().toString()));
