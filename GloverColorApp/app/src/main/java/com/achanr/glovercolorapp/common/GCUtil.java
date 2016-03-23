@@ -355,7 +355,7 @@ public class GCUtil {
 
     public static ArrayList<int[]> parseCustomColorShareString(String customColorString) {
         ArrayList<int[]> customColorArray = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
             customColorArray.add(new int[]{255, 255, 255});
         }
 

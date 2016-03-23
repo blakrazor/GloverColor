@@ -28,6 +28,14 @@
     <string name="color_6_subtitle">6th color</string>
     <string name="color_7_subtitle">7th color</string>
     <string name="color_8_subtitle">8th color</string>
+    <string name="color_9_subtitle">9th color</string>
+    <string name="color_10_subtitle">10th color</string>
+    <string name="color_11_subtitle">11th color</string>
+    <string name="color_12_subtitle">12th color</string>
+    <string name="color_13_subtitle">13th color</string>
+    <string name="color_14_subtitle">14th color</string>
+    <string name="color_15_subtitle">15th color</string>
+    <string name="color_16_subtitle">16th color</string>
     <string name="mode">Mode</string>
     <string name="mode_subtitle">Mode:</string>
     <string name="home">Home</string>
@@ -67,4 +75,6 @@
     <string name="pattern">Pattern</string>
     <string name="paypal_donate_link"><![CDATA[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=67QEZRS7X3W2C]]></string>
     <string name="developer_email_address">andrew.chanrasmi.developer+GloverColorApp@gmail.com</string>
+    <string name="show_more_colors">SHOW MORE COLORS</string>
+    <string name="show_less_colors">SHOW LESS COLORS</string>
 </resources>

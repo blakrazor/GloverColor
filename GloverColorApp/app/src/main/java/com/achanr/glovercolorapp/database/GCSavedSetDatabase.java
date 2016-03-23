@@ -8,6 +8,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.achanr.glovercolorapp.common.GCChipUtil;
+import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCSavedSet;
@@ -120,7 +121,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                             savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
                         } else {
                             ArrayList<int[]> customColors = new ArrayList<>();
-                            for (int i = 0; i < 8; i++) {
+                            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
                                 customColors.add(new int[]{255, 255, 255});
                             }
                             savedSet.setCustomColors(customColors);

@@ -35,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -84,6 +85,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private boolean isNewSet = false;
     private boolean wasChangeDialogCanceled = false;
     private int spinnerSelectionCount = 0;
+    private Button mMoreColorsButton;
+    private boolean isMoreColorsVisible = false;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
@@ -199,8 +202,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
         mModeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         mChipSetSpinner = (Spinner) findViewById(R.id.chip_preset_spinner);
+        //mMoreColorsButton = (Button) findViewById(R.id.more_colors_button);
         mCustomColorArrayList = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
             mCustomColorArrayList.add(new int[]{255, 255, 255});
         }
 
@@ -214,57 +218,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             fillDefaultData();
         }
 
-        setupColorListeners();
-        mTitleEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkForChanges();
-            }
-        });
-        mTitleEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //mTitleTextView.setText(mTitleEditText.getText().toString().trim());
-                    //showTitleEditText(false);
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    return true;
-                }
-                return false;
-            }
-        });
-        /*mTitleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTitleEditText(true);
-                mTitleEditText.requestFocus();
-            }
-        });*/
-
-        mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                checkForChanges();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        setupListeners();
         checkForChanges();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimationListener();
         }
@@ -371,6 +327,38 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 (Spinner) findViewById(R.id.spinner_color_8),
                 (RelativeLayout) findViewById(R.id.color_swatch_8),
                 (TextView) findViewById(R.id.color_swatch_8_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_9_layout),
+                (Spinner) findViewById(R.id.spinner_color_9),
+                (RelativeLayout) findViewById(R.id.color_swatch_9),
+                (TextView) findViewById(R.id.color_swatch_9_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_10_layout),
+                (Spinner) findViewById(R.id.spinner_color_10),
+                (RelativeLayout) findViewById(R.id.color_swatch_10),
+                (TextView) findViewById(R.id.color_swatch_10_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_11_layout),
+                (Spinner) findViewById(R.id.spinner_color_11),
+                (RelativeLayout) findViewById(R.id.color_swatch_11),
+                (TextView) findViewById(R.id.color_swatch_11_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_12_layout),
+                (Spinner) findViewById(R.id.spinner_color_12),
+                (RelativeLayout) findViewById(R.id.color_swatch_12),
+                (TextView) findViewById(R.id.color_swatch_12_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_13_layout),
+                (Spinner) findViewById(R.id.spinner_color_13),
+                (RelativeLayout) findViewById(R.id.color_swatch_13),
+                (TextView) findViewById(R.id.color_swatch_13_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_14_layout),
+                (Spinner) findViewById(R.id.spinner_color_14),
+                (RelativeLayout) findViewById(R.id.color_swatch_14),
+                (TextView) findViewById(R.id.color_swatch_14_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_15_layout),
+                (Spinner) findViewById(R.id.spinner_color_15),
+                (RelativeLayout) findViewById(R.id.color_swatch_15),
+                (TextView) findViewById(R.id.color_swatch_15_textview)));
+        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_16_layout),
+                (Spinner) findViewById(R.id.spinner_color_16),
+                (RelativeLayout) findViewById(R.id.color_swatch_16),
+                (TextView) findViewById(R.id.color_swatch_16_textview)));
     }
 
     private void setupChipSetSpinner() {
@@ -471,6 +459,16 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private void fillExistingData() {
         String title = mSavedSet.getTitle();
         ArrayList<GCPoweredColor> colorList = mSavedSet.getColors();
+        if (colorList.size() > GCConstants.HALF_COLORS) {
+            findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+        }
+        /*if (colorList.size() > GCConstants.HALF_COLORS) {
+            isMoreColorsVisible = true;
+            showMoreColors(true);
+        } else {
+            isMoreColorsVisible = false;
+            showMoreColors(false);
+        }*/
         GCMode mode = mSavedSet.getMode();
         ArrayList<int[]> customColorArray = mSavedSet.getCustomColors();
         mCustomColorArrayList = new ArrayList<>();
@@ -533,14 +531,100 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         mModeSpinner.setSelection(0);
+        /*isMoreColorsVisible = false;
+        showMoreColors(false);*/
     }
 
-    private void setupColorListeners() {
+    private void setupListeners() {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             colorSpinnerHolder.getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
             colorSpinnerHolder.getColorSwatchTextView().setOnClickListener(mColorSwatchClickListener);
         }
+
+        mTitleEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkForChanges();
+            }
+        });
+        mTitleEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //mTitleTextView.setText(mTitleEditText.getText().toString().trim());
+                    //showTitleEditText(false);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+        /*mTitleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTitleEditText(true);
+                mTitleEditText.requestFocus();
+            }
+        });*/
+
+        mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                checkForChanges();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        /*mMoreColorsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isMoreColorsVisible) {
+                    showMoreColors(false);
+                    isMoreColorsVisible = false;
+                } else {
+                    showMoreColors(true);
+                    isMoreColorsVisible = true;
+                }
+            }
+        });*/
     }
+
+    /*private void showMoreColors(boolean shouldShow) {
+        if (shouldShow) {
+            findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.more_colors_spinners).setVisibility(View.VISIBLE);
+            mMoreColorsButton.setText(R.string.show_less_colors);
+        } else {
+            ArrayList<String> colors = mChipSet.getColors();
+            int colorIndex = 0;
+            for (String colorItem : colors) {
+                if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                    mColorSpinnerHolders.get(GCConstants.HALF_COLORS).getColorSpinner().setSelection(colorIndex);
+                    break;
+                } else {
+                    colorIndex++;
+                }
+            }
+            findViewById(R.id.more_color_swatch_layout).setVisibility(View.GONE);
+            findViewById(R.id.more_colors_spinners).setVisibility(View.GONE);
+            mMoreColorsButton.setText(R.string.show_more_colors);
+        }
+    }*/
 
 
     private AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -563,27 +647,35 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     };
 
     private void colorSpinnerSelectedFunction(View view, View parent, boolean isFirstTime) {
-        TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
-        String colorString = spinnerTv.getText().toString();
-        GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
-        if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+        if (view != null && parent != null) {
+            TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
+            String colorString = spinnerTv.getText().toString();
+            GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
             ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
-            hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
-        } else if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
-            if (isFirstTime) {
-                ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
-                int[] rgbValues = mCustomColorArrayList.get(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+            if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+                if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
+                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.GONE);
+                }
+            } else if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
+                if (isFirstTime) {
+                    int[] rgbValues = mCustomColorArrayList.get(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
+                    spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                    unhideNextColorSpinner(parent);
+                    matchColorSpinnerToSwatch();
+                } else {
+                    showCustomColorDialog(spinnerTv, parent);
+                }
+            } else {
+                int[] rgbValues = colorEnum.getRGBValues();
                 spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
                 unhideNextColorSpinner(parent);
                 matchColorSpinnerToSwatch();
-            } else {
-                showCustomColorDialog(spinnerTv, parent);
+
+                if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
+                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+                }
             }
-        } else {
-            int[] rgbValues = colorEnum.getRGBValues();
-            spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
-            unhideNextColorSpinner(parent);
-            matchColorSpinnerToSwatch();
         }
     }
 
@@ -796,7 +888,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                             mChipSetSpinner.setSelection(chipsetIndex, false);
                             retrievePresetColorEnums();
                             fillExistingData();
-                            setupColorListeners();
+                            setupListeners();
                         }
                     }
                 })

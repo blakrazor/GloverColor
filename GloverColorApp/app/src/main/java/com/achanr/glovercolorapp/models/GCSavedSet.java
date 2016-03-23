@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.models;
 
+import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ public class GCSavedSet implements Serializable {
 
     private void initializeCustomColorArray() {
         mCustomColors = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
             mCustomColors.add(new int[]{255, 255, 255});
         }
     }
@@ -64,6 +65,11 @@ public class GCSavedSet implements Serializable {
     public ArrayList<int[]> getCustomColors() {
         if (mCustomColors == null || mCustomColors.isEmpty()) {
             initializeCustomColorArray();
+        } else if (mCustomColors.size() < GCConstants.MAX_COLORS){
+            int difference = GCConstants.MAX_COLORS - mCustomColors.size();
+            for (int i = 0; i < difference; i++) {
+                mCustomColors.add(new int[]{255, 255, 255});
+            }
         }
         return mCustomColors;
     }
