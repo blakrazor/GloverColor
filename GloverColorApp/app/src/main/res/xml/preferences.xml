@@ -23,6 +23,18 @@
         android:title="About">
 
         <Preference
+            android:clickable="true"
+            android:key="@string/rate_app_preference"
+            android:title="Rate App"
+            android:summary="If you like the app, let us know"/>
+
+        <Preference
+            android:clickable="true"
+            android:key="@string/report_bugs_preference"
+            android:title="Report Bugs or Send Feedback"
+            android:summary="Help make the app better by reporting bugs and giving feedback"/>
+
+        <Preference
             android:clickable="false"
             android:defaultValue="0.0"
             android:key="@string/version_number_preference"

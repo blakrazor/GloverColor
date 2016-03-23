@@ -3,4 +3,6 @@
     <string name="theme_preference">THEME_PREFERENCE</string>
     <string name="version_number_preference">VERSION_NUMBER_PREFERENCE</string>
     <string name="power_level_preference">POWER_LEVEL_PREFERENCE</string>
+    <string name="rate_app_preference">RATE_APP_PREFERENCE</string>
+    <string name="report_bugs_preference">REPORT_BUGS_PREFERENCE</string>
 </resources>
