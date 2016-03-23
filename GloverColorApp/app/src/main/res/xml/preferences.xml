@@ -26,13 +26,19 @@
             android:clickable="true"
             android:key="@string/rate_app_preference"
             android:title="Rate App"
-            android:summary="If you like the app, let us know"/>
+            android:summary="Give or update your rating on the Play Store"/>
 
         <Preference
             android:clickable="true"
             android:key="@string/report_bugs_preference"
             android:title="Report Bugs or Send Feedback"
             android:summary="Help make the app better by reporting bugs and giving feedback"/>
+
+        <Preference
+            android:clickable="true"
+            android:key="@string/donate_preference"
+            android:title="Donate"
+            android:summary="This app is completely free. If you like it, please consider donating to show your support."/>
 
         <Preference
             android:clickable="false"

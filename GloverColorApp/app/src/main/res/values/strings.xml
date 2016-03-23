@@ -65,4 +65,6 @@
     <string name="changing_preset_chip">Changing Preset Chip</string>
     <string name="changing_preset_chip_desc">Changing the preset chip will reset your current colors and pattern. Do you want to continue?</string>
     <string name="pattern">Pattern</string>
+    <string name="paypal_donate_link"><![CDATA[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=67QEZRS7X3W2C]]></string>
+    <string name="developer_email_address">andrew.chanrasmi.developer+GloverColorApp@gmail.com</string>
 </resources>

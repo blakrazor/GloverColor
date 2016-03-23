@@ -89,6 +89,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupPowerLevelPreference();
             setupRateAppPreference();
             setupReportBugsPreference();
+            setupDonatePreference();
         }
 
         private void setupThemePreference() {
@@ -184,15 +185,27 @@ public class GCSettingsActivity extends GCBaseActivity {
                     }
 
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto","andrew.chanrasmi.developer+GloverColorApp@gmail.com", null));
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"andrew.chanrasmi.developer+GloverColorApp@gmail.com"}); // String[] addresses
+                            "mailto", mContext.getString(R.string.developer_email_address), null));
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{mContext.getString(R.string.developer_email_address)}); // String[] addresses
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "[GloverColorApp] Bug or Feedback Report");
                     emailIntent.putExtra(Intent.EXTRA_TEXT,
                             "App Name: GloverColor" + "\n" +
-                            "Version: " + version + "\n" +
-                            "Contact (optional): " + "\n" +
-                            "Details: ");
+                                    "Version: " + version + "\n" +
+                                    "Contact (optional): " + "\n" +
+                                    "Details: ");
                     startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    return true;
+                }
+            });
+        }
+
+        private void setupDonatePreference() {
+            Preference donatePreference = findPreference(mContext.getString(R.string.donate_preference));
+            donatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mContext.getString(R.string.paypal_donate_link)));
+                    startActivity(browserIntent);
                     return true;
                 }
             });
