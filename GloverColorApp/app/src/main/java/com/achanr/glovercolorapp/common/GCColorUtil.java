@@ -21,7 +21,7 @@ public class GCColorUtil {
     public static void initColorArrayList() {
 //        mColorArrayList = GCDatabaseHelper.COLOR_DATABASE.getAllData();
 //        if (mColorArrayList == null || mColorArrayList.isEmpty()) {
-            createDefaultColors();
+        createDefaultColors();
 //        }
     }
 
@@ -203,6 +203,54 @@ public class GCColorUtil {
             } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.SUNKIST))) {
                 colorAbbrev = mContext.getString(R.string.Sk);
                 rgbValues = new int[]{250, 190, 104};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.WHITE_PURPLE))) {
+                colorAbbrev = mContext.getString(R.string.WP);
+                rgbValues = new int[]{227, 165, 255};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.DEEP_ORCHID))) {
+                colorAbbrev = mContext.getString(R.string.DO);
+                rgbValues = new int[]{253, 99, 156};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.WHITE_SILVER))) {
+                colorAbbrev = mContext.getString(R.string.WS);
+                rgbValues = new int[]{255, 255, 191};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.GOLDEN_YELLOW))) {
+                colorAbbrev = mContext.getString(R.string.GY);
+                rgbValues = new int[]{255, 199, 11};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.PINK_RASPBERRY))) {
+                colorAbbrev = mContext.getString(R.string.PR);
+                rgbValues = new int[]{255, 48, 170};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LIGHT_LAVENDAR))) {
+                colorAbbrev = mContext.getString(R.string.LL);
+                rgbValues = new int[]{203, 171, 255};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LIGHT_PURPLE))) {
+                colorAbbrev = mContext.getString(R.string.LU);
+                rgbValues = new int[]{193, 125, 254};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.FUCHSIA))) {
+                colorAbbrev = mContext.getString(R.string.Fu);
+                rgbValues = new int[]{253, 0, 121};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.WHITE_LAVENDAR))) {
+                colorAbbrev = mContext.getString(R.string.WL);
+                rgbValues = new int[]{184, 156, 254};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.ORCHID))) {
+                colorAbbrev = mContext.getString(R.string.Od);
+                rgbValues = new int[]{254, 122, 253};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.FLAMINGO))) {
+                colorAbbrev = mContext.getString(R.string.Fl);
+                rgbValues = new int[]{233, 87, 136};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.MANGO))) {
+                colorAbbrev = mContext.getString(R.string.Ma);
+                rgbValues = new int[]{254, 76, 29};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LIME_YELLOW))) {
+                colorAbbrev = mContext.getString(R.string.LY);
+                rgbValues = new int[]{225, 254, 5};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.GREEN_ICE))) {
+                colorAbbrev = mContext.getString(R.string.GI);
+                rgbValues = new int[]{212, 253, 106};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.FLUORESCENT_RED))) {
+                colorAbbrev = mContext.getString(R.string.FR);
+                rgbValues = new int[]{239, 48, 64};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CREAM_SICKLE))) {
+                colorAbbrev = mContext.getString(R.string.CS);
+                rgbValues = new int[]{247, 106, 53};
             }
             mColorArrayList.add(new GCColor(colorItem, colorAbbrev, rgbValues));
         }

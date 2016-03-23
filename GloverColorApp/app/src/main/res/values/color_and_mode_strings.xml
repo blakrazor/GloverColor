@@ -58,6 +58,22 @@
     <string name="MAGENTA">MAGENTA</string>
     <string name="SUNSET">SUNSET</string>
     <string name="SUNKIST">SUNKIST</string>
+    <string name="WHITE_PURPLE">WHITE PURPLE</string>
+    <string name="DEEP_ORCHID">DEEP ORCHID</string>
+    <string name="WHITE_SILVER">WHITE SILVER</string>
+    <string name="GOLDEN_YELLOW">GOLDEN YELLOW</string>
+    <string name="LIGHT_LAVENDAR">LIGHT LAVENDAR</string>
+    <string name="LIGHT_PURPLE">LIGHT PURPLE</string>
+    <string name="FUCHSIA">FUCHSIA</string>
+    <string name="WHITE_LAVENDAR">WHITE LAVENDAR</string>
+    <string name="PINK_RASPBERRY">PINK RASPBERRY</string>
+    <string name="ORCHID">ORCHID</string>
+    <string name="FLAMINGO">FLAMINGO</string>
+    <string name="MANGO">MANGO</string>
+    <string name="LIME_YELLOW">LIME YELLOW</string>
+    <string name="GREEN_ICE">GREEN ICE</string>
+    <string name="FLUORESCENT_RED">FLUORESCENT RED</string>
+    <string name="CREAM_SICKLE">CREAM SICKLE</string>
 
     <!-- ALL COLOR ABBREVS -->
     <string name="Wh">Wh</string>
@@ -114,6 +130,22 @@
     <string name="Ma">Ma</string>
     <string name="Ss">Ss</string>
     <string name="Sk">Sk</string>
+    <string name="WP">WP</string>
+    <string name="DO">DO</string>
+    <string name="WS">WS</string>
+    <string name="GY">GY</string>
+    <string name="LL">LL</string>
+    <string name="LU">LU</string>
+    <string name="Fu">Fu</string>
+    <string name="WL">WL</string>
+    <string name="PR">PR</string>
+    <string name="Od">Od</string>
+    <string name="Fl">Fl</string>
+    <string name="Mg">Mg</string>
+    <string name="LY">LY</string>
+    <string name="GI">GI</string>
+    <string name="FR">FR</string>
+    <string name="CS">CS</string>
 
     <!-- ALL MODE STRINGS -->
     <string name="STROBE">STROBE</string>
@@ -184,9 +216,15 @@
     <string name="FADE">FADE</string>
     <string name="SANDBOX">SANDBOX</string>
     <string name="SLOW_FADE">SLOW_FADE</string>
-    <string name="RAINBOW_STROBE">RAINBOW_STROBE</string>
-    <string name="RAINBOW_RIBBON">RAINBOW_RIBBON</string>
-    <string name="SEVEN_COLOR_STROBE">7C_STROBE</string>
+    <string name="RAINBOW_STROBE">RAINBOW STROBE</string>
+    <string name="RAINBOW_RIBBON">RAINBOW RIBBON</string>
+    <string name="SEVEN_COLOR_STROBE">7C STROBE</string>
+    <string name="HYPER_RIBBON">HYPER RIBBON</string>
+    <string name="DOP_TRACER">DOP TRACER</string>
+    <string name="HYPER_FLASH">HYPER FLASH</string>
+    <string name="QUICK_FLASH">QUICK FLASH</string>
+    <string name="EXTENDED_STUTTER_STROBE">EXTENDED STUTTER STROBE</string>
+    <string name="HYPER_STUTTER_STROBE">HYPER STUTTER STROBE</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -205,4 +243,8 @@
     <string name="ARCLITE_SIMPLICITY">ARCLITE SIMPLICITY</string>
     <string name="ARCLITE_GALAXY">ARCLITE GALAXY</string>
     <string name="ORACLE">ORACLE</string>
+    <string name="SP2_REV1">SP2_REV1</string>
+    <string name="SP2_REV2">SP2_REV2</string>
+    <string name="SP3_REV1">SP3_REV1</string>
+    <string name="SP3_REV2">SP3_REV2</string>
 </resources>

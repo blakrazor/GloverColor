@@ -82,6 +82,18 @@ public class GCChipUtil {
             } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ORACLE))) {
                 colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
                 modeStringArray = mContext.getResources().getStringArray(R.array.oracle_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP2_REV1))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.sp2_rev1_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.sp2_rev1_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP2_REV2))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.sp2_rev2_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.sp2_rev2_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP3_REV1))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.sp3_rev1_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.sp3_rev1_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP3_REV2))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_modes);
             }
             GCChip chip = new GCChip(chipItem,
                     new ArrayList(Arrays.asList(colorStringArray)),

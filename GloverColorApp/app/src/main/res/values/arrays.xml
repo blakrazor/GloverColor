@@ -24,6 +24,10 @@
         <item>@string/ARCLITE_INTENSITY</item>
         <item>@string/ARCLITE_SIMPLICITY</item>
         <item>@string/ARCLITE_GALAXY</item>
+        <item>@string/SP2_REV1</item>
+        <item>@string/SP2_REV2</item>
+        <item>@string/SP3_REV1</item>
+        <item>@string/SP3_REV2</item>
     </string-array>
 
     <!-- ALL COLORS HERE -->
@@ -32,49 +36,65 @@
         <item>@string/CUSTOM</item>
         <item>@string/WHITE</item>
         <item>@string/BLANK</item>
+        <item>@string/FLUORESCENT_RED</item>
         <item>@string/RED</item>
         <item>@string/BLOOD_ORANGE</item>
+        <item>@string/SALMON</item>
+        <item>@string/MANGO</item>
         <item>@string/ORANGE</item>
+        <item>@string/CREAM_SICKLE</item>
         <item>@string/TANGERINE</item>
         <item>@string/GOLDEN_HOUR</item>
+        <item>@string/GOLDEN_YELLOW</item>
         <item>@string/BANANA_YELLOW</item>
+        <item>@string/LIME_YELLOW</item>
+        <item>@string/GREEN_ICE</item>
         <item>@string/YELLOW</item>
         <item>@string/COSMIC_OWL</item>
         <item>@string/LIME</item>
+        <item>@string/GREEN</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/CHAOS_EMERALD</item>
         <item>@string/LIME_GREEN</item>
         <item>@string/AQUA_GREEN</item>
-        <item>@string/GREEN</item>
-        <item>@string/MINT</item>
-        <item>@string/CHAOS_EMERALD</item>
-        <item>@string/SEAFOAM</item>
-        <item>@string/TURQUOISE</item>
         <item>@string/OCEAN</item>
+        <item>@string/MINT</item>
         <item>@string/WINTER</item>
+        <item>@string/TURQUOISE</item>
         <item>@string/NEBULA</item>
-        <item>@string/CYAN</item>
-        <item>@string/LIGHT_BLUE</item>
         <item>@string/SKY_BLUE</item>
-        <item>@string/BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
         <item>@string/DEEP_BLUE</item>
+        <item>@string/BLUE</item>
         <item>@string/COBALT</item>
+        <item>@string/CYAN</item>
         <item>@string/LENS_FLARE</item>
-        <item>@string/PURPLE</item>
-        <item>@string/LAVENDAR</item>
-        <item>@string/VIOLET</item>
         <item>@string/PLUM</item>
-        <item>@string/SALMON</item>
+        <item>@string/PURPLE</item>
+        <item>@string/VIOLET</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/LIGHT_PURPLE</item>
+        <item>@string/LIGHT_LAVENDAR</item>
+        <item>@string/WHITE_LAVENDAR</item>
+        <item>@string/WHITE_PURPLE</item>
+        <item>@string/ORCHID</item>
+        <item>@string/ROSE</item>
+        <item>@string/PINK</item>
         <item>@string/BLUSH</item>
         <item>@string/LIGHT_PINK</item>
-        <item>@string/PINK</item>
+        <item>@string/DEEP_ORCHID</item>
+        <item>@string/FLAMINGO</item>
+        <item>@string/FUCHSIA</item>
         <item>@string/BUBBLEGUM</item>
+        <item>@string/PINK_RASPBERRY</item>
         <item>@string/HOT_PINK</item>
-        <item>@string/ROSE</item>
         <item>@string/MAGENTA</item>
         <item>@string/MEW</item>
-        <item>@string/PEACH</item>
         <item>@string/SNARF</item>
-        <item>@string/OFF_WHITE</item>
+        <item>@string/PEACH</item>
+        <item>@string/WHITE_SILVER</item>
         <item>@string/WARM_WHITE</item>
+        <item>@string/OFF_WHITE</item>
         <item>@string/SILVER</item>
         <item>@string/GOLD</item>
         <item>@string/SUN</item>
@@ -160,6 +180,12 @@
         <item>@string/SLOW_FADE</item>
         <item>@string/RAINBOW_STROBE</item>
         <item>@string/RAINBOW_RIBBON</item>
+        <item>@string/DOP_TRACER</item>
+        <item>@string/HYPER_RIBBON</item>
+        <item>@string/HYPER_FLASH</item>
+        <item>@string/QUICK_FLASH</item>
+        <item>@string/EXTENDED_STUTTER_STROBE</item>
+        <item>@string/HYPER_STUTTER_STROBE</item>
         <item>@string/CUSTOM</item>
     </string-array>
 
@@ -597,5 +623,151 @@
         <item>@string/CANDY_STROBE</item>
         <item>@string/SEVEN_COLOR_STROBE</item>
         <item>@string/BLINK_E</item>
+    </string-array>
+
+    <!-- SP2 REV1 CHIP -->
+    <string-array name="sp2_rev1_colors">
+        <item>@string/NONE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/ORCHID</item>
+        <item>@string/FLAMINGO</item>
+        <item>@string/WHITE</item>
+        <item>@string/PEACH</item>
+        <item>@string/MANGO</item>
+        <item>@string/AQUA_GREEN</item>
+        <item>@string/WHITE_SILVER</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIME_YELLOW</item>
+        <item>@string/GREEN_ICE</item>
+        <item>@string/FLUORESCENT_RED</item>
+        <item>@string/MINT</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/ORANGE</item>
+        <item>@string/MAGENTA</item>
+        <item>@string/CREAM_SICKLE</item>
+    </string-array>
+    <string-array name="sp2_rev1_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/TRACER</item>
+        <item>@string/RIBBON</item>
+        <item>@string/SLOW_FADE</item>
+        <item>@string/FADE</item>
+        <item>@string/RAINBOW_RIBBON</item>
+    </string-array>
+
+    <!-- SP2 REV2 CHIP -->
+    <string-array name="sp2_rev2_colors">
+        <item>@string/NONE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/WHITE_PURPLE</item>
+        <item>@string/DEEP_ORCHID</item>
+        <item>@string/WHITE_SILVER</item>
+        <item>@string/BLUSH</item>
+        <item>@string/GOLDEN_YELLOW</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_LAVENDAR</item>
+        <item>@string/LIGHT_PURPLE</item>
+        <item>@string/VIOLET</item>
+        <item>@string/LIME</item>
+        <item>@string/MINT</item>
+        <item>@string/FUCHSIA</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/WHITE_LAVENDAR</item>
+        <item>@string/ORANGE</item>
+        <item>@string/PINK_RASPBERRY</item>
+        <item>@string/PEACH</item>
+    </string-array>
+    <string-array name="sp2_rev2_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/TRACER</item>
+        <item>@string/RIBBON</item>
+        <item>@string/SLOW_FADE</item>
+        <item>@string/FADE</item>
+        <item>@string/RAINBOW_RIBBON</item>
+    </string-array>
+
+    <!-- SP3 REV1 CHIP -->
+    <string-array name="sp3_rev1_colors">
+        <item>@string/NONE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/ORCHID</item>
+        <item>@string/FLAMINGO</item>
+        <item>@string/WHITE</item>
+        <item>@string/PEACH</item>
+        <item>@string/MANGO</item>
+        <item>@string/AQUA_GREEN</item>
+        <item>@string/WHITE_SILVER</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIME_YELLOW</item>
+        <item>@string/GREEN_ICE</item>
+        <item>@string/FLUORESCENT_RED</item>
+        <item>@string/MINT</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/ORANGE</item>
+        <item>@string/MAGENTA</item>
+        <item>@string/CREAM_SICKLE</item>
+    </string-array>
+    <string-array name="sp3_rev1_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOP_TRACER</item>
+        <item>@string/HYPER_RIBBON</item>
+        <item>@string/HYPER_FLASH</item>
+        <item>@string/QUICK_FLASH</item>
+        <item>@string/EXTENDED_STUTTER_STROBE</item>
+        <item>@string/RAINBOW_RIBBON</item>
+        <item>@string/HYPER_STUTTER_STROBE</item>
+    </string-array>
+
+    <!-- SP3 REV2 CHIP -->
+    <string-array name="sp3_rev2_colors">
+        <item>@string/NONE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/WHITE_PURPLE</item>
+        <item>@string/DEEP_ORCHID</item>
+        <item>@string/WHITE_SILVER</item>
+        <item>@string/BLUSH</item>
+        <item>@string/GOLDEN_YELLOW</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_LAVENDAR</item>
+        <item>@string/LIGHT_PURPLE</item>
+        <item>@string/VIOLET</item>
+        <item>@string/LIME</item>
+        <item>@string/MINT</item>
+        <item>@string/FUCHSIA</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/WHITE_LAVENDAR</item>
+        <item>@string/ORANGE</item>
+        <item>@string/PINK_RASPBERRY</item>
+        <item>@string/PEACH</item>
+    </string-array>
+    <string-array name="sp3_rev2_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOP_TRACER</item>
+        <item>@string/HYPER_RIBBON</item>
+        <item>@string/HYPER_FLASH</item>
+        <item>@string/QUICK_FLASH</item>
+        <item>@string/EXTENDED_STUTTER_STROBE</item>
+        <item>@string/RAINBOW_RIBBON</item>
+        <item>@string/HYPER_STUTTER_STROBE</item>
     </string-array>
 </resources>
