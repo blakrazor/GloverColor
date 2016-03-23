@@ -79,6 +79,9 @@ public class GCChipUtil {
             } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_GALAXY))) {
                 colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
                 modeStringArray = mContext.getResources().getStringArray(R.array.arclite_galaxy_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ORACLE))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.oracle_modes);
             }
             GCChip chip = new GCChip(chipItem,
                     new ArrayList(Arrays.asList(colorStringArray)),

@@ -186,6 +186,7 @@
     <string name="SLOW_FADE">SLOW_FADE</string>
     <string name="RAINBOW_STROBE">RAINBOW_STROBE</string>
     <string name="RAINBOW_RIBBON">RAINBOW_RIBBON</string>
+    <string name="SEVEN_COLOR_STROBE">7C_STROBE</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -203,4 +204,5 @@
     <string name="ARCLITE_INTENSITY">ARCLITE INTENSITY</string>
     <string name="ARCLITE_SIMPLICITY">ARCLITE SIMPLICITY</string>
     <string name="ARCLITE_GALAXY">ARCLITE GALAXY</string>
+    <string name="ORACLE">ORACLE</string>
 </resources>

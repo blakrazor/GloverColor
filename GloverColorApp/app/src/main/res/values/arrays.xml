@@ -14,8 +14,9 @@
         <item>@string/ELEMENT_V2</item>
         <item>@string/ENOVA</item>
         <item>@string/EZLITE_2</item>
-        <item>@string/FLOW</item>
+        <item>@string/ORACLE</item>
         <item>@string/MATRIX</item>
+        <item>@string/FLOW</item>
         <item>@string/AURORA</item>
         <item>@string/FLUX</item>
         <item>@string/PULSAR</item>
@@ -101,6 +102,7 @@
         <item>@string/SHAPE_SHIFTER</item>
         <item>@string/VEX</item>
         <item>@string/KRUSH</item>
+        <item>@string/SEVEN_COLOR_STROBE</item>
         <item>@string/BLINK_E</item>
         <item>@string/RIBBON_FADE</item>
         <item>@string/PULSE</item>
@@ -560,5 +562,40 @@
         <item>@string/SLOW_FADE</item>
         <item>@string/RAINBOW_STROBE</item>
         <item>@string/RAINBOW_RIBBON</item>
+    </string-array>
+
+    <!-- ORACLE CHIP -->
+    <string-array name="oracle_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/GREEN</item>
+        <item>@string/BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SILVER</item>
+        <item>@string/MINT</item>
+        <item>@string/OFF_WHITE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/BLUSH</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/TURQUOISE</item>
+    </string-array>
+    <string-array name="oracle_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/TRACER</item>
+        <item>@string/CANDY_STROBE</item>
+        <item>@string/SEVEN_COLOR_STROBE</item>
+        <item>@string/BLINK_E</item>
     </string-array>
 </resources>
