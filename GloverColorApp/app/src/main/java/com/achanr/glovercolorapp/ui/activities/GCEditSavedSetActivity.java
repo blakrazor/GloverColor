@@ -944,17 +944,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialoglayout = inflater.inflate(R.layout.dialog_custom_color, null);
         final View colorPreview = dialoglayout.findViewById(R.id.custom_color_preview);
-        EditText redValueEditText = (EditText) dialoglayout.findViewById(R.id.red_value_edittext);
+        final EditText redValueEditText = (EditText) dialoglayout.findViewById(R.id.red_value_edittext);
         redValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
-        EditText greenValueEditText = (EditText) dialoglayout.findViewById(R.id.green_value_edittext);
+        final EditText greenValueEditText = (EditText) dialoglayout.findViewById(R.id.green_value_edittext);
         greenValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
-        EditText blueValueEditText = (EditText) dialoglayout.findViewById(R.id.blue_value_edittext);
+        final EditText blueValueEditText = (EditText) dialoglayout.findViewById(R.id.blue_value_edittext);
         blueValueEditText.setFilters(new InputFilter[]{new InputFilterMinMax("0", "255")});
         final SeekBar redValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_red);
         final SeekBar greenValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_green);
         final SeekBar blueValueSeekBar = (SeekBar) dialoglayout.findViewById(R.id.seek_bar_blue);
 
-        CustomColorCallback customColorCallback = new CustomColorCallback() {
+        final CustomColorCallback customColorCallback = new CustomColorCallback() {
             @Override
             public void valueChanged() {
                 int redValue = redValueSeekBar.getProgress();
@@ -977,6 +977,19 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         blueValueSeekBar.setProgress(oldValues[2]);
         blueValueEditText.setText(Integer.toString(oldValues[2]));
 
+        dialoglayout.findViewById(R.id.reset_button_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redValueSeekBar.setProgress(oldValues[0]);
+                redValueEditText.setText(Integer.toString(oldValues[0]));
+                greenValueSeekBar.setProgress(oldValues[1]);
+                greenValueEditText.setText(Integer.toString(oldValues[1]));
+                blueValueSeekBar.setProgress(oldValues[2]);
+                blueValueEditText.setText(Integer.toString(oldValues[2]));
+                customColorCallback.valueChanged();
+            }
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setView(dialoglayout);
         builder.setTitle("Set Custom Color");
@@ -997,26 +1010,30 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 dialog.dismiss();
             }
         });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                spinnerTv.setTextColor(Color.argb(255, oldValues[0], oldValues[1], oldValues[2]));
+                unhideNextColorSpinner(parent);
+                matchColorSpinnerToSwatch();
+                checkForChanges();
+                dialog.dismiss();
+            }
+        });
         builder.setOnKeyListener(new Dialog.OnKeyListener() {
 
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode,
                                  KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    int redValue = redValueSeekBar.getProgress();
-                    int greenValue = greenValueSeekBar.getProgress();
-                    int blueValue = blueValueSeekBar.getProgress();
-                    int[] rgbValues = new int[]{redValue, greenValue, blueValue};
-                    oldValues[0] = rgbValues[0];
-                    oldValues[1] = rgbValues[1];
-                    oldValues[2] = rgbValues[2];
-                    spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
+                    spinnerTv.setTextColor(Color.argb(255, oldValues[0], oldValues[1], oldValues[2]));
                     unhideNextColorSpinner(parent);
                     matchColorSpinnerToSwatch();
                     checkForChanges();
                     dialog.dismiss();
+                    return true;
                 }
-                return true;
+                return false;
             }
         });
         builder.setIcon(R.drawable.ic_settings_black_48dp);

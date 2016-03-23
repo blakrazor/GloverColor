@@ -24,10 +24,16 @@ public class InputFilterMinMax implements InputFilter {
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
         try {
-            int input = Integer.parseInt(dest.toString() + source.toString());
-            if (isInRange(min, max, input))
+            String destString = dest.toString();
+            if(dstart == 0 && dend == 3){
+                destString = "";
+            }
+            int input = Integer.parseInt(destString + source.toString());
+            if (isInRange(min, max, input)) {
                 return null;
-        } catch (NumberFormatException nfe) { }
+            }
+        } catch (NumberFormatException nfe) {
+        }
         return "";
     }
 
