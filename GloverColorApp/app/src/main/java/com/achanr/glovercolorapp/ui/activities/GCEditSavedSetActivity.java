@@ -35,7 +35,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -85,8 +84,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private boolean isNewSet = false;
     private boolean wasChangeDialogCanceled = false;
     private int spinnerSelectionCount = 0;
-    private Button mMoreColorsButton;
-    private boolean isMoreColorsVisible = false;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
@@ -666,6 +663,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 } else {
                     showCustomColorDialog(spinnerTv, parent);
                 }
+
+                if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
+                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+                }
             } else {
                 int[] rgbValues = colorEnum.getRGBValues();
                 spinnerTv.setTextColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
@@ -734,10 +735,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 }
             }
             mColorSpinnerHolders.get(i).getColorLayout().setVisibility(View.INVISIBLE);
-            mColorSpinnerHolders.get(i).getColorSwatch().setVisibility(View.GONE);
+            mColorSpinnerHolders.get(i).getColorSwatch().setVisibility(View.INVISIBLE);
         }
 
-        mColorSpinnerHolders.get(position).getColorSwatch().setVisibility(View.GONE);
+        mColorSpinnerHolders.get(position).getColorSwatch().setVisibility(View.INVISIBLE);
     }
 
     private void unhideNextColorSpinner(View view) {
