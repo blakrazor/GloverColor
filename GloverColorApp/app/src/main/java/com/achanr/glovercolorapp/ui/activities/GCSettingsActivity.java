@@ -175,7 +175,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             reportBugsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    String version;
+                    /*String version;
                     try {
                         PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
                         version = pInfo.versionName;
@@ -193,7 +193,13 @@ public class GCSettingsActivity extends GCBaseActivity {
                                     "Version: " + version + "\n" +
                                     "Contact (optional): " + "\n" +
                                     "Details: ");
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));*/
+
+                    String url = "http://goo.gl/forms/Ge690vaYDQ";
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+
                     return true;
                 }
             });
