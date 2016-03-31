@@ -23,4 +23,10 @@
     <color name="darkThemeAccent">#757575</color>
     <color name="darkThemeAccentLight">#9e9e9e</color>
     <color name="darkThemeBackground">#cfd8dc</color>
+
+    <color name="redThemePrimary">#f44336</color>
+    <color name="redThemePrimaryDark">#d32f2f</color>
+    <color name="redThemeAccent">#ff5252</color>
+    <color name="redThemeAccentLight">#ff8a80</color>
+    <color name="redThemeBackground">#ffcdd2</color>
 </resources>

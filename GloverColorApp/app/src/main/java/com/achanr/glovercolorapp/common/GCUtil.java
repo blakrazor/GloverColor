@@ -192,6 +192,9 @@ public class GCUtil {
             case GREEN_THEME:
                 activity.setTheme(R.style.GreenTheme);
                 break;
+            case RED_THEME:
+                activity.setTheme(R.style.RedTheme);
+                break;
         }
     }
 

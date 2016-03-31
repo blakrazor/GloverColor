@@ -11,4 +11,5 @@ public enum EGCThemeEnum {
     BLUE_THEME,
     PURPLE_THEME,
     GREEN_THEME,
+    RED_THEME
 }
