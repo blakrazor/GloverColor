@@ -5,18 +5,15 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
-import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 
 import java.util.HashMap;
 
@@ -35,7 +32,7 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
     public RelativeLayout rlSavedSetItem;
     public GCSavedSet mSavedSet;
     public Context mContext;
-    public PopupMenu mPopupMenu;
+    //public PopupMenu mPopupMenu;
     public CardView mCardView;
 
     public GCSavedSetListItemViewHolder(Context context, View itemView) {
@@ -59,7 +56,14 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
+        itemView.findViewById(R.id.share_card_action).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GCUtil.showShareDialog(mContext, mSavedSet);
+            }
+        });
+
+        /*mPopupMenu = new PopupMenu(mContext, itemView.findViewById(R.id.saved_set_more_actions));
         mPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, "Edit");
         mPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, "Share");
         mPopupMenu.getMenu().add(Menu.NONE, 3, Menu.NONE, "Delete");
@@ -93,7 +97,9 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
                     }
                 }
 
-        );
+        );*/
+
+
     }
 
     private void onNavigateToEditItem() {
