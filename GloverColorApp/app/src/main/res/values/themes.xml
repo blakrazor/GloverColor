@@ -36,6 +36,18 @@
         <item name="android:windowBackground">?attr/background</item>
     </style>
 
+    <style name="RedTheme">
+        <item name="themeName">RED_THEME</item>
+        <item name="colorPrimary">@color/redThemePrimary</item>
+        <item name="colorPrimaryDark">@color/redThemePrimaryDark</item>
+        <item name="savedSetListBackground">@color/redThemePrimaryDark</item>
+        <item name="colorAccent">@color/redThemeAccent</item>
+        <item name="colorAccentLight">@color/redThemeAccentLight</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="background">@color/redThemeBackground</item>
+        <item name="android:windowBackground">?attr/background</item>
+    </style>
+
     <style name="DefaultTheme">
         <item name="themeName">DEFAULT_THEME</item>
         <item name="colorPrimary">@color/darkThemePrimary</item>

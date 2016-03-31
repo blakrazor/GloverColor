@@ -2,9 +2,10 @@
 <resources>
     <string-array name="themes">
         <item>Default Theme</item>
+        <item>Red Theme</item>
+        <item>Green Theme</item>
         <item>Blue Theme</item>
         <item>Purple Theme</item>
-        <item>Green Theme</item>
     </string-array>
 
     <string-array name="all_chips">
