@@ -11,10 +11,21 @@ android {
         versionCode 1
         versionName "0.1"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("glovercolor.keystore")
+            storePassword "ChanrasmiGloverColor"
+            keyAlias "glovercolor"
+            keyPassword "ChanrasmiGloverColor"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
