@@ -102,9 +102,9 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
         mSavedSetList = getSavedSetListFromDatabase();
 
-        if (mSavedSetList != null && mSavedSetList.size() > 0) {
+        /*if (mSavedSetList != null && mSavedSetList.size() > 0) {
             findViewById(R.id.icon_background).setVisibility(View.GONE);
-        }
+        }*/
 
         mSavedSetListRecyclerView = (GridRecyclerView) findViewById(R.id.saved_set_list_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);

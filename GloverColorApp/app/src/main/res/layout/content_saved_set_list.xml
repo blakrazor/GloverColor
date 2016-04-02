@@ -13,9 +13,10 @@
             android:id="@+id/icon_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
             android:alpha="0.2"
-            android:padding="50dp"
+            android:paddingRight="50dp"
+            android:paddingLeft="50dp"
             android:src="@drawable/glover_color_logo"/>
 
         <com.achanr.glovercolorapp.ui.views.GridRecyclerView
