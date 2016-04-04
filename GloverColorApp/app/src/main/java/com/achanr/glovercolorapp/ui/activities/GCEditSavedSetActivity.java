@@ -368,19 +368,24 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             mChipSetSpinner.setSelection(0, false);
         }
         mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
-        mChipSetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mChipSetSpinner.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (wasChangeDialogCanceled) {
-                    wasChangeDialogCanceled = false;
-                } else {
-                    showChangingChipDialog();
-                }
-            }
+            public void run() {
+                mChipSetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (wasChangeDialogCanceled) {
+                            wasChangeDialogCanceled = false;
+                        } else {
+                            showChangingChipDialog();
+                        }
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
+                    }
+                });
             }
         });
     }
@@ -479,23 +484,45 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         int spinnerIndex = 0;
         ArrayList<String> colors = mChipSet.getColors();
+        boolean firstNoneHit = false;
         for (GCPoweredColor color : colorList) {
             int colorIndex = 0;
+            if (!firstNoneHit) {
+                for (String colorItem : colors) {
+                    if (colorItem.equalsIgnoreCase(color.getColor().getTitle())) {
+                        ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
+                        colorSpinnerHolder.getColorSpinner().setSelection(colorIndex, false);
+                        colorSpinnerHolder.setPowerLevel(color.getPowerLevel().getTitle());
+                        colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevel().getAbbreviation());
+                        colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
+                                colorSpinnerHolder.getColorSpinner(),
+                                true);
+                        break;
+                    } else {
+                        colorIndex++;
+                    }
+                }
+                spinnerIndex++;
+                if (color.getColor().getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
+                    firstNoneHit = true;
+                }
+            }
+        }
+
+        if (spinnerIndex < GCConstants.MAX_COLORS) {
+            ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
+            int colorIndex = 0;
             for (String colorItem : colors) {
-                if (colorItem.equalsIgnoreCase(color.getColor().getTitle())) {
-                    ColorSpinnerHolder colorSpinnerHolder = mColorSpinnerHolders.get(spinnerIndex);
+                if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                     colorSpinnerHolder.getColorSpinner().setSelection(colorIndex, false);
-                    colorSpinnerHolder.setPowerLevel(color.getPowerLevel().getTitle());
-                    colorSpinnerHolder.getColorSwatchTextView().setText(color.getPowerLevel().getAbbreviation());
-                    colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
-                            colorSpinnerHolder.getColorSpinner(),
-                            true);
                     break;
                 } else {
                     colorIndex++;
                 }
             }
-            spinnerIndex++;
+            colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
+                    colorSpinnerHolder.getColorSpinner(),
+                    true);
         }
 
         ArrayList<String> modes = mChipSet.getModes();
@@ -519,7 +546,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             int colorIndex = 0;
             for (String colorItem : colors) {
                 if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
-                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex);
+                    colorSpinnerHolder.getColorSpinner().setSelection(colorIndex, false);
+                    colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
+                            colorSpinnerHolder.getColorSpinner(),
+                            true);
                     break;
                 } else {
                     colorIndex++;
@@ -533,8 +563,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void setupListeners() {
-        for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            colorSpinnerHolder.getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
+        for (final ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
+            colorSpinnerHolder.getColorSpinner().post(new Runnable() {
+                @Override
+                public void run() {
+                    colorSpinnerHolder.getColorSpinner().setOnItemSelectedListener(mColorSpinnerSelectedListener);
+                }
+            });
             colorSpinnerHolder.getColorSwatchTextView().setOnClickListener(mColorSwatchClickListener);
         }
 
