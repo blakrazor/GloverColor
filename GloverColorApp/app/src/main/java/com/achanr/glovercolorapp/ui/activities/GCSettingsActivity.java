@@ -1,7 +1,5 @@
 package com.achanr.glovercolorapp.ui.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -32,8 +30,6 @@ import java.util.ArrayList;
  */
 public class GCSettingsActivity extends GCBaseActivity {
 
-    private Context mContext;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +42,8 @@ public class GCSettingsActivity extends GCBaseActivity {
                 onBackPressed();
             }
         });
-        mContext = this;
 
         PrefsFragment prefsFragment = new PrefsFragment();
-        prefsFragment.setContext(this);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, prefsFragment).commit();
@@ -69,13 +63,6 @@ public class GCSettingsActivity extends GCBaseActivity {
 
     public static class PrefsFragment extends PreferenceFragment {
 
-        private ListPreference mListPreference;
-        private Activity mContext;
-
-        public void setContext(Activity context) {
-            mContext = context;
-        }
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -93,36 +80,36 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupThemePreference() {
-            mListPreference = (ListPreference) findPreference(mContext.getString(R.string.theme_preference));
+            ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.theme_preference));
             String oldThemeString = GCUtil.getCurrentTheme();
             String shortThemeString = oldThemeString.substring(0, oldThemeString.indexOf("_THEME"));
-            mListPreference.setSummary(GCUtil.convertToCamelcase(shortThemeString));
-            mListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            listPreference.setSummary(GCUtil.convertToCamelcase(shortThemeString));
+            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String newThemeString = (String) newValue;
                     EGCThemeEnum themeEnum = EGCThemeEnum.valueOf(newThemeString.replace(" ", "_").toUpperCase());
-                    GCUtil.changeToTheme(mContext, themeEnum);
+                    GCUtil.changeToTheme(getActivity(), themeEnum);
                     return true;
                 }
             });
         }
 
         private void setupVersionNumberPreference() {
-            Preference versionPreference = findPreference(mContext.getString(R.string.version_number_preference));
+            Preference versionPreference = findPreference(getActivity().getString(R.string.version_number_preference));
             String version;
             try {
-                PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+                PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
                 version = pInfo.versionName;
             } catch (PackageManager.NameNotFoundException e) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                version = prefs.getString(mContext.getString(R.string.version_number_preference), "0.0");
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                version = prefs.getString(getActivity().getString(R.string.version_number_preference), "0.0");
             }
             versionPreference.setSummary(version);
         }
 
         private void setupPowerLevelPreference() {
-            final GCPowerLevelPreference powerLevelPreference = (GCPowerLevelPreference) findPreference(mContext.getString(R.string.power_level_preference));
+            final GCPowerLevelPreference powerLevelPreference = (GCPowerLevelPreference) findPreference(getActivity().getString(R.string.power_level_preference));
             powerLevelPreference.setPowerLevelCallback(new GCPowerLevelPreference.PowerLevelCallback() {
                 @Override
                 public void onPowerLevelChanged() {
@@ -136,7 +123,7 @@ public class GCSettingsActivity extends GCBaseActivity {
                     }
                     powerLevelPreference.setSummary(powerLevelString);
 
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, true);
                     editor.apply();
@@ -155,11 +142,11 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupRateAppPreference() {
-            Preference rateAppPreference = findPreference(mContext.getString(R.string.rate_app_preference));
+            Preference rateAppPreference = findPreference(getActivity().getString(R.string.rate_app_preference));
             rateAppPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    final String appPackageName = mContext.getPackageName(); // getPackageName() from Context or Activity object
+                    final String appPackageName = getActivity().getPackageName(); // getPackageName() from Context or Activity object
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                     } catch (android.content.ActivityNotFoundException anfe) {
@@ -171,7 +158,7 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupReportBugsPreference() {
-            Preference reportBugsPreference = findPreference(mContext.getString(R.string.report_bugs_preference));
+            Preference reportBugsPreference = findPreference(getActivity().getString(R.string.report_bugs_preference));
             reportBugsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -206,11 +193,11 @@ public class GCSettingsActivity extends GCBaseActivity {
         }
 
         private void setupDonatePreference() {
-            Preference donatePreference = findPreference(mContext.getString(R.string.donate_preference));
+            Preference donatePreference = findPreference(getActivity().getString(R.string.donate_preference));
             donatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mContext.getString(R.string.paypal_donate_link)));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.paypal_donate_link)));
                     startActivity(browserIntent);
                     return true;
                 }
