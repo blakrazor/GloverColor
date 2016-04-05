@@ -83,6 +83,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private boolean isNewSet = false;
     private boolean wasChangeDialogCanceled = false;
     private int spinnerSelectionCount = 0;
+    private int lastChipSelection = 0;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
@@ -378,6 +379,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             GCChip chipSet = mSavedSet.getChipSet();
             int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
             mChipSetSpinner.setSelection(chipsetIndex, false);
+            lastChipSelection = chipsetIndex;
         } else {
             mChipSetSpinner.setSelection(0, false);
         }
@@ -534,9 +536,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     colorIndex++;
                 }
             }
-            colorSpinnerSelectedFunction(colorSpinnerHolder.getColorSpinner().getSelectedView(),
-                    colorSpinnerHolder.getColorSpinner(),
-                    true);
+            for (int i = spinnerIndex; i < GCConstants.MAX_COLORS; i++) {
+                hideColorSpinnersAfterPosition(i);
+            }
         }
 
         ArrayList<String> modes = mChipSet.getModes();
@@ -772,19 +774,19 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void hideColorSpinnersAfterPosition(int position) {
-        ArrayList<String> colors = mChipSet.getColors();
-        for (int i = position + 1; i < mColorSpinnerHolders.size(); i++) {
+        if (position < mColorSpinnerHolders.size() - 1) {
+            ArrayList<String> colors = mChipSet.getColors();
             int colorIndex = 0;
             for (String colorItem : colors) {
                 if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
-                    mColorSpinnerHolders.get(i).getColorSpinner().setSelection(colorIndex);
+                    mColorSpinnerHolders.get(position + 1).getColorSpinner().setSelection(colorIndex, false);
                     break;
                 } else {
                     colorIndex++;
                 }
             }
-            mColorSpinnerHolders.get(i).getColorLayout().setVisibility(View.INVISIBLE);
-            mColorSpinnerHolders.get(i).getColorSwatch().setVisibility(View.INVISIBLE);
+            mColorSpinnerHolders.get(position + 1).getColorLayout().setVisibility(View.INVISIBLE);
+            mColorSpinnerHolders.get(position + 1).getColorSwatch().setVisibility(View.INVISIBLE);
         }
 
         mColorSpinnerHolders.get(position).getColorSwatch().setVisibility(View.INVISIBLE);
@@ -992,15 +994,16 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         retrievePresetColorEnums();
+                        lastChipSelection = mChipSetSpinner.getSelectedItemPosition();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         wasChangeDialogCanceled = true;
                         if (mSavedSet != null) {
-                            GCChip chipSet = mSavedSet.getChipSet();
-                            int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
-                            mChipSetSpinner.setSelection(chipsetIndex, false);
+                            //GCChip chipSet = mSavedSet.getChipSet();
+                            //int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
+                            mChipSetSpinner.setSelection(lastChipSelection, false);
                         } else {
                             mChipSetSpinner.setSelection(0, false);
                         }
