@@ -285,8 +285,12 @@ public class GCUtil {
     }
 
     public static String convertToCamelcase(String inputString) {
-        if (inputString.equalsIgnoreCase("DOPs")) {
+        if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.DOPS))) {
             return "DOPs";
+        }
+
+        if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.OG_CHROMA))) {
+            return "OG Chroma";
         }
 
         if (inputString != null && !inputString.isEmpty()) {

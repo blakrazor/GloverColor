@@ -21,7 +21,8 @@ public class GCChipUtil {
 
     public static void initChipArrayList() {
         mChipArrayList = GCDatabaseHelper.CHIP_DATABASE.getAllData();
-        if (mChipArrayList == null || mChipArrayList.isEmpty()) {
+        if (mChipArrayList == null || mChipArrayList.isEmpty()
+                || !mChipArrayList.get(0).getTitle().equalsIgnoreCase(mContext.getString(R.string.NO_CHIP))) {
             createDefaultChips();
         }
     }
@@ -94,6 +95,9 @@ public class GCChipUtil {
             } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP3_REV2))) {
                 colorStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_colors);
                 modeStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.OG_CHROMA))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.chroma24_modes);
             }
             GCChip chip = new GCChip(chipItem,
                     new ArrayList(Arrays.asList(colorStringArray)),
