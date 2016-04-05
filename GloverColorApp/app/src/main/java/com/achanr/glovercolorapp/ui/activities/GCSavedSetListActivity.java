@@ -143,7 +143,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         if (intent != null) {
             String fromNavigation = intent.getStringExtra(FROM_NAVIGATION);
             if (fromNavigation != null) {
-                if (fromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())) {
+                if (fromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())
+                        || fromNavigation.equalsIgnoreCase(GCHomeActivity.class.getName())) {
                     isFromEnterCode = true;
                     GCSavedSet newSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
                     Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);

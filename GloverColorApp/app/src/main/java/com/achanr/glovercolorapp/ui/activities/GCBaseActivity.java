@@ -174,7 +174,7 @@ public class GCBaseActivity extends AppCompatActivity
                 .show();
     }*/
 
-    private void startActivityTransition(final Intent intent) {
+    public void startActivityTransition(final Intent intent) {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mContext instanceof GCSavedSetListActivity) {
