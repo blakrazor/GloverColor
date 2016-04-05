@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.transition.Fade;
@@ -96,6 +95,21 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private InputFilter titleFilter = new InputFilter() {
         @Override
+        public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5) {
+            for (int k = arg1; k < arg2; k++) {
+                if (!Character.isLetterOrDigit(arg0.charAt(k))
+                        && !Character.isSpaceChar(arg0.charAt(k))) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
+
+
+
+    /*new InputFilter() {
+        @Override
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
 
@@ -119,7 +133,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 return filteredStringBuilder.toString();
             }
         }
-    };
+    };*/
 
     private class ColorSpinnerHolder {
         private LinearLayout mColorLayout;
