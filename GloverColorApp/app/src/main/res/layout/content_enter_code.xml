@@ -10,7 +10,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_enter_code">
+    tools:showIn="@layout/activity_enter_code"
+    android:background="?attr/background">
 
     <!-- Dummy item to prevent onstart receiving focus -->
     <LinearLayout
