@@ -19,10 +19,10 @@ public class GCColorUtil {
     private static Context mContext = GloverColorApplication.getContext();
 
     public static void initColorArrayList() {
-//        mColorArrayList = GCDatabaseHelper.COLOR_DATABASE.getAllData();
-//        if (mColorArrayList == null || mColorArrayList.isEmpty()) {
-        createDefaultColors();
-//        }
+        mColorArrayList = GCDatabaseHelper.COLOR_DATABASE.getAllData();
+        if (mColorArrayList == null || mColorArrayList.isEmpty()) {
+            createDefaultColors();
+        }
     }
 
     private static void createDefaultColors() {

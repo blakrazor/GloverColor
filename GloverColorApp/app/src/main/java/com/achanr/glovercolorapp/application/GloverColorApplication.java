@@ -23,19 +23,14 @@ public class GloverColorApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                GCDatabaseAdapter.getInstance(getApplicationContext());
-                GCColorUtil.initColorArrayList();
-                GCPowerLevelUtil.initPowerLevelArrayList();
-                GCChipUtil.initChipArrayList();
-                GCModeUtil.initModeArrayList();
-            }
-        }).start();
+        GCDatabaseAdapter.getInstance(getApplicationContext());
+        GCColorUtil.initColorArrayList();
+        GCPowerLevelUtil.initPowerLevelArrayList();
+        GCChipUtil.initChipArrayList();
+        GCModeUtil.initModeArrayList();
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return mContext;
     }
 }
