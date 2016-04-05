@@ -3,11 +3,11 @@ package com.achanr.glovercolorapp.application;
 import android.app.Application;
 import android.content.Context;
 
-import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
 import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCColorUtil;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
+import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
 
 /**
  * Glover Color App Project
@@ -23,11 +23,16 @@ public class GloverColorApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-        GCDatabaseAdapter.getInstance(getApplicationContext());
-        GCColorUtil.initColorArrayList();
-        GCPowerLevelUtil.initPowerLevelArrayList();
-        GCChipUtil.initChipArrayList();
-        GCModeUtil.initModeArrayList();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GCDatabaseAdapter.getInstance(getApplicationContext());
+                GCColorUtil.initColorArrayList();
+                GCPowerLevelUtil.initPowerLevelArrayList();
+                GCChipUtil.initChipArrayList();
+                GCModeUtil.initModeArrayList();
+            }
+        }).start();
     }
 
     public static Context getContext(){
