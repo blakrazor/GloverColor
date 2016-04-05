@@ -77,4 +77,6 @@
     <string name="developer_email_address">andrew.chanrasmi.developer+GloverColorApp@gmail.com</string>
     <string name="show_more_colors">SHOW MORE COLORS</string>
     <string name="show_less_colors">SHOW LESS COLORS</string>
+    <string name="check_out_saved_sets">See your saved sets</string>
+    <string name="create_a_new_set">Create a new set</string>
 </resources>
