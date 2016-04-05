@@ -243,8 +243,9 @@
     <string name="ARCLITE_SIMPLICITY">ARCLITE SIMPLICITY</string>
     <string name="ARCLITE_GALAXY">ARCLITE GALAXY</string>
     <string name="ORACLE">ORACLE</string>
-    <string name="SP2_REV1">SP2_REV1</string>
-    <string name="SP2_REV2">SP2_REV2</string>
-    <string name="SP3_REV1">SP3_REV1</string>
-    <string name="SP3_REV2">SP3_REV2</string>
+    <string name="SP2_REV1">SP2 REV1</string>
+    <string name="SP2_REV2">SP2 REV2</string>
+    <string name="SP3_REV1">SP3 REV1</string>
+    <string name="SP3_REV2">SP3 REV2</string>
+    <string name="OG_CHROMA">OG CHROMA</string>
 </resources>

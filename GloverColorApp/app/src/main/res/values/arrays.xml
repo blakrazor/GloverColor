@@ -10,6 +10,7 @@
 
     <string-array name="all_chips">
         <item>@string/NO_CHIP</item>
+        <item>@string/OG_CHROMA</item>
         <item>@string/CHROMA_24</item>
         <item>@string/CHROMA_CTRL</item>
         <item>@string/ELEMENT_V2</item>
