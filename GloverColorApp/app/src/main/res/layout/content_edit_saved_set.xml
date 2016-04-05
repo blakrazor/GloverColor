@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:transitionName="@string/transition_name_saved_set_cardview">
+    android:transitionName="@string/transition_name_saved_set_cardview"
+    android:background="?attr/background">
 
     <LinearLayout
         android:layout_width="match_parent"
