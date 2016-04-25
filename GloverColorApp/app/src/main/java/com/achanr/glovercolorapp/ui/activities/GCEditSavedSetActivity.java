@@ -25,13 +25,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -181,8 +181,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         super.onStop();
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            GCUtil.hideKeyboard(GCEditSavedSetActivity.this, view);
         }
     }
 
@@ -404,6 +403,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 });
             }
         });
+
+        mChipSetSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                GCUtil.hideKeyboard(GCEditSavedSetActivity.this, mTitleEditText);
+                return false;
+            }
+        });
     }
 
     private void matchColorSpinnerToSwatch() {
@@ -429,6 +436,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private void fillSpinnersWithEnums(final ArrayList<String> colorArray, ArrayList<String> modeArray) {
 
         mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, modeArray));
+
+        mModeSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                GCUtil.hideKeyboard(GCEditSavedSetActivity.this, mTitleEditText);
+                return false;
+            }
+        });
 
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             ArrayAdapter<String> customAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_color_item, colorArray) {
@@ -471,6 +486,14 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             colorSpinnerHolder.getColorSpinner().setAdapter(customAdapter);
             colorSpinnerHolder.setPowerLevel(GCConstants.POWER_LEVEL_HIGH_TITLE);
             colorSpinnerHolder.getColorSwatchTextView().setText(GCConstants.POWER_LEVEL_HIGH_ABBREV);
+
+            colorSpinnerHolder.getColorSpinner().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    GCUtil.hideKeyboard(GCEditSavedSetActivity.this, mTitleEditText);
+                    return false;
+                }
+            });
         }
     }
 
@@ -611,13 +634,22 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //mTitleTextView.setText(mTitleEditText.getText().toString().trim());
                     //showTitleEditText(false);
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    GCUtil.hideKeyboard(GCEditSavedSetActivity.this, v);
                     return true;
                 }
                 return false;
             }
         });
+
+        mTitleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    GCUtil.hideKeyboard(GCEditSavedSetActivity.this, v);
+                }
+            }
+        });
+
         /*mTitleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1233,8 +1265,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    GCUtil.hideKeyboard(GCEditSavedSetActivity.this, v);
                     return true;
                 }
                 return false;
