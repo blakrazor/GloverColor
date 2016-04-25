@@ -11,6 +11,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.EGCThemeEnum;
@@ -77,6 +78,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupRateAppPreference();
             setupReportBugsPreference();
             setupDonatePreference();
+            setupResetDialogPreference();
         }
 
         private void setupThemePreference() {
@@ -199,6 +201,26 @@ public class GCSettingsActivity extends GCBaseActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.paypal_donate_link)));
                     startActivity(browserIntent);
+                    return true;
+                }
+            });
+        }
+
+        private void setupResetDialogPreference() {
+            Preference rateAppPreference = findPreference(getActivity().getString(R.string.reset_dialog_preference));
+            rateAppPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    //Reset chip dialog
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(GCConstants.DONT_SHOW_CHIP_PRESET_DIALOG_KEY, false);
+                    editor.apply();
+
+                    //Display toast
+                    Toast.makeText(getActivity(), "Succesfully reset dialogs", Toast.LENGTH_SHORT).show();
+
                     return true;
                 }
             });
