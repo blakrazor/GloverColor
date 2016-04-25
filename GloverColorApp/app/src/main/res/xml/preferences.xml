@@ -17,6 +17,12 @@
             android:key="@string/power_level_preference"
             android:title="Power Levels"/>
 
+        <Preference
+            android:clickable="true"
+            android:key="@string/reset_dialog_preference"
+            android:title="Reset Hidden Dialogs"
+            android:summary="Show all previously hidden dialogs"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

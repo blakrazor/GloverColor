@@ -10,9 +10,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -34,6 +36,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -1020,30 +1024,52 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     public void showChangingChipDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(getString(R.string.changing_preset_chip))
-                .setMessage(getString(R.string.changing_preset_chip_desc))
-                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        retrievePresetColorEnums();
-                        lastChipSelection = mChipSetSpinner.getSelectedItemPosition();
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        wasChangeDialogCanceled = true;
-                        if (mSavedSet != null) {
-                            //GCChip chipSet = mSavedSet.getChipSet();
-                            //int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
-                            mChipSetSpinner.setSelection(lastChipSelection, false);
-                        } else {
-                            mChipSetSpinner.setSelection(0, false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (!prefs.getBoolean(GCConstants.DONT_SHOW_CHIP_PRESET_DIALOG_KEY, false)) {
+            View checkBoxView = View.inflate(this, R.layout.dialog_with_checkbox, null);
+            CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // Save to shared preferences
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(GCConstants.DONT_SHOW_CHIP_PRESET_DIALOG_KEY, isChecked);
+                    editor.apply();
+                }
+            });
+            checkBox.setText("Don't ask me again");
+
+            new AlertDialog.Builder(mContext)
+                    .setView(checkBoxView)
+                    .setTitle(getString(R.string.changing_preset_chip))
+                    .setMessage(getString(R.string.changing_preset_chip_desc))
+                    .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            retrievePresetColorEnums();
+                            lastChipSelection = mChipSetSpinner.getSelectedItemPosition();
                         }
-                        dialog.cancel();
-                    }
-                })
-                .setIcon(R.drawable.ic_warning_black_48dp)
-                .show();
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            wasChangeDialogCanceled = true;
+                            if (mSavedSet != null) {
+                                //GCChip chipSet = mSavedSet.getChipSet();
+                                //int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
+                                mChipSetSpinner.setSelection(lastChipSelection, false);
+                            } else {
+                                mChipSetSpinner.setSelection(0, false);
+                            }
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_warning_black_48dp)
+                    .show();
+        } else {
+            retrievePresetColorEnums();
+            lastChipSelection = mChipSetSpinner.getSelectedItemPosition();
+        }
     }
 
     public void showLeavingDialog() {

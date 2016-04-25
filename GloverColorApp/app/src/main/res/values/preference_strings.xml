@@ -6,4 +6,5 @@
     <string name="rate_app_preference">RATE_APP_PREFERENCE</string>
     <string name="report_bugs_preference">REPORT_BUGS_PREFERENCE</string>
     <string name="donate_preference">DONATE_PREFERENCE</string>
+    <string name="reset_dialog_preference">RESET_DIALOG_PREFERENCE</string>
 </resources>
