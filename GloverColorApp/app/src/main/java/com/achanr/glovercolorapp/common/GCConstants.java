@@ -22,6 +22,7 @@ public class GCConstants {
     //Preferences Constants
     public static final String WAS_POWER_LEVELS_CHANGED_KEY = "was_power_levels_changed_key";
     public static final String DONT_SHOW_CHIP_PRESET_DIALOG_KEY = "dont_show_chip_preset_dialog_key";
+    public static final String SORTING_KEY = "SORTING_TYPE_KEY";
 
     //Important color constants
     public static final String COLOR_NONE = "NONE";
