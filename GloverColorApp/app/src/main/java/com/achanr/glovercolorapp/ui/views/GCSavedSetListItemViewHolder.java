@@ -56,6 +56,14 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+        itemView.findViewById(R.id.linear_layout_background).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showDeleteDialog();
+                return true;
+            }
+        });
+
         itemView.findViewById(R.id.share_card_action).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
