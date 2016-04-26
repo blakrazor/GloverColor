@@ -378,14 +378,17 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void setupChipSetSpinner() {
         mChipSetSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, GCChipUtil.getAllChipTitles()));
+        String chipTitle = "";
         if (mSavedSet != null) {
             GCChip chipSet = mSavedSet.getChipSet();
-            int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
-            mChipSetSpinner.setSelection(chipsetIndex, false);
-            lastChipSelection = chipsetIndex;
+            chipTitle = chipSet.getTitle();
         } else {
-            mChipSetSpinner.setSelection(0, false);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            chipTitle = prefs.getString(getString(R.string.default_chip_preference), getString(R.string.NO_CHIP));
         }
+        int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipTitle);
+        mChipSetSpinner.setSelection(chipsetIndex, false);
+        lastChipSelection = chipsetIndex;
         mChipSet = GCChipUtil.getChipUsingTitle((String) mChipSetSpinner.getSelectedItem());
         mChipSetSpinner.post(new Runnable() {
             @Override
@@ -1054,13 +1057,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             wasChangeDialogCanceled = true;
-                            if (mSavedSet != null) {
-                                //GCChip chipSet = mSavedSet.getChipSet();
-                                //int chipsetIndex = GCChipUtil.getAllChipTitles().indexOf(chipSet.getTitle());
-                                mChipSetSpinner.setSelection(lastChipSelection, false);
-                            } else {
-                                mChipSetSpinner.setSelection(0, false);
-                            }
+                            mChipSetSpinner.setSelection(lastChipSelection, false);
                             dialog.cancel();
                         }
                     })

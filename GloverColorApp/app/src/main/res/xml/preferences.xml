@@ -17,6 +17,14 @@
             android:key="@string/power_level_preference"
             android:title="Power Levels"/>
 
+        <ListPreference
+            android:defaultValue="@string/NO_CHIP"
+            android:dialogTitle="Choose Default Chip"
+            android:entries="@array/all_chips"
+            android:entryValues="@array/all_chips"
+            android:key="@string/default_chip_preference"
+            android:title="Default Chip"/>
+
         <Preference
             android:clickable="true"
             android:key="@string/reset_dialog_preference"
