@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -15,9 +16,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.transition.Fade;
 import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
@@ -25,14 +29,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
-import com.achanr.glovercolorapp.database.GCDatabaseHelper;
-import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +49,23 @@ import java.util.Map;
  */
 
 public class GCSavedSetListActivity extends GCBaseActivity {
+
+    private enum SortEnum {
+        TITLE_ASC("Sort by title ascending"),
+        TITLE_DESC("Sort by title descending"),
+        CHIP_ASC("Sort by chip ascending"),
+        CHIP_DESC("Sort by chip descending");
+
+        String description;
+
+        SortEnum(String desc) {
+            description = desc;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
 
     private Context mContext;
     private ArrayList<GCSavedSet> mSavedSetList;
@@ -100,7 +123,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mContext = this;
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        mSavedSetList = getSavedSetListFromDatabase();
+        getSavedSetListFromDatabase();
 
         /*if (mSavedSetList != null && mSavedSetList.size() > 0) {
             findViewById(R.id.icon_background).setVisibility(View.GONE);
@@ -194,12 +217,103 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
     }
 
-    private ArrayList<GCSavedSet> getSavedSetListFromDatabase() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 1, "Sort").setIcon(R.drawable.ic_sort_white_48dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1: //revert changes
+                showSortDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showSortDialog() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
+
+        SortEnum[] sortEnums = SortEnum.values();
+        String[] sortDescs = new String[sortEnums.length];
+
+        for (int i = 0; i < sortEnums.length; i++) {
+            sortDescs[i] = sortEnums[i].getDescription();
+            if (i == sortTypeInt) {
+                sortDescs[i] += " (current)";
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose sort option");
+        builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                // Do something with the selection
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(GCConstants.SORTING_KEY, item);
+                editor.apply();
+                sortList(mSavedSetList);
+                mSavedSetListAdapter.notifyDataSetChanged();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void sortList(ArrayList<GCSavedSet> unsortedList) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
+        SortEnum sortType = SortEnum.values()[sortTypeInt];
+
+        switch (sortType) {
+            case TITLE_DESC:
+                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return rhs.getTitle().compareToIgnoreCase(lhs.getTitle());
+                    }
+                });
+                break;
+            case TITLE_ASC:
+                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return lhs.getTitle().compareToIgnoreCase(rhs.getTitle());
+                    }
+                });
+                break;
+            case CHIP_DESC:
+                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return rhs.getChipSet().getTitle().compareToIgnoreCase(lhs.getChipSet().getTitle());
+                    }
+                });
+                break;
+            case CHIP_ASC:
+                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return lhs.getChipSet().getTitle().compareToIgnoreCase(rhs.getChipSet().getTitle());
+                    }
+                });
+                break;
+        }
+    }
+
+    private void getSavedSetListFromDatabase() {
         ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
-        return savedSetList;
+        sortList(savedSetList);
+        mSavedSetList = savedSetList;
     }
 
     private void setupSavedSetList() {
@@ -272,21 +386,21 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
-        mSavedSetList = getSavedSetListFromDatabase();
+        getSavedSetListFromDatabase();
         mSavedSetListAdapter.update(oldSet, newSet);
         Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.deleteData(savedSet);
-        mSavedSetList = getSavedSetListFromDatabase();
+        getSavedSetListFromDatabase();
         mSavedSetListAdapter.remove(savedSet);
         Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetAdded(GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.insertData(newSet);
-        mSavedSetList = getSavedSetListFromDatabase();
+        getSavedSetListFromDatabase();
         mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
     }
