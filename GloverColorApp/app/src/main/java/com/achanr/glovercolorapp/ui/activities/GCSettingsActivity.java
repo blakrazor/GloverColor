@@ -79,6 +79,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupReportBugsPreference();
             setupDonatePreference();
             setupResetDialogPreference();
+            setupDefaultChipPreference();
         }
 
         private void setupThemePreference() {
@@ -221,6 +222,21 @@ public class GCSettingsActivity extends GCBaseActivity {
                     //Display toast
                     Toast.makeText(getActivity(), "Succesfully reset dialogs", Toast.LENGTH_SHORT).show();
 
+                    return true;
+                }
+            });
+        }
+
+        private void setupDefaultChipPreference() {
+            ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.default_chip_preference));
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String oldDefaultChip = prefs.getString(getString(R.string.default_chip_preference), getString(R.string.NO_CHIP));
+            listPreference.setSummary(GCUtil.convertToCamelcase(oldDefaultChip));
+            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    String newDefaultChipString = (String) newValue;
+                    preference.setSummary(GCUtil.convertToCamelcase(newDefaultChipString));
                     return true;
                 }
             });
