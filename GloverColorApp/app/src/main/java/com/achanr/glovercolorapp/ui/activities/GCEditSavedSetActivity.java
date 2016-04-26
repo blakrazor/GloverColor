@@ -1070,21 +1070,29 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     public void showLeavingDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.unsaved_changes))
-                .setMessage(mContext.getString(R.string.unsaved_changes_dialog))
-                .setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        finishActivityTransition(RESULT_CANCELED, null);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setIcon(R.drawable.ic_warning_black_48dp)
-                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(mContext.getString(R.string.unsaved_changes));
+        builder.setMessage(mContext.getString(R.string.unsaved_changes_dialog));
+        builder.setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                finishActivityTransition(RESULT_CANCELED, null);
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        if (!isNewSet) {
+            builder.setNeutralButton("Save and Exit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    saveSet();
+                }
+            });
+        }
+        builder.setIcon(R.drawable.ic_warning_black_48dp);
+        builder.show();
     }
 
     public boolean madeChanges() {
