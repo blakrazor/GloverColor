@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_list_black"
             android:title="@string/title_your_saved_sets"/>
         <item
+            android:id="@+id/nav_collections"
+            android:icon="@drawable/ic_folder_black_48dp"
+            android:title="@string/title_collections"/>
+        <item
             android:id="@+id/nav_enter_code"
             android:icon="@drawable/ic_input_black"
             android:title="@string/title_enter_code"/>

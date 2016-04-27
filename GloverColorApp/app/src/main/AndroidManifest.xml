@@ -44,6 +44,13 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".ui.activities.GCCollectionsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_collections"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".ui.activities.GCEditSavedSetActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_edit_set"

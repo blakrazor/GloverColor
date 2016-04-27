@@ -138,6 +138,11 @@ public class GCBaseActivity extends AppCompatActivity
             intent = new Intent(mContext, GCSavedSetListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
+        } else if (id == R.id.nav_collections && mPosition != R.id.nav_collections) {
+            mPosition = R.id.nav_collections;
+            intent = new Intent(mContext, GCCollectionsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityTransition(intent);
         } else if (id == R.id.nav_enter_code && mPosition != R.id.nav_enter_code) {
             mPosition = R.id.nav_enter_code;
             intent = new Intent(mContext, GCEnterCodeActivity.class);
@@ -182,6 +187,19 @@ public class GCBaseActivity extends AppCompatActivity
                     @Override
                     public void onComplete() {
                         ((GCSavedSetListActivity) mContext).animateListView(false, new GCSavedSetListActivity.AnimationCompleteListener() {
+
+                            @Override
+                            public void onComplete() {
+                                startActivityMaterialDesignTransition(intent);
+                            }
+                        });
+                    }
+                });
+            } else if (mContext instanceof GCCollectionsActivity) {
+                ((GCCollectionsActivity) mContext).animateFab(false, new GCCollectionsActivity.AnimationCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        ((GCCollectionsActivity) mContext).animateListView(false, new GCCollectionsActivity.AnimationCompleteListener() {
 
                             @Override
                             public void onComplete() {

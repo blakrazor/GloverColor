@@ -79,4 +79,5 @@
     <string name="show_less_colors">SHOW LESS COLORS</string>
     <string name="check_out_saved_sets">See your saved sets</string>
     <string name="create_a_new_set">Create a new set</string>
+    <string name="title_collections">Collections</string>
 </resources>
