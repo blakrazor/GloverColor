@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.ui.views.GCSavedSetListItemViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Glover Color App Project
@@ -28,14 +29,16 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     private Context mContext;
 
     public GCSavedSetListAdapter(Context context, ArrayList<GCSavedSet> savedSetList) {
-        mSavedSetList = savedSetList;
+        mSavedSetList = new ArrayList<>(savedSetList);
         mContext = context;
     }
 
     public void add(int position, GCSavedSet savedSet) {
         mSavedSetList.add(position, savedSet);
-        notifyItemInserted(position);
-        notifyItemRangeChanged(position, getItemCount());
+        sortList();
+        int newPosition = mSavedSetList.indexOf(savedSet);
+        notifyItemInserted(newPosition);
+        //notifyItemRangeChanged(position, getItemCount());
     }
 
     public void update(GCSavedSet oldSet, GCSavedSet newSet) {
@@ -48,7 +51,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         int position = mSavedSetList.indexOf(savedSet);
         mSavedSetList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
+        //notifyItemRangeChanged(position, getItemCount());
     }
 
     @Override
@@ -82,5 +85,60 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     @Override
     public int getItemCount() {
         return mSavedSetList.size();
+    }
+
+    public void animateTo(List<GCSavedSet> models) {
+        applyAndAnimateRemovals(models);
+        applyAndAnimateAdditions(models);
+        applyAndAnimateMovedItems(models);
+    }
+
+    private void applyAndAnimateRemovals(List<GCSavedSet> newModels) {
+        for (int i = mSavedSetList.size() - 1; i >= 0; i--) {
+            final GCSavedSet model = mSavedSetList.get(i);
+            if (!newModels.contains(model)) {
+                removeItem(i);
+            }
+        }
+    }
+
+    private void applyAndAnimateAdditions(List<GCSavedSet> newModels) {
+        for (int i = 0, count = newModels.size(); i < count; i++) {
+            final GCSavedSet model = newModels.get(i);
+            if (!mSavedSetList.contains(model)) {
+                addItem(i, model);
+            }
+        }
+    }
+
+    private void applyAndAnimateMovedItems(List<GCSavedSet> newModels) {
+        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+            final GCSavedSet model = newModels.get(toPosition);
+            final int fromPosition = mSavedSetList.indexOf(model);
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition);
+            }
+        }
+    }
+
+    public GCSavedSet removeItem(int position) {
+        final GCSavedSet model = mSavedSetList.remove(position);
+        notifyItemRemoved(position);
+        return model;
+    }
+
+    public void addItem(int position, GCSavedSet model) {
+        mSavedSetList.add(position, model);
+        notifyItemInserted(position);
+    }
+
+    public void moveItem(int fromPosition, int toPosition) {
+        final GCSavedSet model = mSavedSetList.remove(fromPosition);
+        mSavedSetList.add(toPosition, model);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    public void sortList() {
+        mSavedSetList = GCUtil.sortList(mSavedSetList);
     }
 }

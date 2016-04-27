@@ -20,6 +20,7 @@ import android.text.style.SuperscriptSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,8 +31,12 @@ import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -392,5 +397,68 @@ public class GCUtil {
     public static void hideKeyboard(Activity activity, View v) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public static <V extends View> Collection<V> findChildrenByClass(ViewGroup viewGroup, Class<V> clazz) {
+
+        return gatherChildrenByClass(viewGroup, clazz, new ArrayList<V>());
+    }
+
+    private static <V extends View> Collection<V> gatherChildrenByClass(ViewGroup viewGroup, Class<V> clazz, Collection<V> childrenFound) {
+
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            final View child = viewGroup.getChildAt(i);
+            if (clazz.isAssignableFrom(child.getClass())) {
+                childrenFound.add((V) child);
+            }
+            if (child instanceof ViewGroup) {
+                gatherChildrenByClass((ViewGroup) child, clazz, childrenFound);
+            }
+        }
+
+        return childrenFound;
+    }
+
+    public static ArrayList<GCSavedSet> sortList(ArrayList<GCSavedSet> savedSetArrayList) {
+        ArrayList<GCSavedSet> sortedSetList = new ArrayList<>(savedSetArrayList);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GloverColorApplication.getContext());
+        int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
+        GCSavedSetListActivity.SortEnum sortType = GCSavedSetListActivity.SortEnum.values()[sortTypeInt];
+
+        switch (sortType) {
+            case TITLE_DESC:
+                Collections.sort(sortedSetList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return rhs.getTitle().compareToIgnoreCase(lhs.getTitle());
+                    }
+                });
+                break;
+            case TITLE_ASC:
+                Collections.sort(sortedSetList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return lhs.getTitle().compareToIgnoreCase(rhs.getTitle());
+                    }
+                });
+                break;
+            case CHIP_DESC:
+                Collections.sort(sortedSetList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return rhs.getChipSet().getTitle().compareToIgnoreCase(lhs.getChipSet().getTitle());
+                    }
+                });
+                break;
+            case CHIP_ASC:
+                Collections.sort(sortedSetList, new Comparator<GCSavedSet>() {
+                    @Override
+                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
+                        return lhs.getChipSet().getTitle().compareToIgnoreCase(rhs.getChipSet().getTitle());
+                    }
+                });
+                break;
+        }
+        return sortedSetList;
     }
 }
