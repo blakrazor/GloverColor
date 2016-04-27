@@ -409,7 +409,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListAdapter.add(mSavedSetList.size(), newSet);
         mSavedSetList.add(mSavedSetList.size(), newSet);
         mSavedSetList = GCUtil.sortList(mSavedSetList);
-        //sort();
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
     }
 
