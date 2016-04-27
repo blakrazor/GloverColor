@@ -29,6 +29,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.CustomItemAnimator;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
@@ -258,22 +259,21 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(GCConstants.SORTING_KEY, item);
                 editor.apply();
-                sortList(mSavedSetList);
-                mSavedSetListAdapter.notifyDataSetChanged();
+                sort();
             }
         });
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    private void sortList(ArrayList<GCSavedSet> unsortedList) {
+    private void prepareList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
         SortEnum sortType = SortEnum.values()[sortTypeInt];
 
         switch (sortType) {
             case TITLE_DESC:
-                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
                     @Override
                     public int compare(GCSavedSet lhs, GCSavedSet rhs) {
                         return rhs.getTitle().compareToIgnoreCase(lhs.getTitle());
@@ -281,7 +281,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 });
                 break;
             case TITLE_ASC:
-                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
                     @Override
                     public int compare(GCSavedSet lhs, GCSavedSet rhs) {
                         return lhs.getTitle().compareToIgnoreCase(rhs.getTitle());
@@ -289,7 +289,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 });
                 break;
             case CHIP_DESC:
-                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
                     @Override
                     public int compare(GCSavedSet lhs, GCSavedSet rhs) {
                         return rhs.getChipSet().getTitle().compareToIgnoreCase(lhs.getChipSet().getTitle());
@@ -297,7 +297,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 });
                 break;
             case CHIP_ASC:
-                Collections.sort(unsortedList, new Comparator<GCSavedSet>() {
+                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
                     @Override
                     public int compare(GCSavedSet lhs, GCSavedSet rhs) {
                         return lhs.getChipSet().getTitle().compareToIgnoreCase(rhs.getChipSet().getTitle());
@@ -312,8 +312,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
-        sortList(savedSetList);
         mSavedSetList = savedSetList;
+        prepareList();
     }
 
     private void setupSavedSetList() {
@@ -324,6 +324,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         // use a linear layout manager
         mSavedSetListLayoutManager = new GridLayoutManager(mContext, 1);
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
+        mSavedSetListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
@@ -386,23 +387,32 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
-        getSavedSetListFromDatabase();
         mSavedSetListAdapter.update(oldSet, newSet);
+        sort();
         Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.deleteData(savedSet);
-        getSavedSetListFromDatabase();
         mSavedSetListAdapter.remove(savedSet);
+        sort();
         Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetAdded(GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.insertData(newSet);
-        getSavedSetListFromDatabase();
-        mSavedSetListAdapter.add(mSavedSetList.indexOf(newSet), newSet);
+        mSavedSetListAdapter.add(mSavedSetList.size(), newSet);
+        sort();
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+    }
+
+    private void sort() {
+        prepareList();
+        int firstVisible = mSavedSetListLayoutManager.findFirstVisibleItemPosition();
+        int lastVisible = mSavedSetListLayoutManager.findLastVisibleItemPosition();
+        int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
+        int start = firstVisible - itemsChanged> 0 ? firstVisible - itemsChanged: 0;
+        mSavedSetListAdapter.notifyItemRangeChanged(start, itemsChanged+itemsChanged);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
