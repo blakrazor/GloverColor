@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
@@ -122,13 +121,13 @@ public class CustomItemAnimator extends SimpleItemAnimator {
 
     @Override
     public boolean animateRemove(final RecyclerView.ViewHolder holder) {
-        Log.e(TAG, "animateRemove" + holder.getAdapterPosition());
+        //Log.e(TAG, "animateRemove" + holder.getAdapterPosition());
         return remove(holder);
     }
 
     @Override
     public boolean animateAdd(final RecyclerView.ViewHolder holder) {
-        Log.e(TAG, "animateAdd" + holder.getAdapterPosition());
+        //Log.e(TAG, "animateAdd" + holder.getAdapterPosition());
         return add(holder);
     }
 
@@ -136,7 +135,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
     @Override
     public boolean animateMove(final RecyclerView.ViewHolder holder, int fromX, int fromY,
                                int toX, int toY) {
-        Log.e(TAG, "animateMove" + holder.getAdapterPosition());
+        //Log.e(TAG, "animateMove" + holder.getAdapterPosition());
         final View view = holder.itemView;
         fromX += ViewCompat.getTranslationX(holder.itemView);
         fromY += ViewCompat.getTranslationY(holder.itemView);
@@ -201,7 +200,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
     @Override
     public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder,
                                  int fromX, int fromY, int toX, int toY) {
-        Log.e(TAG, "animateChange" + newHolder.getAdapterPosition());
+        //Log.e(TAG, "animateChange" + newHolder.getAdapterPosition());
         add(newHolder);
         if (oldHolder != newHolder)
             remove(oldHolder);

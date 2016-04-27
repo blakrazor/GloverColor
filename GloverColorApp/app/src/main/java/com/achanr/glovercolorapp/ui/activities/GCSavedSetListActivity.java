@@ -6,10 +6,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,14 +20,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.SearchView;
 import android.transition.Fade;
 import android.util.Pair;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
@@ -38,9 +43,8 @@ import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,7 +55,7 @@ import java.util.Map;
 
 public class GCSavedSetListActivity extends GCBaseActivity {
 
-    private enum SortEnum {
+    public enum SortEnum {
         TITLE_ASC("Sort by title ascending"),
         TITLE_DESC("Sort by title descending"),
         CHIP_ASC("Sort by chip ascending"),
@@ -77,6 +81,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private boolean isFromEditing = false;
     private boolean isLeaving = false;
     private boolean isFromEnterCode = false;
+    private boolean isAnimating = false;
 
     public static final String FROM_NAVIGATION = "from_navigation";
     public static final String NEW_SET_KEY = "new_set_key";
@@ -220,20 +225,58 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, 1, 1, "Sort").setIcon(R.drawable.ic_sort_white_48dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_saved_set_list, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            for (TextView textView : GCUtil.findChildrenByClass(searchView, TextView.class)) {
+                textView.setTextColor(Color.WHITE);
+            }
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    final List<GCSavedSet> filteredModelList = filter(mSavedSetList, newText);
+                    mSavedSetListAdapter.animateTo(filteredModelList);
+                    mSavedSetListRecyclerView.scrollToPosition(0);
+                    return true;
+                }
+            });
+        }
+
+        MenuItem sortItem = menu.findItem(R.id.menu_sort);
+        sortItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showSortDialog();
+                return true;
+            }
+        });
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 1: //revert changes
-                showSortDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private List<GCSavedSet> filter(List<GCSavedSet> models, String query) {
+        query = query.toLowerCase();
+
+        final List<GCSavedSet> filteredModelList = new ArrayList<>();
+        for (GCSavedSet model : models) {
+            final String text = model.getTitle().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
         }
+        return filteredModelList;
     }
 
     private void showSortDialog() {
@@ -266,54 +309,13 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         alert.show();
     }
 
-    private void prepareList() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
-        SortEnum sortType = SortEnum.values()[sortTypeInt];
-
-        switch (sortType) {
-            case TITLE_DESC:
-                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
-                    @Override
-                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
-                        return rhs.getTitle().compareToIgnoreCase(lhs.getTitle());
-                    }
-                });
-                break;
-            case TITLE_ASC:
-                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
-                    @Override
-                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
-                        return lhs.getTitle().compareToIgnoreCase(rhs.getTitle());
-                    }
-                });
-                break;
-            case CHIP_DESC:
-                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
-                    @Override
-                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
-                        return rhs.getChipSet().getTitle().compareToIgnoreCase(lhs.getChipSet().getTitle());
-                    }
-                });
-                break;
-            case CHIP_ASC:
-                Collections.sort(mSavedSetList, new Comparator<GCSavedSet>() {
-                    @Override
-                    public int compare(GCSavedSet lhs, GCSavedSet rhs) {
-                        return lhs.getChipSet().getTitle().compareToIgnoreCase(rhs.getChipSet().getTitle());
-                    }
-                });
-                break;
-        }
-    }
-
     private void getSavedSetListFromDatabase() {
         ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
         mSavedSetList = savedSetList;
-        prepareList();
+        mSavedSetList = GCUtil.sortList(mSavedSetList);
     }
 
     private void setupSavedSetList() {
@@ -326,6 +328,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
         mSavedSetListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
+        mSavedSetListAdapter.sortList();
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
 
@@ -388,31 +391,36 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSavedSetListAdapter.update(oldSet, newSet);
-        sort();
+        int position = mSavedSetList.indexOf(oldSet);
+        mSavedSetList.set(position, newSet);
         Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.deleteData(savedSet);
         mSavedSetListAdapter.remove(savedSet);
-        sort();
+        int position = mSavedSetList.indexOf(savedSet);
+        mSavedSetList.remove(position);
         Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetAdded(GCSavedSet newSet) {
         GCDatabaseHelper.SAVED_SET_DATABASE.insertData(newSet);
         mSavedSetListAdapter.add(mSavedSetList.size(), newSet);
-        sort();
+        mSavedSetList.add(mSavedSetList.size(), newSet);
+        mSavedSetList = GCUtil.sortList(mSavedSetList);
+        //sort();
         Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
     }
 
     private void sort() {
-        prepareList();
         int firstVisible = mSavedSetListLayoutManager.findFirstVisibleItemPosition();
         int lastVisible = mSavedSetListLayoutManager.findLastVisibleItemPosition();
         int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
-        int start = firstVisible - itemsChanged> 0 ? firstVisible - itemsChanged: 0;
-        mSavedSetListAdapter.notifyItemRangeChanged(start, itemsChanged+itemsChanged);
+        int start = firstVisible - itemsChanged > 0 ? firstVisible - itemsChanged : 0;
+        mSavedSetList = GCUtil.sortList(mSavedSetList);
+        mSavedSetListAdapter.sortList();
+        mSavedSetListAdapter.notifyItemRangeChanged(start, itemsChanged + itemsChanged);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -532,6 +540,11 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     @Override
     public void onBackPressed() {
+        if(isAnimating){
+            return;
+        }
+
+        isAnimating = true;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -549,12 +562,14 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     }
                 });
             } else {
+                isAnimating = false;
                 super.onBackPressed();
             }
         }
     }
 
     private void completedAnimationBackPressed() {
+        isAnimating = false;
         super.onBackPressed();
     }
 }
