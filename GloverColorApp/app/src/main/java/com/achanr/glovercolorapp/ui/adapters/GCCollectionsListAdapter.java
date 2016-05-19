@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.ui.views.GCCollectionsListItemViewHolder;
 
 import java.util.ArrayList;
@@ -20,12 +21,37 @@ import java.util.List;
  * @created 4/27/16 4:03 PM
  */
 public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollectionsListItemViewHolder> {
-    private ArrayList<GCSavedSet> mSavedSetList;
+    private ArrayList<GCCollection> mCollectionList;
     private Context mContext;
 
-    public GCCollectionsListAdapter(Context context, ArrayList<GCSavedSet> savedSetList) {
-        mSavedSetList = new ArrayList<>(savedSetList);
+    public GCCollectionsListAdapter(Context context, ArrayList<GCCollection> collectionList) {
+        mCollectionList = new ArrayList<>(collectionList);
         mContext = context;
+    }
+
+    public void sortList() {
+        mCollectionList = GCUtil.sortCollectionList(mCollectionList);
+    }
+
+    public void add(int position, GCCollection savedCollection) {
+        mCollectionList.add(position, savedCollection);
+        sortList();
+        int newPosition = mCollectionList.indexOf(savedCollection);
+        notifyItemInserted(newPosition);
+        //notifyItemRangeChanged(position, getItemCount());
+    }
+
+    public void update(GCCollection oldCollection, GCCollection newCollection) {
+        int position = mCollectionList.indexOf(oldCollection);
+        mCollectionList.set(position, newCollection);
+        notifyItemChanged(position);
+    }
+
+    public void remove(GCCollection savedCollection) {
+        int position = mCollectionList.indexOf(savedCollection);
+        mCollectionList.remove(position);
+        notifyItemRemoved(position);
+        //notifyItemRangeChanged(position, getItemCount());
     }
 
     @Override
@@ -41,62 +67,65 @@ public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollections
     public void onBindViewHolder(GCCollectionsListItemViewHolder holder, final int position) {
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
-
+        String title = mCollectionList.get(position).getTitle();
+        String description = mCollectionList.get(position).getDescription();
+        holder.txtTitle.setText(title);
+        holder.txtDesc.setText(description);
     }
 
     @Override
     public int getItemCount() {
-        return mSavedSetList.size();
+        return mCollectionList.size();
     }
 
-    public void animateTo(List<GCSavedSet> models) {
+    public void animateTo(List<GCCollection> models) {
         applyAndAnimateRemovals(models);
         applyAndAnimateAdditions(models);
         applyAndAnimateMovedItems(models);
     }
 
-    private void applyAndAnimateRemovals(List<GCSavedSet> newModels) {
-        for (int i = mSavedSetList.size() - 1; i >= 0; i--) {
-            final GCSavedSet model = mSavedSetList.get(i);
+    private void applyAndAnimateRemovals(List<GCCollection> newModels) {
+        for (int i = mCollectionList.size() - 1; i >= 0; i--) {
+            final GCCollection model = mCollectionList.get(i);
             if (!newModels.contains(model)) {
                 removeItem(i);
             }
         }
     }
 
-    private void applyAndAnimateAdditions(List<GCSavedSet> newModels) {
+    private void applyAndAnimateAdditions(List<GCCollection> newModels) {
         for (int i = 0, count = newModels.size(); i < count; i++) {
-            final GCSavedSet model = newModels.get(i);
-            if (!mSavedSetList.contains(model)) {
+            final GCCollection model = newModels.get(i);
+            if (!mCollectionList.contains(model)) {
                 addItem(i, model);
             }
         }
     }
 
-    private void applyAndAnimateMovedItems(List<GCSavedSet> newModels) {
+    private void applyAndAnimateMovedItems(List<GCCollection> newModels) {
         for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final GCSavedSet model = newModels.get(toPosition);
-            final int fromPosition = mSavedSetList.indexOf(model);
+            final GCCollection model = newModels.get(toPosition);
+            final int fromPosition = mCollectionList.indexOf(model);
             if (fromPosition >= 0 && fromPosition != toPosition) {
                 moveItem(fromPosition, toPosition);
             }
         }
     }
 
-    public GCSavedSet removeItem(int position) {
-        final GCSavedSet model = mSavedSetList.remove(position);
+    public GCCollection removeItem(int position) {
+        final GCCollection model = mCollectionList.remove(position);
         notifyItemRemoved(position);
         return model;
     }
 
-    public void addItem(int position, GCSavedSet model) {
-        mSavedSetList.add(position, model);
+    public void addItem(int position, GCCollection model) {
+        mCollectionList.add(position, model);
         notifyItemInserted(position);
     }
 
     public void moveItem(int fromPosition, int toPosition) {
-        final GCSavedSet model = mSavedSetList.remove(fromPosition);
-        mSavedSetList.add(toPosition, model);
+        final GCCollection model = mCollectionList.remove(fromPosition);
+        mCollectionList.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
     }
 }

@@ -27,7 +27,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
     static final String CREATE_SAVED_SET_DATABASE =
             "CREATE TABLE IF NOT EXISTS " +
                     TABLE_NAME +
-                    " (" + GCSavedSetEntry._ID + " INTEGER PRIMARY KEY," +
+                    " (" + GCSavedSetEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     GCSavedSetEntry.SAVED_SET_TITLE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_COLORS + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_MODE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
@@ -108,12 +108,14 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                     do {
                         GCSavedSet savedSet = new GCSavedSet();
 
+                        int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
                         String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
                         String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
                         String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
                         String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
                         String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
 
+                        savedSet.setId(id);
                         savedSet.setTitle(title);
                         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
                         savedSet.setMode(GCModeUtil.getModeUsingTitle(modeString.toUpperCase()));

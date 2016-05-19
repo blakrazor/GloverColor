@@ -27,10 +27,13 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.application.GloverColorApplication;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.models.GCColor;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCCollectionsActivity;
 import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 
 import java.util.ArrayList;
@@ -460,5 +463,56 @@ public class GCUtil {
                 break;
         }
         return sortedSetList;
+    }
+
+    public static ArrayList<GCCollection> sortCollectionList(ArrayList<GCCollection> collectionList) {
+        ArrayList<GCCollection> sortedCollectionList = new ArrayList<>(collectionList);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GloverColorApplication.getContext());
+        int sortTypeInt = prefs.getInt(GCConstants.COLLECTION_SORTING_KEY, 0);
+        GCCollectionsActivity.SortEnum sortType = GCCollectionsActivity.SortEnum.values()[sortTypeInt];
+
+        switch (sortType) {
+            case TITLE_DESC:
+                Collections.sort(sortedCollectionList, new Comparator<GCCollection>() {
+                    @Override
+                    public int compare(GCCollection lhs, GCCollection rhs) {
+                        return rhs.getTitle().compareToIgnoreCase(lhs.getTitle());
+                    }
+                });
+                break;
+            case TITLE_ASC:
+                Collections.sort(sortedCollectionList, new Comparator<GCCollection>() {
+                    @Override
+                    public int compare(GCCollection lhs, GCCollection rhs) {
+                        return lhs.getTitle().compareToIgnoreCase(rhs.getTitle());
+                    }
+                });
+                break;
+        }
+        return sortedCollectionList;
+    }
+
+    public static String convertSetListToString(ArrayList<GCSavedSet> setArrayList) {
+        String setListString = "";
+        for (GCSavedSet set : setArrayList) {
+            setListString += set.getId();
+            setListString += ",";
+        }
+        return setListString;
+    }
+
+    public static ArrayList<GCSavedSet> convertStringToSetList(String setListString) {
+        ArrayList<GCSavedSet> setArrayList = new ArrayList<>();
+        String[] stringParts = setListString.split(",");
+        ArrayList<GCSavedSet> allSavedSets = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
+        for (String part : stringParts) {
+            for (GCSavedSet set : allSavedSets) {
+                if (set.getId() == Integer.parseInt(part)) {
+                    setArrayList.add(set);
+                    break;
+                }
+            }
+        }
+        return setArrayList;
     }
 }

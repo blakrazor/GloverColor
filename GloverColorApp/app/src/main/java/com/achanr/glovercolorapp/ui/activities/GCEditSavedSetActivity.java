@@ -608,6 +608,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         showMoreColors(false);*/
     }
 
+
     private void setupListeners() {
         for (final ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             colorSpinnerHolder.getColorSpinner().post(new Runnable() {
@@ -690,7 +691,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         });*/
     }
-
     /*private void showMoreColors(boolean shouldShow) {
         if (shouldShow) {
             findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);

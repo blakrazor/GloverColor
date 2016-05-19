@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 21;
+    public static final int DATABASE_VERSION = 23;
     public static final String DATABASE_NAME = "SavedSet.db";
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INT";
@@ -26,6 +26,7 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
     public static GCColorDatabase COLOR_DATABASE;
     public static GCChipDatabase CHIP_DATABASE;
     public static GCModeDatabase MODE_DATABASE;
+    public static GCCollectionDatabase COLLECTION_DATABASE;
 
     public GCDatabaseHelper(Context context, String name,
                             SQLiteDatabase.CursorFactory factory, int version, GCDatabaseAdapter dbAdapter) {
@@ -41,6 +42,7 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
         COLOR_DATABASE = new GCColorDatabase(mContext, db_adapter);
         CHIP_DATABASE = new GCChipDatabase(mContext, db_adapter);
         MODE_DATABASE = new GCModeDatabase(mContext, db_adapter);
+        COLLECTION_DATABASE = new GCCollectionDatabase(mContext, db_adapter);
     }
 
     @Override
@@ -51,6 +53,7 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
         COLOR_DATABASE.createTable(db);
         CHIP_DATABASE.createTable(db);
         MODE_DATABASE.createTable(db);
+        COLLECTION_DATABASE.createTable(db);
     }
 
     @Override
@@ -78,6 +81,12 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
                 case 21:
                     String[] ids = {"SP2_REV1", "SP2_REV2", "SP3_REV1", "SP3_REV2"};
                     db.delete(SAVED_SET_DATABASE.TABLE_NAME, GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_CHIP + " IN (?, ?, ?, ?)", ids);
+                case 22:
+                    db.execSQL("delete from " + SAVED_SET_DATABASE.TABLE_NAME + ";");
+                    break;
+                case 23:
+                    COLLECTION_DATABASE.createTable(db);
+                    break;
                 default: //if case not shown, no changes made
                     break;
             }
