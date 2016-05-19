@@ -5,27 +5,44 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.SearchView;
+import android.transition.Fade;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
-import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.ui.adapters.GCCollectionsListAdapter;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Glover Color App Project
@@ -35,8 +52,23 @@ import java.util.ArrayList;
  */
 public class GCCollectionsActivity extends GCBaseActivity {
 
+    public enum SortEnum {
+        TITLE_ASC("Sort by title ascending"),
+        TITLE_DESC("Sort by title descending");
+
+        String description;
+
+        SortEnum(String desc) {
+            description = desc;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
     private Context mContext;
-    private ArrayList<GCSavedSet> mCollectionsList;
+    private ArrayList<GCCollection> mCollectionsList;
     private GridRecyclerView mCollectionsListRecyclerView;
     private GCCollectionsListAdapter mCollectionsListAdapter;
     private GridLayoutManager mCollectionsListLayoutManager;
@@ -46,6 +78,11 @@ public class GCCollectionsActivity extends GCBaseActivity {
     private boolean isFromEnterCode = false;
     private boolean isAnimating = false;
 
+    public static final String OLD_COLLECTION_KEY = "old_collection_key";
+    public static final String IS_DELETE_KEY = "is_delete_key";
+    public static final String NEW_COLLECTION_KEY = "new_collection_key";
+    public static final int ADD_NEW_COLLECTION_REQUEST_CODE = 1000;
+
     public interface AnimationCompleteListener {
         void onComplete();
     }
@@ -54,7 +91,14 @@ public class GCCollectionsActivity extends GCBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        isLeaving = false;
+        if (requestCode == ADD_NEW_COLLECTION_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
+            if (!isDeleted) {
+                GCCollection newCollection = (GCCollection) data.getSerializableExtra(NEW_COLLECTION_KEY);
+                onCollectionAdded(newCollection);
+            }
+        }
     }
 
     @Override
@@ -77,13 +121,13 @@ public class GCCollectionsActivity extends GCBaseActivity {
                             animateListView(false, new AnimationCompleteListener() {
                                 @Override
                                 public void onComplete() {
-
+                                    onAddCollectionClicked();
                                 }
                             });
                         }
                     });
                 } else {
-
+                    onAddCollectionClicked();
                 }
             }
         });
@@ -127,8 +171,57 @@ public class GCCollectionsActivity extends GCBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_saved_set_list, menu);
 
-        return false;
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            for (TextView textView : GCUtil.findChildrenByClass(searchView, TextView.class)) {
+                textView.setTextColor(Color.WHITE);
+            }
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    final List<GCCollection> filteredModelList = filter(mCollectionsList, newText);
+                    mCollectionsListAdapter.animateTo(filteredModelList);
+                    mCollectionsListRecyclerView.scrollToPosition(0);
+                    return true;
+                }
+            });
+        }
+
+        MenuItem sortItem = menu.findItem(R.id.menu_sort);
+        sortItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showSortDialog();
+                return true;
+            }
+        });
+        return true;
+    }
+
+    private List<GCCollection> filter(List<GCCollection> models, String query) {
+        query = query.toLowerCase();
+
+        final List<GCCollection> filteredModelList = new ArrayList<>();
+        for (GCCollection model : models) {
+            final String text = model.getTitle().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
     }
 
     private void setupSavedSetList() {
@@ -142,6 +235,91 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mCollectionsListAdapter = new GCCollectionsListAdapter(mContext, mCollectionsList);
         mCollectionsListRecyclerView.setAdapter(mCollectionsListAdapter);
+    }
+
+    public void onAddCollectionClicked() {
+        isLeaving = true;
+        Intent intent = new Intent(mContext, GCEditCollectionActivity.class);
+        intent.putExtra(GCEditCollectionActivity.IS_NEW_COLLECTION_KEY, true);
+        startAddCollectionActivityTransition(intent);
+    }
+
+    private void startAddCollectionActivityTransition(Intent intent) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            getWindow().setExitTransition(new Fade());
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivityForResult(intent, ADD_NEW_COLLECTION_REQUEST_CODE, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, ADD_NEW_COLLECTION_REQUEST_CODE);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        }
+    }
+
+    public void onCollectionUpdated(GCCollection oldCollection, GCCollection newCollection) {
+        GCDatabaseHelper.COLLECTION_DATABASE.updateData(oldCollection, newCollection);
+        mCollectionsListAdapter.update(oldCollection, newCollection);
+        int position = mCollectionsList.indexOf(oldCollection);
+        mCollectionsList.set(position, newCollection);
+        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onCollectionDeleted(GCCollection savedCollection) {
+        GCDatabaseHelper.COLLECTION_DATABASE.deleteData(savedCollection);
+        mCollectionsListAdapter.remove(savedCollection);
+        int position = mCollectionsList.indexOf(savedCollection);
+        mCollectionsList.remove(position);
+        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onCollectionAdded(GCCollection newCollection) {
+        GCDatabaseHelper.COLLECTION_DATABASE.insertData(newCollection);
+        mCollectionsListAdapter.add(mCollectionsList.size(), newCollection);
+        mCollectionsList.add(mCollectionsList.size(), newCollection);
+        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
+        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+    }
+
+    private void showSortDialog() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int sortTypeInt = prefs.getInt(GCConstants.COLLECTION_SORTING_KEY, 0);
+
+        SortEnum[] sortEnums = SortEnum.values();
+        String[] sortDescs = new String[sortEnums.length];
+
+        for (int i = 0; i < sortEnums.length; i++) {
+            sortDescs[i] = sortEnums[i].getDescription();
+            if (i == sortTypeInt) {
+                sortDescs[i] += " (current)";
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose sort option");
+        builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                // Do something with the selection
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(GCConstants.COLLECTION_SORTING_KEY, item);
+                editor.apply();
+                sort();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void sort() {
+        int firstVisible = mCollectionsListLayoutManager.findFirstVisibleItemPosition();
+        int lastVisible = mCollectionsListLayoutManager.findLastVisibleItemPosition();
+        int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
+        int start = firstVisible - itemsChanged > 0 ? firstVisible - itemsChanged : 0;
+        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
+        mCollectionsListAdapter.sortList();
+        mCollectionsListAdapter.notifyItemRangeChanged(start, itemsChanged + itemsChanged);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -261,7 +439,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(isAnimating){
+        if (isAnimating) {
             return;
         }
 

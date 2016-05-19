@@ -13,6 +13,7 @@ import java.util.ArrayList;
  */
 public class GCSavedSet implements Serializable {
 
+    private int mId;
     private String mTitle;
     private ArrayList<GCPoweredColor> mColors;
     private GCMode mMode;
@@ -28,6 +29,14 @@ public class GCSavedSet implements Serializable {
         for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
             mCustomColors.add(new int[]{255, 255, 255});
         }
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        this.mId = id;
     }
 
     public String getTitle() {
