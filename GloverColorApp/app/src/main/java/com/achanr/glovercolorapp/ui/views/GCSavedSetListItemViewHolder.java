@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCEditCollectionActivity;
 import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 
 import java.util.HashMap;
@@ -117,24 +118,46 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_colors), txtColors);
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_cardview), mCardView);
-        ((GCSavedSetListActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
+        if (mContext instanceof GCSavedSetListActivity) {
+            ((GCSavedSetListActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
+        } else if (mContext instanceof GCEditCollectionActivity) {
+            ((GCEditCollectionActivity) mContext).onEditSetListItemClicked(mSavedSet, transitionViews);
+        }
     }
 
     private void showDeleteDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.delete))
-                .setMessage(mContext.getString(R.string.delete_dialog))
-                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        ((GCSavedSetListActivity) mContext).onSetDeleted(mSavedSet);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setIcon(R.drawable.ic_delete_black_48dp)
-                .show();
+        if (mContext instanceof GCSavedSetListActivity) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(mContext.getString(R.string.delete))
+                    .setMessage(mContext.getString(R.string.delete_dialog))
+                    .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((GCSavedSetListActivity) mContext).onSetDeleted(mSavedSet);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_delete_black_48dp)
+                    .show();
+        } else if (mContext instanceof GCEditCollectionActivity) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle("Remove Set")
+                    .setMessage("Remove this set from the current collection?")
+                    .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ((GCEditCollectionActivity) mContext).onSetRemoved(mSavedSet);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_delete_black_48dp)
+                    .show();
+        }
     }
 }

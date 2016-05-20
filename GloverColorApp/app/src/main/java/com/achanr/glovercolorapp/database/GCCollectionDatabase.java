@@ -103,7 +103,11 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
                         collection.setDescription(desc);
                         collection.setSavedSetList(GCUtil.convertStringToSetList(setListString));
 
-                        collectionArrayList.add(collection);
+                        if (collection.getSavedSetList().size() == 0) {
+                            deleteData(collection);
+                        } else {
+                            collectionArrayList.add(collection);
+                        }
                     } while (mCursor.moveToNext());
                 }
             }

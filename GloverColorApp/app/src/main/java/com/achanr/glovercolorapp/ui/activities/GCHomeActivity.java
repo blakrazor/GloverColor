@@ -26,6 +26,7 @@ public class GCHomeActivity extends GCBaseActivity {
     private void setupClickListeners() {
         Button createNewSetButton = (Button) findViewById(R.id.create_new_set_button);
         Button checkoutSavedSetButton = (Button) findViewById(R.id.checkout_saved_set_button);
+        Button checkoutCollectionButton = (Button) findViewById(R.id.checkout_collection_button);
 
         createNewSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,10 +44,23 @@ public class GCHomeActivity extends GCBaseActivity {
                 goToSavedSetListActivity();
             }
         });
+
+        checkoutCollectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToCollectionListActivity();
+            }
+        });
     }
 
     private void goToSavedSetListActivity() {
         Intent intent = new Intent(GCHomeActivity.this, GCSavedSetListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityTransition(intent);
+    }
+
+    private void goToCollectionListActivity() {
+        Intent intent = new Intent(GCHomeActivity.this, GCCollectionsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityTransition(intent);
     }

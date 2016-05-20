@@ -5,4 +5,8 @@
     <string name="transition_name_saved_set_mode">saved_set_mode</string>
     <string name="transition_name_saved_set_colors">saved_set_colors</string>
     <string name="transition_name_saved_set_cardview">saved_set_cardview</string>
+
+    <string name="transition_name_collection_title">collection_title</string>
+    <string name="transition_name_collection_desc">collection_desc</string>
+    <string name="transition_name_collection_cardview">collection_cardview</string>
 </resources>

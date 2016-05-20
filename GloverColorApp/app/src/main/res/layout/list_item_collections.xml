@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    android:transitionName="@string/transition_name_saved_set_cardview"
+    android:transitionName="@string/transition_name_collection_cardview"
     card_view:cardCornerRadius="4dp">
 
     <LinearLayout
@@ -32,7 +32,8 @@
                 android:layout_alignParentLeft="true"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Example Title With A Long Description"/>
+                android:text="Example Title With A Long Description"
+                android:transitionName="@string/transition_name_collection_title"/>
 
             <TextView
                 android:id="@+id/list_item_collections_desc"
@@ -43,7 +44,17 @@
                 android:layout_below="@id/list_item_collections_title"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Example description With A Long Description"/>
+                android:text="Example description With A Long Description"
+                android:transitionName="@string/transition_name_collection_desc"/>
+
+            <TextView
+                android:id="@+id/list_item_collections_set_number"
+                style="@style/ListItemSavedSetDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/list_item_collections_desc"
+                android:text="Set size: 5"/>
 
         </RelativeLayout>
 
