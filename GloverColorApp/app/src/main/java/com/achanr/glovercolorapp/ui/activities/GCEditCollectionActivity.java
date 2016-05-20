@@ -307,7 +307,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void navigateToSavedSetList() {
         setPosition(R.id.nav_saved_color_sets);
         Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEditCollectionActivity.class.getName());
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
