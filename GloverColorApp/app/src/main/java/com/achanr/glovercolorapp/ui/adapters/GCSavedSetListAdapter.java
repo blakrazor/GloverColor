@@ -13,6 +13,7 @@ import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCEditCollectionActivity;
 import com.achanr.glovercolorapp.ui.views.GCSavedSetListItemViewHolder;
 
 import java.util.ArrayList;
@@ -139,6 +140,8 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     }
 
     public void sortList() {
-        mSavedSetList = GCUtil.sortList(mSavedSetList);
+        if (!(mContext instanceof GCEditCollectionActivity)) {
+            mSavedSetList = GCUtil.sortList(mSavedSetList);
+        }
     }
 }

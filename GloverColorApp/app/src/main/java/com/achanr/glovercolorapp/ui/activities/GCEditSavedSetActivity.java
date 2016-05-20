@@ -88,9 +88,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private boolean wasChangeDialogCanceled = false;
     private int spinnerSelectionCount = 0;
     private int lastChipSelection = 0;
+    private String mFromNavigation;
 
     public static final String SAVED_SET_KEY = "saved_set_key";
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
+    public static final String FROM_NAVIGATION = "from_navigation";
 
     public static final int MAX_TITLE_LENGTH = 100;
 
@@ -206,6 +208,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             mSavedSet = (GCSavedSet) intent.getSerializableExtra(SAVED_SET_KEY);
+            mFromNavigation = intent.getStringExtra(FROM_NAVIGATION);
             isNewSet = intent.getBooleanExtra(IS_NEW_SET_KEY, false);
             if (isNewSet) {
                 setCustomTitle(getString(R.string.title_add_set));
@@ -993,24 +996,45 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private void showDeleteDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.delete))
-                .setMessage(mContext.getString(R.string.delete_dialog))
-                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
-                        returnIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
-                        finishActivityTransition(RESULT_OK, returnIntent);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setIcon(R.drawable.ic_delete_black_48dp)
-                .show();
+        if (mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
+            new AlertDialog.Builder(mContext)
+                    .setTitle("Remove Set")
+                    .setMessage("Remove this set from the current collection?")
+                    .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra(GCEditCollectionActivity.OLD_SET_KEY, mSavedSet);
+                            returnIntent.putExtra(GCEditCollectionActivity.IS_REMOVE_KEY, true);
+                            finishActivityTransition(RESULT_OK, returnIntent);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_delete_black_48dp)
+                    .show();
+        } else {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(mContext.getString(R.string.delete))
+                    .setMessage(mContext.getString(R.string.delete_dialog))
+                    .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
+                            returnIntent.putExtra(GCSavedSetListActivity.IS_DELETE_KEY, true);
+                            finishActivityTransition(RESULT_OK, returnIntent);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(R.drawable.ic_delete_black_48dp)
+                    .show();
+        }
     }
 
     private void showErrorDialog(String message) {

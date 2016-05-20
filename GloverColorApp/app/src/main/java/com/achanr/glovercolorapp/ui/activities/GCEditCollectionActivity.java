@@ -6,18 +6,22 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Transition;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -28,12 +32,23 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.CustomItemAnimator;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCCollection;
+import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
+import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Glover Color App Project
@@ -47,6 +62,11 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private TextView mTitleEditText;
     private TextView mDescEditText;
     private GCCollection mCollection;
+    private Button mAddSetButton;
+    private GridRecyclerView mSetsListRecyclerView;
+    private GCSavedSetListAdapter mSetsListListAdapter;
+    private GridLayoutManager mSetsListLayoutManager;
+    private ArrayList<GCSavedSet> mSetsList;
     private boolean enterFinished = false;
     private boolean isNewSet = false;
     private boolean madeChanges = false;
@@ -54,7 +74,14 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
     public static final String SAVED_COLLECTION_KEY = "SAVED_COLLECTION_KEY";
     public static final String IS_NEW_COLLECTION_KEY = "IS_NEW_COLLECTION_KEY";
+    public static final String ADD_SET_KEY = "add_set_key";
+    public static final String IS_REMOVE_KEY = "is_delete_key";
+    public static final String NEW_SET_KEY = "new_set_key";
+    public static final String OLD_SET_KEY = "old_set_key";
     public static final int MAX_TITLE_LENGTH = 100;
+    public static final int MAX_DESC_LENGTH = 500;
+    public static final int COLLECTIONS_ADD_SET_RESULT = 1000;
+    public static final int UPDATE_SET_REQUEST_CODE = 1001;
 
     private InputFilter titleFilter = new InputFilter() {
         @Override
@@ -68,6 +95,31 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             return null;
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == COLLECTIONS_ADD_SET_RESULT) {
+            if (resultCode == RESULT_OK) {
+                GCSavedSet addedSet = (GCSavedSet) data.getSerializableExtra(ADD_SET_KEY);
+                mSetsListListAdapter.add(mSetsList.size(), addedSet);
+                mSetsList.add(addedSet);
+            }
+        } else if (requestCode == UPDATE_SET_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+                boolean isRemoved = data.getBooleanExtra(IS_REMOVE_KEY, false);
+                if (isRemoved) {
+                    GCSavedSet savedSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                    onSetRemoved(savedSet);
+                } else {
+                    GCSavedSet oldSet = (GCSavedSet) data.getSerializableExtra(OLD_SET_KEY);
+                    GCSavedSet newSet = (GCSavedSet) data.getSerializableExtra(NEW_SET_KEY);
+                    onSetUpdated(oldSet, newSet);
+                }
+            }
+        }
+        checkForChanges();
+    }
 
     @Override
     protected void onStop() {
@@ -94,6 +146,8 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
         mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mDescEditText = (EditText) findViewById(R.id.edit_text_description);
+        mAddSetButton = (Button) findViewById(R.id.add_set_button);
+        mSetsListRecyclerView = (GridRecyclerView) findViewById(R.id.collection_sets_list);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
 
         Intent intent = getIntent();
@@ -111,6 +165,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             fillDefaultData();
         }
 
+        setupSetsList();
         setupListeners();
         checkForChanges();
 
@@ -172,13 +227,28 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void fillDefaultData() {
         mTitleEditText.setText("");
         mDescEditText.setText("");
+        mSetsList = new ArrayList<>();
     }
 
     private void fillExistingData() {
         String title = mCollection.getTitle();
         String description = mCollection.getDescription();
+        mSetsList = new ArrayList<>(mCollection.getSavedSetList());
         mTitleEditText.setText(title);
         mDescEditText.setText(description);
+    }
+
+    private void setupSetsList() {
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mSetsListRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mSetsListLayoutManager = new GridLayoutManager(mContext, 1);
+        mSetsListRecyclerView.setLayoutManager(mSetsListLayoutManager);
+        mSetsListRecyclerView.setItemAnimator(new CustomItemAnimator());
+        mSetsListListAdapter = new GCSavedSetListAdapter(mContext, mSetsList);
+        mSetsListRecyclerView.setAdapter(mSetsListListAdapter);
     }
 
     private void setupListeners() {
@@ -219,12 +289,35 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             }
         };
 
+        mAddSetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToSavedSetList();
+            }
+        });
+
         mTitleEditText.addTextChangedListener(textWatcher);
         mTitleEditText.setOnEditorActionListener(onEditActionlistener);
         mTitleEditText.setOnFocusChangeListener(onFocusChangeListener);
         mDescEditText.addTextChangedListener(textWatcher);
         mDescEditText.setOnEditorActionListener(onEditActionlistener);
         mDescEditText.setOnFocusChangeListener(onFocusChangeListener);
+    }
+
+    private void navigateToSavedSetList() {
+        setPosition(R.id.nav_saved_color_sets);
+        Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEditCollectionActivity.class.getName());
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setExitTransition(new Explode());
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivityForResult(intent, COLLECTIONS_ADD_SET_RESULT, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, COLLECTIONS_ADD_SET_RESULT);
+        }
     }
 
     public boolean validateFields() {
@@ -234,6 +327,17 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             return false;
         } else if (newTitle.length() > MAX_TITLE_LENGTH) {
             showErrorDialog(String.format(mContext.getString(R.string.error_title_length), MAX_TITLE_LENGTH));
+            return false;
+        }
+
+        String newDesc = mDescEditText.getText().toString().trim();
+        if (newDesc.length() > MAX_DESC_LENGTH) {
+            showErrorDialog(String.format(mContext.getString(R.string.error_desc_length), MAX_DESC_LENGTH));
+            return false;
+        }
+
+        if (mSetsList.size() == 0) {
+            showErrorDialog("You must choose at least 1 set.");
             return false;
         }
 
@@ -267,11 +371,47 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             return true;
         }
 
+        if (mCollection.getSavedSetList().size() != mSetsList.size()) {
+            return true;
+        }
+
         return false;
     }
 
     private void saveCollection() {
+        String newTitle = mTitleEditText.getText().toString().trim();
+        if (validateTitleAgainstDatabase(newTitle) && isNewSet) {
+            showErrorDialog(mContext.getString(R.string.error_title_exists));
+            return;
+        }
 
+        String description = mDescEditText.getText().toString().trim();
+
+        GCCollection newCollection = new GCCollection();
+        newCollection.setTitle(newTitle);
+        newCollection.setDescription(description);
+        newCollection.setSavedSetList(new ArrayList<>(mSetsList));
+
+        if (isNewSet) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(GCCollectionsActivity.NEW_COLLECTION_KEY, newCollection);
+            finishActivityTransition(RESULT_OK, resultIntent);
+        } else {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(GCCollectionsActivity.OLD_COLLECTION_KEY, mCollection);
+            resultIntent.putExtra(GCCollectionsActivity.NEW_COLLECTION_KEY, newCollection);
+            finishActivityTransition(RESULT_OK, resultIntent);
+        }
+    }
+
+    private boolean validateTitleAgainstDatabase(String title) {
+        ArrayList<GCCollection> collectionList = GCDatabaseHelper.COLLECTION_DATABASE.getAllData();
+        for (GCCollection collection : collectionList) {
+            if (collection.getTitle().equals(title)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showSaveDialog(String title, String body) {
@@ -338,6 +478,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
                         } else {
                             fillExistingData();
                         }
+                        setupSetsList();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -514,5 +655,53 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         });
         // start the animation
         animatorSet.start();
+    }
+
+    public void onEditSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
+        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+        intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
+        intent.putExtra(GCEditSavedSetActivity.FROM_NAVIGATION, GCEditCollectionActivity.class.getName());
+        startEditSetActivityTransition(intent, transitionViews);
+    }
+
+    private void startEditSetActivityTransition(Intent intent, HashMap<String, View> transitionView) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            getWindow().setExitTransition(new Fade());
+            ArrayList<Pair> pairArrayList = new ArrayList<>();
+            for (Map.Entry<String, View> entry : transitionView.entrySet()) {
+                String key = entry.getKey();
+                View value = entry.getValue();
+                pairArrayList.add(Pair.create(value, key));
+            }
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    this,
+                    pairArrayList.get(0),
+                    pairArrayList.get(1),
+                    pairArrayList.get(2),
+                    pairArrayList.get(3),
+                    pairArrayList.get(4));
+            startActivityForResult(intent, UPDATE_SET_REQUEST_CODE, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, UPDATE_SET_REQUEST_CODE);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        }
+    }
+
+    public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
+        GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
+        mSetsListListAdapter.update(oldSet, newSet);
+        int position = mSetsList.indexOf(oldSet);
+        mSetsList.set(position, newSet);
+        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSetRemoved(GCSavedSet savedSet) {
+        mSetsListListAdapter.remove(savedSet);
+        int position = mSetsList.indexOf(savedSet);
+        mSetsList.remove(position);
+        Toast.makeText(mContext, "Removed set from collection", Toast.LENGTH_SHORT).show();
     }
 }

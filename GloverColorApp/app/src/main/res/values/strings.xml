@@ -51,6 +51,7 @@
     <string name="save_changes_dialog">Save your changes?</string>
     <string name="error_title_empty">Title cannot be empty.</string>
     <string name="error_title_length">Title must be less than %d characters.</string>
+    <string name="error_desc_length">Description must be less than %d characters.</string>
     <string name="error_no_color">You must choose at least 1 color.</string>
     <string name="error_title_exists">Title already exists. Choose a different title.</string>
     <string name="revert_changes">Revert Changes</string>

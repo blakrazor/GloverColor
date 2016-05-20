@@ -71,6 +71,8 @@ public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollections
         String description = mCollectionList.get(position).getDescription();
         holder.txtTitle.setText(title);
         holder.txtDesc.setText(description);
+        holder.txtSetNum.setText("Set size: " + mCollectionList.get(position).getSavedSetList().size());
+        holder.mCollection = mCollectionList.get(position);
     }
 
     @Override

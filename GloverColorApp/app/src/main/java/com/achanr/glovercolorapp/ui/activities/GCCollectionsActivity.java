@@ -22,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.transition.Fade;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,7 +43,9 @@ import com.achanr.glovercolorapp.ui.adapters.GCCollectionsListAdapter;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Glover Color App Project
@@ -77,11 +80,13 @@ public class GCCollectionsActivity extends GCBaseActivity {
     private boolean isLeaving = false;
     private boolean isFromEnterCode = false;
     private boolean isAnimating = false;
+    private boolean fromActivityResult = false;
 
     public static final String OLD_COLLECTION_KEY = "old_collection_key";
     public static final String IS_DELETE_KEY = "is_delete_key";
     public static final String NEW_COLLECTION_KEY = "new_collection_key";
     public static final int ADD_NEW_COLLECTION_REQUEST_CODE = 1000;
+    public static final int UPDATE_COLLECTION_REQUEST_CODE = 1001;
 
     public interface AnimationCompleteListener {
         void onComplete();
@@ -91,12 +96,26 @@ public class GCCollectionsActivity extends GCBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        fromActivityResult = true;
         isLeaving = false;
         if (requestCode == ADD_NEW_COLLECTION_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
             if (!isDeleted) {
                 GCCollection newCollection = (GCCollection) data.getSerializableExtra(NEW_COLLECTION_KEY);
                 onCollectionAdded(newCollection);
+            }
+        } else if (requestCode == UPDATE_COLLECTION_REQUEST_CODE) {
+            isFromEditing = true;
+            if (resultCode == RESULT_OK && data != null) {
+                boolean isDeleted = data.getBooleanExtra(IS_DELETE_KEY, false);
+                if (isDeleted) {
+                    GCCollection collection = (GCCollection) data.getSerializableExtra(OLD_COLLECTION_KEY);
+                    onCollectionDeleted(collection);
+                } else {
+                    GCCollection oldCollection = (GCCollection) data.getSerializableExtra(OLD_COLLECTION_KEY);
+                    GCCollection newCollection = (GCCollection) data.getSerializableExtra(NEW_COLLECTION_KEY);
+                    onCollectionUpdated(oldCollection, newCollection);
+                }
             }
         }
     }
@@ -107,6 +126,8 @@ public class GCCollectionsActivity extends GCBaseActivity {
         getLayoutInflater().inflate(R.layout.activity_collections, mFrameLayout);
         mContext = this;
         setupToolbar(getString(R.string.title_collections));
+
+        getCollectionListFromDatabase();
 
         mCollectionsListRecyclerView = (GridRecyclerView) findViewById(R.id.collections_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -132,7 +153,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
             }
         });
 
-        mCollectionsList = new ArrayList<>();
         setupSavedSetList();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -147,6 +167,13 @@ public class GCCollectionsActivity extends GCBaseActivity {
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_collections);
+
+        if (!fromActivityResult) {
+            getCollectionListFromDatabase();
+            setupSavedSetList();
+        } else {
+            fromActivityResult = false;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mCollectionsListRecyclerView.getVisibility() != View.VISIBLE) {
@@ -211,6 +238,15 @@ public class GCCollectionsActivity extends GCBaseActivity {
         return true;
     }
 
+    private void getCollectionListFromDatabase() {
+        ArrayList<GCCollection> collectionArrayList = GCDatabaseHelper.COLLECTION_DATABASE.getAllData();
+        if (mCollectionsList == null || mCollectionsList.size() <= 0) {
+            mCollectionsList = new ArrayList<>();
+        }
+        mCollectionsList = collectionArrayList;
+        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
+    }
+
     private List<GCCollection> filter(List<GCCollection> models, String query) {
         query = query.toLowerCase();
 
@@ -235,6 +271,39 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mCollectionsListAdapter = new GCCollectionsListAdapter(mContext, mCollectionsList);
         mCollectionsListRecyclerView.setAdapter(mCollectionsListAdapter);
+    }
+
+    public void onEditCollectionListItemClicked(GCCollection collection, HashMap<String, View> transitionViews) {
+        isFromEditing = true;
+        isLeaving = true;
+        Intent intent = new Intent(mContext, GCEditCollectionActivity.class);
+        intent.putExtra(GCEditCollectionActivity.SAVED_COLLECTION_KEY, collection);
+        startEditSetActivityTransition(intent, transitionViews);
+    }
+
+    private void startEditSetActivityTransition(Intent intent, HashMap<String, View> transitionView) {
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            getWindow().setExitTransition(new Fade());
+            ArrayList<Pair> pairArrayList = new ArrayList<>();
+            for (Map.Entry<String, View> entry : transitionView.entrySet()) {
+                String key = entry.getKey();
+                View value = entry.getValue();
+                pairArrayList.add(Pair.create(value, key));
+            }
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    this,
+                    pairArrayList.get(0),
+                    pairArrayList.get(1),
+                    pairArrayList.get(2));
+            animateFab(false, null);
+            startActivityForResult(intent, UPDATE_COLLECTION_REQUEST_CODE, options.toBundle());
+        } else {
+            // Implement this feature without material design
+            startActivityForResult(intent, UPDATE_COLLECTION_REQUEST_CODE);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        }
     }
 
     public void onAddCollectionClicked() {
@@ -263,7 +332,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.update(oldCollection, newCollection);
         int position = mCollectionsList.indexOf(oldCollection);
         mCollectionsList.set(position, newCollection);
-        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Collection updated", Toast.LENGTH_SHORT).show();
     }
 
     public void onCollectionDeleted(GCCollection savedCollection) {
@@ -271,7 +340,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.remove(savedCollection);
         int position = mCollectionsList.indexOf(savedCollection);
         mCollectionsList.remove(position);
-        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Collection deleted", Toast.LENGTH_SHORT).show();
     }
 
     public void onCollectionAdded(GCCollection newCollection) {
@@ -279,7 +348,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.add(mCollectionsList.size(), newCollection);
         mCollectionsList.add(mCollectionsList.size(), newCollection);
         mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
-        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Collection added", Toast.LENGTH_SHORT).show();
     }
 
     private void showSortDialog() {

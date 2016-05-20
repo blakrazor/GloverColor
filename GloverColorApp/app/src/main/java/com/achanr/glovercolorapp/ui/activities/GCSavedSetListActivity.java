@@ -78,6 +78,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private GCSavedSetListAdapter mSavedSetListAdapter;
     private GridLayoutManager mSavedSetListLayoutManager;
     private FloatingActionButton mFab;
+    private String mFromNavigation;
     private boolean isFromEditing = false;
     private boolean isLeaving = false;
     private boolean isFromEnterCode = false;
@@ -170,10 +171,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            String fromNavigation = intent.getStringExtra(FROM_NAVIGATION);
-            if (fromNavigation != null) {
-                if (fromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())
-                        || fromNavigation.equalsIgnoreCase(GCHomeActivity.class.getName())) {
+            mFromNavigation = intent.getStringExtra(FROM_NAVIGATION);
+            if (mFromNavigation != null) {
+                if (mFromNavigation.equalsIgnoreCase(GCEnterCodeActivity.class.getName())
+                        || mFromNavigation.equalsIgnoreCase(GCHomeActivity.class.getName())) {
                     isFromEnterCode = true;
                     GCSavedSet newSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
                     Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
@@ -181,6 +182,15 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
                     startActivityForResult(newIntent, ADD_NEW_SET_REQUEST_CODE);
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                } else if (mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
+                    mFab.setVisibility(View.GONE);
                 }
             }
 
@@ -335,9 +345,16 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     public void onEditSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
         isFromEditing = true;
         isLeaving = true;
-        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
-        intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
-        startEditSetActivityTransition(intent, transitionViews);
+        if (mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(GCEditCollectionActivity.ADD_SET_KEY, savedSet);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        } else {
+            Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+            intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
+            startEditSetActivityTransition(intent, transitionViews);
+        }
     }
 
     public void onAddSetListItemClicked() {
@@ -424,6 +441,14 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void animateFab(boolean isAppearing, final AnimationCompleteListener animationCompleteListener) {
+        if (mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
+            mFab.setVisibility(View.GONE);
+            if (animationCompleteListener != null) {
+                animationCompleteListener.onComplete();
+            }
+            return;
+        }
+
         // previously visible view
         final View myView = findViewById(R.id.fab);
 
@@ -539,7 +564,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(isAnimating){
+        if (isAnimating) {
             return;
         }
 
