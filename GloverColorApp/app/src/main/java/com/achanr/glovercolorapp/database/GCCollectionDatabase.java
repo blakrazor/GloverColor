@@ -138,6 +138,8 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(GCCollectionEntry.COLLECTION_TITLE_KEY, newCollection.getTitle());
+        values.put(GCCollectionEntry.COLLECTION_DESC_KEY, newCollection.getDescription());
+        values.put(GCCollectionEntry.COLLECTION_SETS_KEY, GCUtil.convertSetListToString(newCollection.getSavedSetList()));
 
         // Which row to update, based on the ID
         String selection = GCCollectionEntry.COLLECTION_TITLE_KEY + "=?";
