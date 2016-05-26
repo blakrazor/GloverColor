@@ -133,97 +133,97 @@
 
     <!-- ALL MODES HERE -->
     <string-array name="default_modes">
-        <item>@string/STROBE</item>
-        <item>@string/HYPERSTROBE</item>
-        <item>@string/SOLID</item>
-        <item>@string/RIBBON</item>
-        <item>@string/TRACER</item>
-        <item>@string/CHROMA</item>
-        <item>@string/DOPS</item>
-        <item>@string/STROBIE</item>
-        <item>@string/BLINK</item>
-        <item>@string/FLICKER</item>
-        <item>@string/SHAPE_SHIFTER</item>
-        <item>@string/VEX</item>
-        <item>@string/KRUSH</item>
         <item>@string/SEVEN_COLOR_STROBE</item>
+        <item>@string/BLINK</item>
         <item>@string/BLINK_E</item>
-        <item>@string/RIBBON_FADE</item>
-        <item>@string/PULSE</item>
-        <item>@string/DASH_MORPH</item>
-        <item>@string/STROBE_FADE</item>
-        <item>@string/STROBE_MORPH</item>
-        <item>@string/KANDI_MODE</item>
-        <item>@string/SHADOW</item>
-        <item>@string/CENTERPOINT</item>
-        <item>@string/ULTRA_DOPS</item>
+        <item>@string/BURST</item>
         <item>@string/CANDY_STROBE</item>
-        <item>@string/X_CHANGE</item>
-        <item>@string/TRIBBON</item>
-        <item>@string/X_MORPH</item>
-        <item>@string/HEART_BEAT</item>
-        <item>@string/DASH_DOT</item>
-        <item>@string/SHORT_STROBE_V1</item>
-        <item>@string/SHORT_STROBE_V2</item>
-        <item>@string/SHORT_STROBE_V3</item>
-        <item>@string/SHORT_STROBE_V4</item>
-        <item>@string/LONG_STROBE_V1</item>
-        <item>@string/LONG_STROBE_V2</item>
-        <item>@string/LONG_STROBE_V3</item>
-        <item>@string/LONG_STROBE_V4</item>
-        <item>@string/EVEN_STROBE_V1</item>
-        <item>@string/EVEN_STROBE_V2</item>
-        <item>@string/EVEN_STROBE_V3</item>
-        <item>@string/EVEN_STROBE_V4</item>
-        <item>@string/TWO_COLOR_WHEEL_V1</item>
-        <item>@string/TWO_COLOR_WHEEL_V2</item>
-        <item>@string/TWO_COLOR_WHEEL_V3</item>
-        <item>@string/TWO_COLOR_WHEEL_V4</item>
-        <item>@string/PULSE_V1</item>
-        <item>@string/PULSE_V2</item>
-        <item>@string/PULSE_V3</item>
-        <item>@string/PULSE_V4</item>
+        <item>@string/CENTERPOINT</item>
+        <item>@string/CHROMA</item>
         <item>@string/COMET_V1</item>
         <item>@string/COMET_V2</item>
         <item>@string/COMET_V3</item>
         <item>@string/COMET_V4</item>
+        <item>@string/CUSTOM</item>
+        <item>@string/DASH_DOPS</item>
+        <item>@string/DASH_DOT</item>
+        <item>@string/DASH_MORPH</item>
+        <item>@string/DOPS</item>
+        <item>@string/DOP_TRACER</item>
+        <item>@string/DOP_WAVE</item>
+        <item>@string/EVEN_STROBE_V1</item>
+        <item>@string/EVEN_STROBE_V2</item>
+        <item>@string/EVEN_STROBE_V3</item>
+        <item>@string/EVEN_STROBE_V4</item>
+        <item>@string/EXTENDED_STUTTER_STROBE</item>
+        <item>@string/FADE</item>
+        <item>@string/FLICKER</item>
+        <item>@string/FUSION</item>
+        <item>@string/GEO_MODE</item>
+        <item>@string/HEART_BEAT</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/HYPER_FLASH</item>
+        <item>@string/HYPER_LOOP</item>
+        <item>@string/HYPER_RIBBON</item>
+        <item>@string/HYPER_STUTTER_STROBE</item>
+        <item>@string/KANDI_MODE</item>
+        <item>@string/KINETIC_MODE</item>
+        <item>@string/KRUSH</item>
+        <item>@string/LONG_STROBE_V1</item>
+        <item>@string/LONG_STROBE_V2</item>
+        <item>@string/LONG_STROBE_V3</item>
+        <item>@string/LONG_STROBE_V4</item>
         <item>@string/METEOR_V1</item>
         <item>@string/METEOR_V2</item>
         <item>@string/METEOR_V3</item>
         <item>@string/METEOR_V4</item>
-        <item>@string/SATURATION_V1</item>
-        <item>@string/SATURATION_V2</item>
-        <item>@string/SATURATION_V3</item>
-        <item>@string/SATURATION_V4</item>
+        <item>@string/MULTI_MODE</item>
+        <item>@string/PULSE</item>
+        <item>@string/PULSE_V1</item>
+        <item>@string/PULSE_V2</item>
+        <item>@string/PULSE_V3</item>
+        <item>@string/PULSE_V4</item>
+        <item>@string/QUICK_FLASH</item>
+        <item>@string/RAINBOW_RIBBON</item>
+        <item>@string/RAINBOW_STROBE</item>
+        <item>@string/RIBBON</item>
+        <item>@string/RIBBON_FADE</item>
         <item>@string/RIBBON_V1</item>
         <item>@string/RIBBON_V2</item>
         <item>@string/RIBBON_V3</item>
         <item>@string/RIBBON_V4</item>
-        <item>@string/FADE</item>
         <item>@string/SANDBOX</item>
-        <item>@string/SLOW_FADE</item>
-        <item>@string/RAINBOW_STROBE</item>
-        <item>@string/RAINBOW_RIBBON</item>
-        <item>@string/DOP_TRACER</item>
-        <item>@string/HYPER_RIBBON</item>
-        <item>@string/HYPER_FLASH</item>
-        <item>@string/QUICK_FLASH</item>
-        <item>@string/EXTENDED_STUTTER_STROBE</item>
-        <item>@string/HYPER_STUTTER_STROBE</item>
-        <item>@string/CUSTOM</item>
-        <item>@string/KINETIC_MODE</item>
-        <item>@string/GEO_MODE</item>
-        <item>@string/MULTI_MODE</item>
-        <item>@string/SPECTRUM_MODE</item>
         <item>@string/SANDBOX_MODE_1</item>
         <item>@string/SANDBOX_MODE_2</item>
-        <item>@string/DASH_DOPS</item>
+        <item>@string/SATURATION_V1</item>
+        <item>@string/SATURATION_V2</item>
+        <item>@string/SATURATION_V3</item>
+        <item>@string/SATURATION_V4</item>
+        <item>@string/SHADOW</item>
+        <item>@string/SHAPE_SHIFTER</item>
+        <item>@string/SHORT_STROBE_V1</item>
+        <item>@string/SHORT_STROBE_V2</item>
+        <item>@string/SHORT_STROBE_V3</item>
+        <item>@string/SHORT_STROBE_V4</item>
+        <item>@string/SLOW_FADE</item>
+        <item>@string/SOLID</item>
+        <item>@string/SPECTRUM_MODE</item>
         <item>@string/STRETCH</item>
-        <item>@string/BURST</item>
-        <item>@string/HYPER_LOOP</item>
-        <item>@string/FUSION</item>
+        <item>@string/STROBE</item>
+        <item>@string/STROBE_FADE</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/STROBIE</item>
+        <item>@string/TRACER</item>
+        <item>@string/TRIBBON</item>
+        <item>@string/TWO_COLOR_WHEEL_V1</item>
+        <item>@string/TWO_COLOR_WHEEL_V2</item>
+        <item>@string/TWO_COLOR_WHEEL_V3</item>
+        <item>@string/TWO_COLOR_WHEEL_V4</item>
+        <item>@string/ULTRA_DOPS</item>
+        <item>@string/VEX</item>
         <item>@string/VORTEX</item>
-        <item>@string/DOP_WAVE</item>
+        <item>@string/X_CHANGE</item>
+        <item>@string/X_MORPH</item>
     </string-array>
 
     <!-- CHROMA CHIP HERE -->
