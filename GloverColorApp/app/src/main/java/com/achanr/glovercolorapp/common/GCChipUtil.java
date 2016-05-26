@@ -98,6 +98,12 @@ public class GCChipUtil {
             } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.OG_CHROMA))) {
                 colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
                 modeStringArray = mContext.getResources().getStringArray(R.array.chroma24_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.KINETIC))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.kinetic_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.kinetic_modes);
+            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.AETHER))) {
+                colorStringArray = mContext.getResources().getStringArray(R.array.aether_colors);
+                modeStringArray = mContext.getResources().getStringArray(R.array.aether_modes);
             }
             GCChip chip = new GCChip(chipItem,
                     new ArrayList(Arrays.asList(colorStringArray)),

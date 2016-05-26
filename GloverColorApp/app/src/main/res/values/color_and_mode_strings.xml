@@ -74,6 +74,26 @@
     <string name="GREEN_ICE">GREEN ICE</string>
     <string name="FLUORESCENT_RED">FLUORESCENT RED</string>
     <string name="CREAM_SICKLE">CREAM SICKLE</string>
+    <string name="LEMON">LEMON</string>
+    <string name="AURORA_COLOR">AURORA</string>
+    <string name="SOLAR_FLARE">SOLAR FLARE</string>
+    <string name="ACID">ACID</string>
+    <string name="COMET">COMET</string>
+    <string name="KIWI">KIWI</string>
+    <string name="NYMPH">NYMPH</string>
+    <string name="AQUA">AQUA</string>
+    <string name="SKY">SKY</string>
+    <string name="VIRIDIAN">VIRIDIAN</string>
+    <string name="LAKE">LAKE</string>
+    <string name="DUSK">DUSK</string>
+    <string name="CANDY">CANDY</string>
+    <string name="LOVE">LOVE</string>
+    <string name="LEAF">LEAF</string>
+    <string name="DREAM">DREAM</string>
+    <string name="NEPTUNE">NEPTUNE</string>
+    <string name="STARDUST">STARDUST</string>
+    <string name="BLOSSOM">BLOSSOM</string>
+    <string name="CLOUD">CLOUD</string>
 
     <!-- ALL COLOR ABBREVS -->
     <string name="Wh">Wh</string>
@@ -146,6 +166,26 @@
     <string name="GI">GI</string>
     <string name="FR">FR</string>
     <string name="CS">CS</string>
+    <string name="Cm">Cm</string>
+    <string name="Ac">Ac</string>
+    <string name="Le">Le</string>
+    <string name="SF">SF</string>
+    <string name="Au">Au</string>
+    <string name="Ki">Ki</string>
+    <string name="Ny">Ny</string>
+    <string name="Aq">Aq</string>
+    <string name="Sy">Sy</string>
+    <string name="Vr">Vr</string>
+    <string name="Lk">Lk</string>
+    <string name="Du">Du</string>
+    <string name="Ca">Ca</string>
+    <string name="Lo">Lo</string>
+    <string name="Lf">Lf</string>
+    <string name="Dr">Dr</string>
+    <string name="Np">Np</string>
+    <string name="SD">SD</string>
+    <string name="Bs">Bs</string>
+    <string name="Cl">Cl</string>
 
     <!-- ALL MODE STRINGS -->
     <string name="STROBE">STROBE</string>
@@ -225,6 +265,19 @@
     <string name="QUICK_FLASH">QUICK FLASH</string>
     <string name="EXTENDED_STUTTER_STROBE">EXTENDED STUTTER STROBE</string>
     <string name="HYPER_STUTTER_STROBE">HYPER STUTTER STROBE</string>
+    <string name="KINETIC_MODE">KINETIC MODE</string>
+    <string name="GEO_MODE">GEO MODE</string>
+    <string name="MULTI_MODE">MULTI MODE</string>
+    <string name="SPECTRUM_MODE">SPECTRUM MODE</string>
+    <string name="SANDBOX_MODE_1">SANDBOX MODE 1</string>
+    <string name="SANDBOX_MODE_2">SANDBOX MODE 2</string>
+    <string name="DASH_DOPS">DASH DOPS</string>
+    <string name="STRETCH">STRETCH</string>
+    <string name="BURST">BURST</string>
+    <string name="HYPER_LOOP">HYPER LOOP</string>
+    <string name="FUSION">FUSION</string>
+    <string name="VORTEX">VORTEX</string>
+    <string name="DOP_WAVE">DOP WAVE</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -248,4 +301,6 @@
     <string name="SP3_REV1">SP3 REV1</string>
     <string name="SP3_REV2">SP3 REV2</string>
     <string name="OG_CHROMA">OG CHROMA</string>
+    <string name="KINETIC">KINETIC</string>
+    <string name="AETHER">AETHER</string>
 </resources>

@@ -251,6 +251,66 @@ public class GCColorUtil {
             } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CREAM_SICKLE))) {
                 colorAbbrev = mContext.getString(R.string.CS);
                 rgbValues = new int[]{247, 106, 53};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LEMON))) {
+                colorAbbrev = mContext.getString(R.string.Le);
+                rgbValues = new int[]{255, 253, 56};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.AURORA_COLOR))) {
+                colorAbbrev = mContext.getString(R.string.Au);
+                rgbValues = new int[]{39, 36, 250};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.SOLAR_FLARE))) {
+                colorAbbrev = mContext.getString(R.string.SF);
+                rgbValues = new int[]{251, 40, 28};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.ACID))) {
+                colorAbbrev = mContext.getString(R.string.Ac);
+                rgbValues = new int[]{115, 253, 48};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.COMET))) {
+                colorAbbrev = mContext.getString(R.string.Cm);
+                rgbValues = new int[]{139, 220, 252};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.KIWI))) {
+                colorAbbrev = mContext.getString(R.string.Ki);
+                rgbValues = new int[]{184, 253, 51};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.NYMPH))) {
+                colorAbbrev = mContext.getString(R.string.Ny);
+                rgbValues = new int[]{56, 253, 47};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.AQUA))) {
+                colorAbbrev = mContext.getString(R.string.Aq);
+                rgbValues = new int[]{42, 253, 116};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.SKY))) {
+                colorAbbrev = mContext.getString(R.string.Sy);
+                rgbValues = new int[]{45, 255, 254};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.VIRIDIAN))) {
+                colorAbbrev = mContext.getString(R.string.Vr);
+                rgbValues = new int[]{19, 114, 250};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LAKE))) {
+                colorAbbrev = mContext.getString(R.string.Lk);
+                rgbValues = new int[]{12, 52, 251};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.DUSK))) {
+                colorAbbrev = mContext.getString(R.string.Du);
+                rgbValues = new int[]{110, 37, 251};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CANDY))) {
+                colorAbbrev = mContext.getString(R.string.Ca);
+                rgbValues = new int[]{252, 40, 251};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LOVE))) {
+                colorAbbrev = mContext.getString(R.string.Lo);
+                rgbValues = new int[]{252, 14, 47};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.LEAF))) {
+                colorAbbrev = mContext.getString(R.string.Lf);
+                rgbValues = new int[]{221, 253, 112};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.DREAM))) {
+                colorAbbrev = mContext.getString(R.string.Dr);
+                rgbValues = new int[]{140, 253, 174};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.NEPTUNE))) {
+                colorAbbrev = mContext.getString(R.string.Np);
+                rgbValues = new int[]{141, 254, 221};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.STARDUST))) {
+                colorAbbrev = mContext.getString(R.string.SD);
+                rgbValues = new int[]{138, 173, 252};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.BLOSSOM))) {
+                colorAbbrev = mContext.getString(R.string.Bs);
+                rgbValues = new int[]{253, 139, 219};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CLOUD))) {
+                colorAbbrev = mContext.getString(R.string.Cl);
+                rgbValues = new int[]{253, 136, 170};
             }
             mColorArrayList.add(new GCColor(colorItem, colorAbbrev, rgbValues));
         }
