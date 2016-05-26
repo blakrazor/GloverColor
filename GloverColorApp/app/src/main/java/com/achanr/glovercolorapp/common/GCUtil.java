@@ -143,7 +143,7 @@ public class GCUtil {
 
             if (colorString.equalsIgnoreCase("--")) {
                 SpannableString spannableString = new SpannableString(colorString);
-                spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2])), 0, colorString.length(), 0);
+                spannableString.setSpan(new ForegroundColorSpan(Color.argb(255, 255, 255, 255)), 0, colorString.length(), 0);
                 builder.append(spannableString);
             } else {
                 SpannableString spannableString = new SpannableString(colorAbbrev);
