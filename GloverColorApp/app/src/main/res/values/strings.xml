@@ -82,4 +82,12 @@
     <string name="create_a_new_set">Create a new set</string>
     <string name="title_collections">Collections</string>
     <string name="title_edit_collection">Edit Collection</string>
+    <string name="delete_collection">Delete this collection?</string>
+    <string name="add_at_least_1_set">You must add at least 1 set.</string>
+    <string name="add_collection_title">Add Collection</string>
+    <string name="removed_set_from_collection">Removed set from collection</string>
+    <string name="collection_updated">Collection updated</string>
+    <string name="collection_deleted">Collection deleted</string>
+    <string name="collection_added">Collection added</string>
+    <string name="choose_sort_option">Choose sort option</string>
 </resources>

@@ -304,7 +304,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose sort option");
+        builder.setTitle(getString(R.string.choose_sort_option));
         builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection

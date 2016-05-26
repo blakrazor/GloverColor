@@ -155,7 +155,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             mCollection = (GCCollection) intent.getSerializableExtra(SAVED_COLLECTION_KEY);
             isNewSet = intent.getBooleanExtra(IS_NEW_COLLECTION_KEY, false);
             if (isNewSet) {
-                setCustomTitle("Add Collection");
+                setCustomTitle(getString(R.string.add_collection_title));
             }
         }
 
@@ -337,7 +337,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         }
 
         if (mSetsList.size() == 0) {
-            showErrorDialog("You must add at least 1 set.");
+            showErrorDialog(getString(R.string.add_at_least_1_set));
             return false;
         }
 
@@ -435,7 +435,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void showDeleteDialog() {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete))
-                .setMessage(mContext.getString(R.string.delete_dialog))
+                .setMessage(getString(R.string.delete_collection))
                 .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent returnIntent = new Intent();
@@ -702,6 +702,6 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         mSetsListListAdapter.remove(savedSet);
         int position = mSetsList.indexOf(savedSet);
         mSetsList.remove(position);
-        Toast.makeText(mContext, "Removed set from collection", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.removed_set_from_collection, Toast.LENGTH_SHORT).show();
     }
 }

@@ -332,7 +332,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.update(oldCollection, newCollection);
         int position = mCollectionsList.indexOf(oldCollection);
         mCollectionsList.set(position, newCollection);
-        Toast.makeText(mContext, "Collection updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.collection_updated, Toast.LENGTH_SHORT).show();
     }
 
     public void onCollectionDeleted(GCCollection savedCollection) {
@@ -340,7 +340,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.remove(savedCollection);
         int position = mCollectionsList.indexOf(savedCollection);
         mCollectionsList.remove(position);
-        Toast.makeText(mContext, "Collection deleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.collection_deleted, Toast.LENGTH_SHORT).show();
     }
 
     public void onCollectionAdded(GCCollection newCollection) {
@@ -348,7 +348,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter.add(mCollectionsList.size(), newCollection);
         mCollectionsList.add(mCollectionsList.size(), newCollection);
         mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
-        Toast.makeText(mContext, "Collection added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.collection_added, Toast.LENGTH_SHORT).show();
     }
 
     private void showSortDialog() {
@@ -366,7 +366,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose sort option");
+        builder.setTitle(getString(R.string.choose_sort_option));
         builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection

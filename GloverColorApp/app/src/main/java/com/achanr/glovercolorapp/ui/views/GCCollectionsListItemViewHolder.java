@@ -69,7 +69,7 @@ public class GCCollectionsListItemViewHolder extends RecyclerView.ViewHolder {
     private void showDeleteDialog() {
         new AlertDialog.Builder(mContext)
                 .setTitle(mContext.getString(R.string.delete))
-                .setMessage("Delete this collection?")
+                .setMessage(mContext.getString(R.string.delete_collection))
                 .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ((GCCollectionsActivity) mContext).onCollectionDeleted(mCollection);
