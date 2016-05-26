@@ -337,7 +337,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         }
 
         if (mSetsList.size() == 0) {
-            showErrorDialog("You must choose at least 1 set.");
+            showErrorDialog("You must add at least 1 set.");
             return false;
         }
 
