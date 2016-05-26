@@ -40,12 +40,18 @@ public class GCModeUtil {
 
     public static GCMode getModeUsingTitle(String title) {
         GCMode mode = null;
+
+        if (title.equalsIgnoreCase("SLOW_FADE")) {
+            return new GCMode(GloverColorApplication.getContext().getResources().getString(R.string.SLOW_FADE));
+        }
+
         for (GCMode modeItem : mModeArrayList) {
             if (title.equalsIgnoreCase(modeItem.getTitle())) {
                 mode = modeItem;
                 break;
             }
         }
+
         return mode;
     }
 }

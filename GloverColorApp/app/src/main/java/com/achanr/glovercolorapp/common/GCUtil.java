@@ -295,23 +295,46 @@ public class GCUtil {
     }
 
     public static String convertToCamelcase(String inputString) {
-        if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.DOPS))) {
-            return "DOPs";
-        }
-
-        if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.OG_CHROMA))) {
-            return "OG Chroma";
-        }
-
         if (inputString != null && !inputString.isEmpty()) {
-            if (inputString.length() < 2) {
-                return inputString.toUpperCase();
+
+            if (inputString.toLowerCase().contains("dop")) {
+                int dopIndex = inputString.toLowerCase().indexOf("dop");
+                String dopMode = convertToCamelcase(inputString.substring(0, dopIndex)) + "DOP" + convertToCamelcase(inputString.substring(dopIndex + 3).toLowerCase());
+                return dopMode;
             }
 
-            String returnString = "";
-            returnString += inputString.substring(0, 1).toUpperCase();
-            returnString += inputString.substring(1).toLowerCase();
-            return returnString;
+            if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.OG_CHROMA))) {
+                return "OG Chroma";
+            }
+
+            if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.EZLITE_2))) {
+                return "ezLite 2.0";
+            }
+
+            if (inputString.toLowerCase().startsWith("sp")) {
+                String spChip = "SP" + convertToCamelcase(inputString.substring(2).toLowerCase());
+                return spChip;
+            }
+
+
+            if (inputString.length() <= 1) {
+                return inputString.toLowerCase();
+            }
+
+            String[] parts = inputString.split(" ");
+            String camelCaseString = "";
+            for (String part : parts) {
+                camelCaseString = camelCaseString + capitalizeFirstLetter(part) + " ";
+            }
+            return camelCaseString;
+        } else {
+            return "";
+        }
+    }
+
+    private static String capitalizeFirstLetter(String s) {
+        if (s.length() > 0) {
+            return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
         } else {
             return "";
         }

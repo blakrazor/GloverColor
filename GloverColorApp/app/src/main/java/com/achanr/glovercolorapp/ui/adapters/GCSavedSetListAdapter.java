@@ -76,7 +76,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
         holder.txtMode.setText(GCUtil.convertToCamelcase(mode.getTitle().toString()));
         if (chipSet.getTitle().equalsIgnoreCase("NONE")) {
-            holder.txtChipset.setText("No preset");
+            holder.txtChipset.setText("No Preset");
         } else {
             holder.txtChipset.setText(GCUtil.convertToCamelcase(chipSet.getTitle().toString()));
         }
