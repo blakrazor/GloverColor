@@ -10,24 +10,24 @@
 
     <string-array name="all_chips">
         <item>@string/NO_CHIP</item>
-        <item>@string/OG_CHROMA</item>
+        <item>@string/AETHER</item>
+        <item>@string/ARCLITE_INTENSITY</item>
+        <item>@string/ARCLITE_SIMPLICITY</item>
+        <item>@string/ARCLITE_GALAXY</item>
+        <item>@string/AURORA</item>
         <item>@string/CHROMA_24</item>
         <item>@string/CHROMA_CTRL</item>
         <item>@string/ELEMENT_V2</item>
         <item>@string/ENOVA</item>
         <item>@string/EZLITE_2</item>
-        <item>@string/ORACLE</item>
-        <item>@string/MATRIX</item>
         <item>@string/FLOW</item>
-        <item>@string/KINETIC</item>
-        <item>@string/AETHER</item>
-        <item>@string/AURORA</item>
         <item>@string/FLUX</item>
+        <item>@string/KINETIC</item>
+        <item>@string/MATRIX</item>
+        <item>@string/OG_CHROMA</item>
+        <item>@string/ORACLE</item>
         <item>@string/PULSAR</item>
         <item>@string/SIMPLEX</item>
-        <item>@string/ARCLITE_INTENSITY</item>
-        <item>@string/ARCLITE_SIMPLICITY</item>
-        <item>@string/ARCLITE_GALAXY</item>
         <item>@string/SP2_REV1</item>
         <item>@string/SP2_REV2</item>
         <item>@string/SP3_REV1</item>
@@ -41,68 +41,67 @@
         <item>@string/WHITE</item>
         <item>@string/BLANK</item>
         <item>@string/FLUORESCENT_RED</item>
-        <item>@string/RED</item>
         <item>@string/LOVE</item>
+        <item>@string/RED</item>
+        <item>@string/SOLAR_FLARE</item>
         <item>@string/BLOOD_ORANGE</item>
         <item>@string/SALMON</item>
         <item>@string/MANGO</item>
         <item>@string/ORANGE</item>
-        <item>@string/SOLAR_FLARE</item>
         <item>@string/CREAM_SICKLE</item>
         <item>@string/TANGERINE</item>
         <item>@string/GOLDEN_HOUR</item>
         <item>@string/GOLDEN_YELLOW</item>
+        <item>@string/LEMON</item>
         <item>@string/BANANA_YELLOW</item>
         <item>@string/LIME_YELLOW</item>
         <item>@string/GREEN_ICE</item>
         <item>@string/LEAF</item>
         <item>@string/YELLOW</item>
-        <item>@string/LEMON</item>
-        <item>@string/DREAM</item>
-        <item>@string/NEPTUNE</item>
         <item>@string/KIWI</item>
         <item>@string/COSMIC_OWL</item>
-        <item>@string/ACID</item>
-        <item>@string/NYMPH</item>
-        <item>@string/AQUA</item>
         <item>@string/LIME</item>
         <item>@string/GREEN</item>
         <item>@string/SEAFOAM</item>
         <item>@string/CHAOS_EMERALD</item>
         <item>@string/LIME_GREEN</item>
         <item>@string/AQUA_GREEN</item>
+        <item>@string/NYMPH</item>
+        <item>@string/ACID</item>
+        <item>@string/AQUA</item>
         <item>@string/OCEAN</item>
-        <item>@string/SKY</item>
+        <item>@string/DREAM</item>
+        <item>@string/NEPTUNE</item>
         <item>@string/MINT</item>
-        <item>@string/COMET</item>
-        <item>@string/STARDUST</item>
+        <item>@string/SKY</item>
         <item>@string/WINTER</item>
+        <item>@string/COMET</item>
         <item>@string/TURQUOISE</item>
         <item>@string/NEBULA</item>
-        <item>@string/VIRIDIAN</item>
-        <item>@string/LAKE</item>
         <item>@string/SKY_BLUE</item>
         <item>@string/LIGHT_BLUE</item>
-        <item>@string/DEEP_BLUE</item>
-        <item>@string/BLUE</item>
-        <item>@string/COBALT</item>
         <item>@string/CYAN</item>
+        <item>@string/DEEP_BLUE</item>
+        <item>@string/VIRIDIAN</item>
+        <item>@string/BLUE</item>
+        <item>@string/LAKE</item>
+        <item>@string/COBALT</item>
+        <item>@string/STARDUST</item>
         <item>@string/LENS_FLARE</item>
         <item>@string/PLUM</item>
-        <item>@string/DUSK</item>
-        <item>@string/PURPLE</item>
-        <item>@string/VIOLET</item>
         <item>@string/AURORA_COLOR</item>
-        <item>@string/CANDY</item>
+        <item>@string/PURPLE</item>
+        <item>@string/DUSK</item>
+        <item>@string/VIOLET</item>
         <item>@string/LAVENDAR</item>
-        <item>@string/BLOSSOM</item>
-        <item>@string/CLOUD</item>
         <item>@string/LIGHT_PURPLE</item>
         <item>@string/LIGHT_LAVENDAR</item>
         <item>@string/WHITE_LAVENDAR</item>
         <item>@string/WHITE_PURPLE</item>
+        <item>@string/BLOSSOM</item>
         <item>@string/ORCHID</item>
         <item>@string/ROSE</item>
+        <item>@string/CANDY</item>
         <item>@string/PINK</item>
         <item>@string/BLUSH</item>
         <item>@string/LIGHT_PINK</item>
@@ -113,6 +112,7 @@
         <item>@string/PINK_RASPBERRY</item>
         <item>@string/HOT_PINK</item>
         <item>@string/MAGENTA</item>
+        <item>@string/CLOUD</item>
         <item>@string/MEW</item>
         <item>@string/SNARF</item>
         <item>@string/PEACH</item>
