@@ -46,6 +46,7 @@
                         android:ellipsize="end"
                         android:hint="@string/title"
                         android:inputType="text"
+                        android:maxLength="100"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textSize="24sp"

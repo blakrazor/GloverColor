@@ -13,7 +13,7 @@
         android:id="@+id/linear_layout_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/savedSetListBackground"
+        android:background="@android:color/black"
         android:clickable="true"
         android:orientation="vertical">
 
@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/list_item_collections_set_number"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="Example Title With A Long Description"
@@ -42,19 +43,24 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/list_item_collections_title"
+                android:layout_toLeftOf="@+id/list_item_collections_set_number"
                 android:ellipsize="end"
-                android:maxLines="2"
-                android:text="Example description With A Long Description"
+                android:maxLines="3"
+                android:text="Example description With A Long Description that is exceptionally long for testing purposes"
                 android:transitionName="@string/transition_name_collection_desc"/>
 
             <TextView
                 android:id="@+id/list_item_collections_set_number"
-                style="@style/ListItemSavedSetDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@id/list_item_collections_desc"
-                android:text="Set size: 5"/>
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="4dp"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"/>
 
         </RelativeLayout>
 
