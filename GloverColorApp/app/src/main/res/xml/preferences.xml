@@ -10,12 +10,12 @@
             android:entries="@array/themes"
             android:entryValues="@array/themes"
             android:key="@string/theme_preference"
-            android:title="Theme"/>
+            android:title="App Theme"/>
 
         <com.achanr.glovercolorapp.ui.views.GCPowerLevelPreference
             android:dialogTitle="Configure Power Levels"
             android:key="@string/power_level_preference"
-            android:title="Power Levels"/>
+            android:title="Brightness Levels"/>
 
         <ListPreference
             android:defaultValue="@string/NO_CHIP"
@@ -23,7 +23,7 @@
             android:entries="@array/all_chips"
             android:entryValues="@array/all_chips"
             android:key="@string/default_chip_preference"
-            android:title="Default Chip"/>
+            android:title="Default Preset Chip"/>
 
         <Preference
             android:clickable="true"
@@ -35,6 +35,12 @@
 
     <PreferenceCategory
         android:title="About">
+
+        <Preference
+            android:clickable="false"
+            android:defaultValue="0.0"
+            android:key="@string/version_number_preference"
+            android:title="Version"/>
 
         <Preference
             android:clickable="true"
@@ -53,12 +59,6 @@
             android:key="@string/donate_preference"
             android:title="Donate"
             android:summary="This app is completely free. If you like it, please consider donating to show your support."/>
-
-        <Preference
-            android:clickable="false"
-            android:defaultValue="0.0"
-            android:key="@string/version_number_preference"
-            android:title="Version"/>
 
     </PreferenceCategory>
 
