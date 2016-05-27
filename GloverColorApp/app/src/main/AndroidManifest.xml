@@ -70,6 +70,10 @@
             android:label="@string/title_settings"
             android:screenOrientation="portrait">
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1503a3d7f3a5b932fe52076333b3746997624419" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

@@ -8,6 +8,8 @@ import com.achanr.glovercolorapp.common.GCColorUtil;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Glover Color App Project
@@ -22,6 +24,7 @@ public class GloverColorApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         mContext = this;
         GCDatabaseAdapter.getInstance(getApplicationContext());
         GCColorUtil.initColorArrayList();
