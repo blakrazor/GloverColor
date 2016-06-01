@@ -17,7 +17,9 @@
         <item>@string/AURORA</item>
         <item>@string/CHROMA_24</item>
         <item>@string/CHROMA_CTRL</item>
+        <item>@string/ELEMENT_V1</item>
         <item>@string/ELEMENT_V2</item>
+        <item>@string/ELEMENT_V2_LOYALTY</item>
         <item>@string/ENOVA</item>
         <item>@string/EZLITE_2</item>
         <item>@string/FLOW</item>
@@ -129,6 +131,8 @@
         <item>@string/FROST</item>
         <item>@string/TOMBSTONE</item>
         <item>@string/SPACE_GHOST</item>
+        <item>@string/SMURF</item>
+        <item>@string/RUST</item>
     </string-array>
 
     <!-- ALL MODES HERE -->
@@ -206,6 +210,7 @@
         <item>@string/SHORT_STROBE_V2</item>
         <item>@string/SHORT_STROBE_V3</item>
         <item>@string/SHORT_STROBE_V4</item>
+        <item>@string/SIGNAL_BLINK</item>
         <item>@string/SLOW_FADE</item>
         <item>@string/SOLID</item>
         <item>@string/SPECTRUM_MODE</item>
@@ -222,6 +227,7 @@
         <item>@string/TWO_COLOR_WHEEL_V4</item>
         <item>@string/ULTRA_DOPS</item>
         <item>@string/VEX</item>
+        <item>@string/VEX_V2</item>
         <item>@string/VORTEX</item>
         <item>@string/X_CHANGE</item>
         <item>@string/X_MORPH</item>
@@ -901,5 +907,106 @@
         <item>@string/FUSION</item>
         <item>@string/VORTEX</item>
         <item>@string/DOP_WAVE</item>
+    </string-array>
+
+    <!-- ELEMENT V1 CHIP HERE -->
+    <string-array name="element_v1_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/PEACH</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+    </string-array>
+    <string-array name="element_v1_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/CHROMA</item>
+        <item>@string/TRACER</item>
+        <item>@string/CANDY_STROBE</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/DASH_MORPH</item>
+        <item>@string/HEART_BEAT</item>
+        <item>@string/BLINK_E</item>
+        <item>@string/SIGNAL_BLINK</item>
+    </string-array>
+
+
+    <!-- ELEMENT V2 LOYALTY CHIP HERE -->
+    <string-array name="element_v2_loyalty_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/COSMIC_OWL</item>
+        <item>@string/LIME</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/CYAN</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/LENS_FLARE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PEACH</item>
+        <item>@string/SNARF</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+        <item>@string/TOMBSTONE</item>
+        <item>@string/SPACE_GHOST</item>
+        <item>@string/CHAOS_EMERALD</item>
+        <item>@string/FROST</item>
+        <item>@string/BUBBLEGUM</item>
+        <item>@string/TANGERINE</item>
+        <item>@string/SMURF</item>
+        <item>@string/RUST</item>
+    </string-array>
+    <string-array name="element_v2_loyalty_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/SHADOW</item>
+        <item>@string/STROBIE</item>
+        <item>@string/FLICKER</item>
+        <item>@string/CHROMA</item>
+        <item>@string/TRACER</item>
+        <item>@string/CENTERPOINT</item>
+        <item>@string/BLINK_E</item>
+        <item>@string/ULTRA_DOPS</item>
+        <item>@string/BLINK</item>
+        <item>@string/VEX_V2</item>
     </string-array>
 </resources>
