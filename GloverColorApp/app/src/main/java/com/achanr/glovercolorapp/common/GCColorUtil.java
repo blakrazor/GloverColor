@@ -311,6 +311,12 @@ public class GCColorUtil {
             } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CLOUD))) {
                 colorAbbrev = mContext.getString(R.string.Cl);
                 rgbValues = new int[]{253, 136, 170};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.SMURF))) {
+                colorAbbrev = mContext.getString(R.string.Sm);
+                rgbValues = new int[]{103, 202, 241};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.RUST))) {
+                colorAbbrev = mContext.getString(R.string.Ru);
+                rgbValues = new int[]{241, 183, 182};
             }
             mColorArrayList.add(new GCColor(colorItem, colorAbbrev, rgbValues));
         }

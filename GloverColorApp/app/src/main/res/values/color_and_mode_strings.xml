@@ -94,6 +94,8 @@
     <string name="STARDUST">STARDUST</string>
     <string name="BLOSSOM">BLOSSOM</string>
     <string name="CLOUD">CLOUD</string>
+    <string name="SMURF">SMURF</string>
+    <string name="RUST">RUST</string>
 
     <!-- ALL COLOR ABBREVS -->
     <string name="Wh">Wh</string>
@@ -186,6 +188,8 @@
     <string name="SD">SD</string>
     <string name="Bs">Bs</string>
     <string name="Cl">Cl</string>
+    <string name="Sm">Sm</string>
+    <string name="Ru">Ru</string>
 
     <!-- ALL MODE STRINGS -->
     <string name="STROBE">STROBE</string>
@@ -279,6 +283,8 @@
     <string name="VORTEX">VORTEX</string>
     <string name="DOP_WAVE">DOP WAVE</string>
     <string name="META_MODE">META MODE</string>
+    <string name="SIGNAL_BLINK">SIGNAL BLINK</string>
+    <string name="VEX_V2">VEX V2</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -304,4 +310,6 @@
     <string name="OG_CHROMA">OG CHROMA</string>
     <string name="KINETIC">KINETIC</string>
     <string name="AETHER">AETHER</string>
+    <string name="ELEMENT_V1">ELEMENT V1</string>
+    <string name="ELEMENT_V2_LOYALTY">ELEMENT V2 LOYALTY</string>
 </resources>
