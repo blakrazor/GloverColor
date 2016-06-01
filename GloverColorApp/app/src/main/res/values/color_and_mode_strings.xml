@@ -96,6 +96,13 @@
     <string name="CLOUD">CLOUD</string>
     <string name="SMURF">SMURF</string>
     <string name="RUST">RUST</string>
+    <string name="CORAL">CORAL</string>
+    <string name="TEAL">TEAL</string>
+    <string name="PHANTOM">PHANTOM</string>
+    <string name="AMETHYST">AMETHYST</string>
+    <string name="COTTON_CANDY">COTTON CANDY</string>
+    <string name="KREAM">KREAM</string>
+    <string name="BLUE_STEEL">BLUE STEEL</string>
 
     <!-- ALL COLOR ABBREVS -->
     <string name="Wh">Wh</string>
@@ -190,6 +197,13 @@
     <string name="Cl">Cl</string>
     <string name="Sm">Sm</string>
     <string name="Ru">Ru</string>
+    <string name="Cr">Cr</string>
+    <string name="Te">Te</string>
+    <string name="Ph">Ph</string>
+    <string name="Am">Am</string>
+    <string name="CC">CC</string>
+    <string name="Kr">Kr</string>
+    <string name="BS">BS</string>
 
     <!-- ALL MODE STRINGS -->
     <string name="STROBE">STROBE</string>
@@ -285,6 +299,8 @@
     <string name="META_MODE">META MODE</string>
     <string name="SIGNAL_BLINK">SIGNAL BLINK</string>
     <string name="VEX_V2">VEX V2</string>
+    <string name="SEIZURE_STROBE">SEIZURE STROBE</string>
+    <string name="EDGE">EDGE</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -312,4 +328,5 @@
     <string name="AETHER">AETHER</string>
     <string name="ELEMENT_V1">ELEMENT V1</string>
     <string name="ELEMENT_V2_LOYALTY">ELEMENT V2 LOYALTY</string>
+    <string name="CHROMA_36">CHROMA 36</string>
 </resources>
