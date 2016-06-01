@@ -1,7 +1,13 @@
 package com.achanr.glovercolorapp.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,6 +21,7 @@ public class GCHomeActivity extends GCBaseActivity {
         getLayoutInflater().inflate(R.layout.activity_home, mFrameLayout);
         setupToolbar(getString(R.string.title_activity_gcwelcome_screen));
         setupClickListeners();
+        checkIfNewVersion();
     }
 
     @Override
@@ -63,5 +70,37 @@ public class GCHomeActivity extends GCBaseActivity {
         Intent intent = new Intent(GCHomeActivity.this, GCCollectionsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityTransition(intent);
+    }
+
+    private void checkIfNewVersion() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GCHomeActivity.this);
+        String oldVersion = prefs.getString("CHECK_UPDATE_VERSION", "0.0");
+        String currentVersion;
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            currentVersion = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            currentVersion = prefs.getString(getString(R.string.version_number_preference), "0.0");
+        }
+
+        if (!currentVersion.equalsIgnoreCase(oldVersion)) {
+            displayWhatsNewDialog(currentVersion);
+        }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("CHECK_UPDATE_VERSION", currentVersion.toString());
+        editor.apply();
+    }
+
+    private void displayWhatsNewDialog(String versionNumber) {
+        new AlertDialog.Builder(GCHomeActivity.this)
+                .setTitle("GloverColor v" + versionNumber)
+                .setMessage(getString(R.string.whats_new_in_version))
+                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 }
