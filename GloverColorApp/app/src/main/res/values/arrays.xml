@@ -238,6 +238,7 @@
         <item>@string/LIME_GREEN</item>
         <item>@string/GREEN</item>
         <item>@string/MINT</item>
+        <item>@string/SEAFOAM</item>
         <item>@string/TURQUOISE</item>
         <item>@string/LIGHT_BLUE</item>
         <item>@string/SKY_BLUE</item>
@@ -246,6 +247,7 @@
         <item>@string/LAVENDAR</item>
         <item>@string/BLUSH</item>
         <item>@string/LIGHT_PINK</item>
+        <item>@string/PINK</item>
         <item>@string/HOT_PINK</item>
         <item>@string/PEACH</item>
         <item>@string/WARM_WHITE</item>
