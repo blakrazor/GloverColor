@@ -278,6 +278,7 @@
     <string name="FUSION">FUSION</string>
     <string name="VORTEX">VORTEX</string>
     <string name="DOP_WAVE">DOP WAVE</string>
+    <string name="META_MODE">META MODE</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>

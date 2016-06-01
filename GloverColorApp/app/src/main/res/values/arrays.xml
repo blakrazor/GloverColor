@@ -173,6 +173,7 @@
         <item>@string/LONG_STROBE_V2</item>
         <item>@string/LONG_STROBE_V3</item>
         <item>@string/LONG_STROBE_V4</item>
+        <item>@string/META_MODE</item>
         <item>@string/METEOR_V1</item>
         <item>@string/METEOR_V2</item>
         <item>@string/METEOR_V3</item>
@@ -839,6 +840,7 @@
         <item>@string/GEO_MODE</item>
         <item>@string/MULTI_MODE</item>
         <item>@string/SPECTRUM_MODE</item>
+        <item>@string/META_MODE</item>
         <item>@string/SANDBOX_MODE_1</item>
         <item>@string/SANDBOX_MODE_2</item>
     </string-array>
