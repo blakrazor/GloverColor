@@ -50,6 +50,12 @@
 
         <Preference
             android:clickable="true"
+            android:key="@string/follow_facebook_preference"
+            android:title="Follow on Facebook"
+            android:summary="Stay up to date with the latest developments"/>
+
+        <Preference
+            android:clickable="true"
             android:key="@string/report_bugs_preference"
             android:title="Report Bugs or Send Feedback"
             android:summary="Help make the app better by reporting bugs and giving feedback"/>
