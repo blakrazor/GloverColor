@@ -3,6 +3,7 @@ package com.achanr.glovercolorapp.ui.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCChipUtil;
@@ -44,7 +46,25 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         mSubmitCodeButton = (Button) findViewById(R.id.submit_code_button);
 
         updateButton();
+        setListeners();
 
+        if (getIntent() != null) {
+            Intent intent = getIntent();
+            Uri data = intent.getData();
+            if (data != null) {
+                String matchString = "entercode/";
+                String setString = data.toString().substring(data.toString().indexOf(matchString) + matchString.length());
+                if (setString != null && !setString.trim().isEmpty()) {
+                    mEnterCodeEditText.getEditText().setText(setString);
+                    Toast.makeText(mContext, "Successfully prefilled shared code", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Failed to prefill shared code", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void setListeners() {
         mEnterCodeEditText.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -127,8 +147,8 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         String mode = splitString[3];
 
         ArrayList<GCPoweredColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
-        GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString);
-        GCMode newMode = GCModeUtil.getModeUsingTitle(mode);
+        GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString.replace("_", " "));
+        GCMode newMode = GCModeUtil.getModeUsingTitle(mode.replace("_", " "));
 
         String customColorString = "";
         if (splitString.length > 4) {

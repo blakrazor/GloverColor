@@ -42,6 +42,15 @@
             android:label="@string/title_enter_code"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
+            <intent-filter android:label="@string/filter_enter_code">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="entercode"
+                    android:scheme="glovercolorapp"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activities.GCCollectionsActivity"
@@ -70,10 +79,11 @@
             android:label="@string/title_settings"
             android:screenOrientation="portrait">
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="1503a3d7f3a5b932fe52076333b3746997624419" />
+            android:value="1503a3d7f3a5b932fe52076333b3746997624419"/>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
