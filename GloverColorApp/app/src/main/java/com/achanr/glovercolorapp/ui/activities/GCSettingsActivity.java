@@ -2,6 +2,7 @@ package com.achanr.glovercolorapp.ui.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -80,6 +81,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupDonatePreference();
             setupResetDialogPreference();
             setupDefaultChipPreference();
+            setupFollowFacebookPreference();
         }
 
         private void setupThemePreference() {
@@ -237,6 +239,25 @@ public class GCSettingsActivity extends GCBaseActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String newDefaultChipString = (String) newValue;
                     preference.setSummary(GCUtil.convertToCamelcase(newDefaultChipString));
+                    return true;
+                }
+            });
+        }
+
+        private void setupFollowFacebookPreference() {
+            Preference facebookPreference = findPreference(getActivity().getString(R.string.follow_facebook_preference));
+            facebookPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Uri uri = Uri.parse(getActivity().getString(R.string.facebook_page_url));
+                    try {
+                        ApplicationInfo applicationInfo = getActivity().getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+                        if (applicationInfo.enabled) {
+                            uri = Uri.parse("fb://facewebmodal/f?href=" + getActivity().getString(R.string.facebook_page_url));
+                        }
+                    } catch (PackageManager.NameNotFoundException ignored) {
+                    }
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     return true;
                 }
             });

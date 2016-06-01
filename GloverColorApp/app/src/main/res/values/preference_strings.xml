@@ -8,4 +8,5 @@
     <string name="donate_preference">DONATE_PREFERENCE</string>
     <string name="reset_dialog_preference">RESET_DIALOG_PREFERENCE</string>
     <string name="default_chip_preference">DEFAULT_CHIP_PREFERENCE</string>
+    <string name="follow_facebook_preference">FOLLOW_FACEBOOK_PREFERENCE</string>
 </resources>
