@@ -234,7 +234,9 @@ public class GCUtil {
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get chipset
-        shareString += savedSet.getChipSet().getTitle();
+        String chip = savedSet.getChipSet().getTitle();
+        chip = chip.replace(" ", "_");
+        shareString += chip;
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get colors
@@ -243,7 +245,9 @@ public class GCUtil {
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get mode
-        shareString += savedSet.getMode().getTitle();
+        String mode = savedSet.getMode().getTitle();
+        mode = mode.replace(" ", "_");
+        shareString += mode;
         shareString += BREAK_CHARACTER_FOR_SHARING;
 
         //Get custom colors
@@ -279,7 +283,7 @@ public class GCUtil {
             public void onClick(DialogInterface dialog, int which) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, shareString + mContext.getString(R.string.share_body_text));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://deeplink.me/glovercolorapp.com/entercode/" + shareString);
                 sendIntent.setType("text/plain");
                 mContext.startActivity(Intent.createChooser(sendIntent, "Share gloving set with"));
             }
