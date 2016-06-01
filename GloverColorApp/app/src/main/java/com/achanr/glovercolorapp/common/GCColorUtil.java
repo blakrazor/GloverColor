@@ -316,7 +316,28 @@ public class GCColorUtil {
                 rgbValues = new int[]{103, 202, 241};
             } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.RUST))) {
                 colorAbbrev = mContext.getString(R.string.Ru);
-                rgbValues = new int[]{241, 183, 182};
+                rgbValues = new int[]{241, 183, 170};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.CORAL))) {
+                colorAbbrev = mContext.getString(R.string.Cr);
+                rgbValues = new int[]{232, 27, 68};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.TEAL))) {
+                colorAbbrev = mContext.getString(R.string.Te);
+                rgbValues = new int[]{106, 196, 160};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.PHANTOM))) {
+                colorAbbrev = mContext.getString(R.string.Ph);
+                rgbValues = new int[]{139, 93, 166};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.AMETHYST))) {
+                colorAbbrev = mContext.getString(R.string.Am);
+                rgbValues = new int[]{154, 86, 161};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.COTTON_CANDY))) {
+                colorAbbrev = mContext.getString(R.string.CC);
+                rgbValues = new int[]{221, 144, 190};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.KREAM))) {
+                colorAbbrev = mContext.getString(R.string.Kr);
+                rgbValues = new int[]{212, 235, 249};
+            } else if (colorItem.equalsIgnoreCase(mContext.getString(R.string.BLUE_STEEL))) {
+                colorAbbrev = mContext.getString(R.string.BS);
+                rgbValues = new int[]{78, 197, 205};
             }
             mColorArrayList.add(new GCColor(colorItem, colorAbbrev, rgbValues));
         }

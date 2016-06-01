@@ -16,6 +16,7 @@
         <item>@string/ARCLITE_GALAXY</item>
         <item>@string/AURORA</item>
         <item>@string/CHROMA_24</item>
+        <item>@string/CHROMA_36</item>
         <item>@string/CHROMA_CTRL</item>
         <item>@string/ELEMENT_V1</item>
         <item>@string/ELEMENT_V2</item>
@@ -45,6 +46,7 @@
         <item>@string/FLUORESCENT_RED</item>
         <item>@string/LOVE</item>
         <item>@string/RED</item>
+        <item>@string/CORAL</item>
         <item>@string/SOLAR_FLARE</item>
         <item>@string/BLOOD_ORANGE</item>
         <item>@string/SALMON</item>
@@ -65,6 +67,7 @@
         <item>@string/LIME</item>
         <item>@string/GREEN</item>
         <item>@string/SEAFOAM</item>
+        <item>@string/TEAL</item>
         <item>@string/CHAOS_EMERALD</item>
         <item>@string/LIME_GREEN</item>
         <item>@string/AQUA_GREEN</item>
@@ -96,6 +99,8 @@
         <item>@string/DUSK</item>
         <item>@string/VIOLET</item>
         <item>@string/LAVENDAR</item>
+        <item>@string/PHANTOM</item>
+        <item>@string/AMETHYST</item>
         <item>@string/LIGHT_PURPLE</item>
         <item>@string/LIGHT_LAVENDAR</item>
         <item>@string/WHITE_LAVENDAR</item>
@@ -107,6 +112,7 @@
         <item>@string/PINK</item>
         <item>@string/BLUSH</item>
         <item>@string/LIGHT_PINK</item>
+        <item>@string/COTTON_CANDY</item>
         <item>@string/DEEP_ORCHID</item>
         <item>@string/FLAMINGO</item>
         <item>@string/FUCHSIA</item>
@@ -121,6 +127,7 @@
         <item>@string/WHITE_SILVER</item>
         <item>@string/WARM_WHITE</item>
         <item>@string/OFF_WHITE</item>
+        <item>@string/KREAM</item>
         <item>@string/SILVER</item>
         <item>@string/GOLD</item>
         <item>@string/SUN</item>
@@ -128,6 +135,7 @@
         <item>@string/SUNKIST</item>
         <item>@string/MOON</item>
         <item>@string/LUNA</item>
+        <item>@string/BLUE_STEEL</item>
         <item>@string/FROST</item>
         <item>@string/TOMBSTONE</item>
         <item>@string/SPACE_GHOST</item>
@@ -155,6 +163,7 @@
         <item>@string/DOPS</item>
         <item>@string/DOP_TRACER</item>
         <item>@string/DOP_WAVE</item>
+        <item>@string/EDGE</item>
         <item>@string/EVEN_STROBE_V1</item>
         <item>@string/EVEN_STROBE_V2</item>
         <item>@string/EVEN_STROBE_V3</item>
@@ -204,6 +213,7 @@
         <item>@string/SATURATION_V2</item>
         <item>@string/SATURATION_V3</item>
         <item>@string/SATURATION_V4</item>
+        <item>@string/SEIZURE_STROBE</item>
         <item>@string/SHADOW</item>
         <item>@string/SHAPE_SHIFTER</item>
         <item>@string/SHORT_STROBE_V1</item>
@@ -233,7 +243,7 @@
         <item>@string/X_MORPH</item>
     </string-array>
 
-    <!-- CHROMA CHIP HERE -->
+    <!-- CHROMA 24 CHIP HERE -->
     <string-array name="chroma24_colors">
         <item>@string/NONE</item>
         <item>@string/WHITE</item>
@@ -1008,5 +1018,55 @@
         <item>@string/ULTRA_DOPS</item>
         <item>@string/BLINK</item>
         <item>@string/VEX_V2</item>
+    </string-array>
+
+    <!-- CHROMA 36 CHIP HERE -->
+    <string-array name="chroma36_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/CORAL</item>
+        <item>@string/BLOOD_ORANGE</item>
+        <item>@string/ORANGE</item>
+        <item>@string/GOLDEN_HOUR</item>
+        <item>@string/BANANA_YELLOW</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/SEAFOAM</item>
+        <item>@string/TEAL</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/LENS_FLARE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/PHANTOM</item>
+        <item>@string/AMETHYST</item>
+        <item>@string/BLUSH</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/COTTON_CANDY</item>
+        <item>@string/PEACH</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/KREAM</item>
+        <item>@string/SILVER</item>
+        <item>@string/LUNA</item>
+        <item>@string/BLUE_STEEL</item>
+        <item>@string/SPACE_GHOST</item>
+    </string-array>
+    <string-array name="chroma36_modes">
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/STROBIE</item>
+        <item>@string/SEIZURE_STROBE</item>
+        <item>@string/DASH_DOPS</item>
+        <item>@string/EDGE</item>
     </string-array>
 </resources>
