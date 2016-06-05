@@ -93,9 +93,12 @@ public class GCHomeActivity extends GCBaseActivity {
     }
 
     private void displayWhatsNewDialog(String versionNumber) {
+        String[] versionInfoArray = getResources().getStringArray(R.array.version_info_array);
+        String latestMessage = "What\'s new in this version?" + versionInfoArray[versionInfoArray.length - 1];
+
         new AlertDialog.Builder(GCHomeActivity.this)
                 .setTitle("GloverColor v" + versionNumber)
-                .setMessage(getString(R.string.whats_new_in_version))
+                .setMessage(latestMessage)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

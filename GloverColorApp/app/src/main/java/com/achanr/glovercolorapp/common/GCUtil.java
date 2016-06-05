@@ -71,11 +71,15 @@ public class GCUtil {
         List<String> stringParts = getParts(shortenedColorString, 3);
 
         for (String colorAbbrev : stringParts) {
-            String colorString = colorAbbrev.substring(0, 2);
-            String powerString = colorAbbrev.substring(2, 3);
-            GCColor color = GCColorUtil.getColorUsingAbbrev(colorString);
-            GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
-            colorList.add(new GCPoweredColor(color, powerLevel.getTitle()));
+            try {
+                String colorString = colorAbbrev.substring(0, 2);
+                String powerString = colorAbbrev.substring(2, 3);
+                GCColor color = GCColorUtil.getColorUsingAbbrev(colorString);
+                GCPowerLevel powerLevel = GCPowerLevelUtil.getPowerLevelUsingAbbrev(powerString);
+                colorList.add(new GCPoweredColor(color, powerLevel.getTitle()));
+            } catch (Exception e) {
+                return null;
+            }
         }
 
         return colorList;
@@ -406,19 +410,23 @@ public class GCUtil {
         String[] customColorParts = customColorString.split("\\(");
         for (String customColor : customColorParts) {
             if (!customColor.isEmpty()) {
-                int index = Integer.parseInt(customColor.substring(0, customColor.indexOf(",")));
+                try {
+                    int index = Integer.parseInt(customColor.substring(0, customColor.indexOf(",")));
 
-                int[] rgbValues = new int[3];
-                int firstIndex = customColor.indexOf("-");
-                int secondIndex = customColor.indexOf("-", firstIndex + 1);
-                rgbValues[0] = Integer.parseInt(customColor.substring(customColor.indexOf(",") + 1, firstIndex));
-                rgbValues[1] = Integer.parseInt(customColor.substring(firstIndex + 1, secondIndex));
-                rgbValues[2] = Integer.parseInt(customColor.substring(secondIndex + 1, customColor.indexOf(")")));
+                    int[] rgbValues = new int[3];
+                    int firstIndex = customColor.indexOf("-");
+                    int secondIndex = customColor.indexOf("-", firstIndex + 1);
+                    rgbValues[0] = Integer.parseInt(customColor.substring(customColor.indexOf(",") + 1, firstIndex));
+                    rgbValues[1] = Integer.parseInt(customColor.substring(firstIndex + 1, secondIndex));
+                    rgbValues[2] = Integer.parseInt(customColor.substring(secondIndex + 1, customColor.indexOf(")")));
 
-                int[] oldRgbValues = customColorArray.get(index);
-                oldRgbValues[0] = rgbValues[0];
-                oldRgbValues[1] = rgbValues[1];
-                oldRgbValues[2] = rgbValues[2];
+                    int[] oldRgbValues = customColorArray.get(index);
+                    oldRgbValues[0] = rgbValues[0];
+                    oldRgbValues[1] = rgbValues[1];
+                    oldRgbValues[2] = rgbValues[2];
+                } catch (Exception e) {
+                    return null;
+                }
             }
         }
         return customColorArray;
