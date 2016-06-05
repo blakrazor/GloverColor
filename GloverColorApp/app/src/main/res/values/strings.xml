@@ -92,15 +92,5 @@
     <string name="choose_sort_option">Choose sort option</string>
     <string name="filter_enter_code">GloverColor</string>
     <string name="facebook_page_url">https://www.facebook.com/GloverColor/</string>
-
-    <string name="whats_new_in_version">What\'s new in this version?
-        \n\u2022 Fixed social media sharing
-        \n\u2022 Fixed Chroma24 colors
-        \n\u2022 Fixed Kinetic modes
-        \n\u2022 Added Element V1
-        \n\u2022 Added Element V2 Loyalty
-        \n\u2022 Added Chroma36
-    </string>
-
-
+    <string name="title_version_info">Version Release Notes</string>
 </resources>
