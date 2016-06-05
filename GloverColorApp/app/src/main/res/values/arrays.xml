@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="version_number_array">
+        <item>1.1</item>
+        <item>1.2</item>
+    </string-array>
+
+    <string-array name="version_info_array">
+        <item>@string/whats_new_in_version_1.1</item>
+        <item>@string/whats_new_in_version_1.2</item>
+    </string-array>
+
     <string-array name="themes">
         <item>Default Theme</item>
         <item>Red Theme</item>
