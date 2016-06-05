@@ -106,6 +106,15 @@ public class GCEnterCodeActivity extends GCBaseActivity {
                 }
             }
         });
+
+        findViewById(R.id.clear_text_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEnterCodeEditText.getEditText().setText("");
+                isTextEntered = false;
+                updateButton();
+            }
+        });
     }
 
     @Override
@@ -149,11 +158,18 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         ArrayList<GCPoweredColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
         GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString.replace("_", " "));
         GCMode newMode = GCModeUtil.getModeUsingTitle(mode.replace("_", " "));
+        if (newColorList == null || chipSet == null || newMode == null) {
+            return null;
+        }
 
         String customColorString = "";
         if (splitString.length > 4) {
             customColorString += splitString[4];
-            newSet.setCustomColors(GCUtil.parseCustomColorShareString(customColorString));
+            ArrayList<int[]> customColorArray = GCUtil.parseCustomColorShareString(customColorString);
+            if (customColorArray == null) {
+                return null;
+            }
+            newSet.setCustomColors(customColorArray);
         }
 
         newSet.setTitle(title);

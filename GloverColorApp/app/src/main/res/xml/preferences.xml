@@ -37,7 +37,7 @@
         android:title="About">
 
         <Preference
-            android:clickable="false"
+            android:clickable="true"
             android:defaultValue="0.0"
             android:key="@string/version_number_preference"
             android:title="Version"/>

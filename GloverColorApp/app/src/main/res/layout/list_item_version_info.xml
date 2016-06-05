@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    android:transitionName="@string/transition_name_collection_cardview"
     card_view:cardCornerRadius="4dp">
 
     <LinearLayout
@@ -18,49 +17,34 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/list_item_collections_layout"
+            android:id="@+id/list_item_version_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?android:attr/listPreferredItemHeight"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/list_item_collections_title"
+                android:id="@+id/list_item_version_info_title"
                 style="@style/ListItemSavedSetTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/list_item_collections_set_number"
                 android:ellipsize="end"
-                android:maxLines="2"
                 android:text="Example Title With A Long Description"
                 android:transitionName="@string/transition_name_collection_title"/>
 
             <TextView
-                android:id="@+id/list_item_collections_desc"
+                android:id="@+id/list_item_version_info_desc"
                 style="@style/ListItemSavedSetDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/list_item_collections_title"
+                android:layout_below="@id/list_item_version_info_title"
                 android:layout_toLeftOf="@+id/list_item_collections_set_number"
                 android:ellipsize="end"
-                android:maxLines="3"
                 android:text="Example description With A Long Description that is exceptionally long for testing purposes"
                 android:transitionName="@string/transition_name_collection_desc"/>
-
-            <TextView
-                android:id="@+id/list_item_collections_set_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="4dp"
-                android:gravity="center"
-                android:text="5"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"/>
 
         </RelativeLayout>
 

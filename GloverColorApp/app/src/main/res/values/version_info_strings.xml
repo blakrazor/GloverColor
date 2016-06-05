@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whats_new_in_version_1.1">
+        \n\u2022 Fixed social media sharing
+        \n\u2022 Fixed Chroma24 colors
+        \n\u2022 Fixed Kinetic modes
+        \n\u2022 Added Element V1
+        \n\u2022 Added Element V2 Loyalty
+        \n\u2022 Added Chroma36
+    </string>
+    <string name="whats_new_in_version_1.2">
+        \n\u2022 Fixing crashes on enter share code
+        \n\u2022 Fixing memory issues
+        \n\u2022 Added version release notes
+    </string>
+</resources>

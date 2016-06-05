@@ -110,7 +110,17 @@ public class GCSettingsActivity extends GCBaseActivity {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 version = prefs.getString(getActivity().getString(R.string.version_number_preference), "0.0");
             }
+            final String versionFinal = version;
             versionPreference.setSummary(version);
+            versionPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), GCVersionInfoActivity.class);
+                    intent.putExtra(GCVersionInfoActivity.CURRENT_VERSION, versionFinal);
+                    startActivity(intent);
+                    return true;
+                }
+            });
         }
 
         private void setupPowerLevelPreference() {
