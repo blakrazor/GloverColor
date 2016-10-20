@@ -13,4 +13,11 @@
         \n\u2022 Fixing memory issues
         \n\u2022 Added version release notes
     </string>
+    <string name="whats_new_in_version_1.3">
+        \n\u2022 Performance Optimizations
+        \n\u2022 Fixed Mango to use Mg instead of Ma
+        \n\u2022 Fixed similar abbreviation bug
+        \n\u2022 Added numbers to colors and patterns
+        \n\u2022 Added Flow V2 chip
+    </string>
 </resources>
