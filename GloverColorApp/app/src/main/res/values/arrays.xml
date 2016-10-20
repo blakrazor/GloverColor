@@ -34,6 +34,7 @@
         <item>@string/ENOVA</item>
         <item>@string/EZLITE_2</item>
         <item>@string/FLOW</item>
+        <item>@string/FLOW_V2</item>
         <item>@string/FLUX</item>
         <item>@string/KINETIC</item>
         <item>@string/MATRIX</item>
@@ -162,6 +163,8 @@
         <item>@string/CANDY_STROBE</item>
         <item>@string/CENTERPOINT</item>
         <item>@string/CHROMA</item>
+        <item>@string/CHROMA_FADE</item>
+        <item>@string/CHROMA_MORPH</item>
         <item>@string/COMET_V1</item>
         <item>@string/COMET_V2</item>
         <item>@string/COMET_V3</item>
@@ -1078,5 +1081,48 @@
         <item>@string/SEIZURE_STROBE</item>
         <item>@string/DASH_DOPS</item>
         <item>@string/EDGE</item>
+    </string-array>
+
+    <!-- FLOW V2 CHIP HERE -->
+    <string-array name="flow_v2_colors">
+        <item>@string/NONE</item>
+        <item>@string/WHITE</item>
+        <item>@string/BLANK</item>
+        <item>@string/RED</item>
+        <item>@string/ORANGE</item>
+        <item>@string/YELLOW</item>
+        <item>@string/LIME_GREEN</item>
+        <item>@string/GREEN</item>
+        <item>@string/MINT</item>
+        <item>@string/TURQUOISE</item>
+        <item>@string/LIGHT_BLUE</item>
+        <item>@string/SKY_BLUE</item>
+        <item>@string/BLUE</item>
+        <item>@string/PURPLE</item>
+        <item>@string/LAVENDAR</item>
+        <item>@string/BLUSH</item>
+        <item>@string/LIGHT_PINK</item>
+        <item>@string/PINK</item>
+        <item>@string/HOT_PINK</item>
+        <item>@string/WARM_WHITE</item>
+        <item>@string/SILVER</item>
+    </string-array>
+    <string-array name="flow_v2_modes">
+        <item>@string/CHROMA_FADE</item>
+        <item>@string/CHROMA_MORPH</item>
+        <item>@string/STROBE_FADE</item>
+        <item>@string/STROBE_MORPH</item>
+        <item>@string/VEX</item>
+        <item>@string/PULSE</item>
+        <item>@string/STROBIE</item>
+        <item>@string/FLICKER</item>
+        <item>@string/TRACER</item>
+        <item>@string/CHROMA</item>
+        <item>@string/CENTERPOINT</item>
+        <item>@string/DASH_DOT</item>
+        <item>@string/STROBE</item>
+        <item>@string/HYPERSTROBE</item>
+        <item>@string/DOPS</item>
+        <item>@string/SHADOW</item>
     </string-array>
 </resources>
