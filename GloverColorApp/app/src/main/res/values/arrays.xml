@@ -3,6 +3,7 @@
     <string-array name="version_number_array">
         <item>1.1</item>
         <item>1.2</item>
+        <item>1.3</item>
     </string-array>
 
     <string-array name="version_info_array">
