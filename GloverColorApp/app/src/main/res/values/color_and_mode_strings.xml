@@ -301,6 +301,8 @@
     <string name="VEX_V2">VEX V2</string>
     <string name="SEIZURE_STROBE">SEIZURE STROBE</string>
     <string name="EDGE">EDGE</string>
+    <string name="CHROMA_FADE">CHROMA FADE</string>
+    <string name="CHROMA_MORPH">CHROMA MORPH</string>
 
     <!-- ALL CHIP STRINGS -->
     <string name="NO_CHIP">NONE</string>
@@ -329,4 +331,5 @@
     <string name="ELEMENT_V1">ELEMENT V1</string>
     <string name="ELEMENT_V2_LOYALTY">ELEMENT V2 LOYALTY</string>
     <string name="CHROMA_36">CHROMA 36</string>
+    <string name="FLOW_V2">FLOW V2</string>
 </resources>
