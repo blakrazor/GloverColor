@@ -18,44 +18,42 @@ import java.util.ArrayList;
  */
 public class GCCollectionDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "COLLECTION_TBL";
-    static final String CREATE_COLLECTION_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
-                    TABLE_NAME +
-                    " (" + GCCollectionEntry._ID + " INTEGER PRIMARY KEY," +
-                    GCCollectionEntry.COLLECTION_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCCollectionEntry.COLLECTION_DESC_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCCollectionEntry.COLLECTION_SETS_KEY + GCDatabaseHelper.TEXT_TYPE +
-                    " );";
+    private static final String TABLE_NAME = "COLLECTION_TBL";
 
-    private Context mContext;
-
-    public static class GCCollectionEntry implements BaseColumns {
-        public static final String COLLECTION_TITLE_KEY = "COLLECTION_TITLE";
-        public static final String COLLECTION_DESC_KEY = "COLLECTION_DESC";
-        public static final String COLLECTION_SETS_KEY = "COLLECTION_SETS";
+    private static class GCCollectionEntry implements BaseColumns {
+        static final String COLLECTION_TITLE_KEY = "COLLECTION_TITLE";
+        static final String COLLECTION_DESC_KEY = "COLLECTION_DESC";
+        static final String COLLECTION_SETS_KEY = "COLLECTION_SETS";
     }
 
-    public GCCollectionDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
+    private final Context mContext;
+
+    GCCollectionDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
         mContext = context;
-        GCCollectionDatabase.db_adapter = databaseAdapter;
+        db_adapter = databaseAdapter;
     }
 
     @Override
     public void createTable(SQLiteDatabase db) {
         synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_COLLECTION_DATABASE);
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                    TABLE_NAME +
+                    " (" + GCCollectionEntry._ID + " INTEGER PRIMARY KEY," +
+                    GCCollectionEntry.COLLECTION_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCCollectionEntry.COLLECTION_DESC_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCCollectionEntry.COLLECTION_SETS_KEY + GCDatabaseHelper.TEXT_TYPE +
+                    " );");
         }
     }
 
-    public long insertData(GCCollection collection) {
+    public void insertData(GCCollection collection) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCCollectionEntry.COLLECTION_TITLE_KEY, collection.getTitle());
         values.put(GCCollectionEntry.COLLECTION_DESC_KEY, collection.getDescription());
         values.put(GCCollectionEntry.COLLECTION_SETS_KEY, GCUtil.convertSetListToString(collection.getSavedSetList()));
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {
@@ -101,7 +99,7 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
 
                         collection.setTitle(title);
                         collection.setDescription(desc);
-                        collection.setSavedSetList(GCUtil.convertStringToSetList(setListString));
+                        collection.setSavedSetList(GCUtil.convertStringToSetList(mContext, setListString));
 
                         if (collection.getSavedSetList().size() == 0) {
                             deleteData(collection);
@@ -124,16 +122,16 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
         return collectionArrayList;
     }
 
-    public boolean deleteData(GCCollection collection) {
+    public void deleteData(GCCollection collection) {
         // Define 'where' part of query.
         String selection = GCCollectionEntry.COLLECTION_TITLE_KEY + "=?";
         // Specify arguments in placeholder order.
         String[] selectionArgs = {String.valueOf(collection.getTitle())};
         // Issue SQL statement.
-        return db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs) > 0;
+        db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs);
     }
 
-    public int updateData(GCCollection oldCollection, GCCollection newCollection) {
+    public void updateData(GCCollection oldCollection, GCCollection newCollection) {
 
         // New value for one column
         ContentValues values = new ContentValues();
@@ -145,6 +143,6 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
         String selection = GCCollectionEntry.COLLECTION_TITLE_KEY + "=?";
         String[] selectionArgs = {String.valueOf(oldCollection.getTitle())};
 
-        return db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
+        db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }
 }

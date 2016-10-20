@@ -50,16 +50,6 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="SettingsTitle">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
-    <style name="SettingsBody">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
-    </style>
-
     <style name="AppTheme.NoActionBar.AppBarOverlay"
            parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 

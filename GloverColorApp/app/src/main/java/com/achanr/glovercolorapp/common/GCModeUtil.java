@@ -1,7 +1,8 @@
 package com.achanr.glovercolorapp.common;
 
+import android.content.Context;
+
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCMode;
 
@@ -15,34 +16,34 @@ public class GCModeUtil {
 
     private static ArrayList<GCMode> mModeArrayList;
 
-    public static void initModeArrayList() {
-        mModeArrayList = GCDatabaseHelper.MODE_DATABASE.getAllData();
+    public static void initModeArrayList(Context context) {
+        mModeArrayList = GCDatabaseHelper.getInstance(context).MODE_DATABASE.getAllData();
         if (mModeArrayList == null || mModeArrayList.isEmpty()) {
-            createDefaultModes();
+            createDefaultModes(context);
         }
     }
 
-    private static void createDefaultModes() {
+    private static void createDefaultModes(Context context) {
         mModeArrayList = new ArrayList<>();
 
-        String[] modesStringArray = GloverColorApplication.getContext().getResources().getStringArray(R.array.default_modes);
+        String[] modesStringArray = context.getResources().getStringArray(R.array.default_modes);
 
         for (String modeString : modesStringArray) {
             mModeArrayList.add(new GCMode(modeString));
         }
 
         //Clear database and save default values
-        GCDatabaseHelper.MODE_DATABASE.clearTable();
+        GCDatabaseHelper.getInstance(context).MODE_DATABASE.clearTable();
         for (GCMode mode : mModeArrayList) {
-            GCDatabaseHelper.MODE_DATABASE.insertData(mode);
+            GCDatabaseHelper.getInstance(context).MODE_DATABASE.insertData(mode);
         }
     }
 
-    public static GCMode getModeUsingTitle(String title) {
+    public static GCMode getModeUsingTitle(Context context, String title) {
         GCMode mode = null;
 
         if (title.equalsIgnoreCase("SLOW_FADE")) {
-            return new GCMode(GloverColorApplication.getContext().getResources().getString(R.string.SLOW_FADE));
+            return new GCMode(context.getResources().getString(R.string.SLOW_FADE));
         }
 
         for (GCMode modeItem : mModeArrayList) {

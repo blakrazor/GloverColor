@@ -13,36 +13,40 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 29;
-    public static final String DATABASE_NAME = "SavedSet.db";
-    public static final String TEXT_TYPE = " TEXT";
-    public static final String INT_TYPE = " INT";
-    public static final String COMMA_SEP = ",";
-    private static Context mContext;
-    private static GCDatabaseAdapter mDbAdapter;
+    private static final int DATABASE_VERSION = 30;
+    private static final String DATABASE_NAME = "SavedSet.db";
+    static final String TEXT_TYPE = " TEXT";
+    static final String INT_TYPE = " INT";
+    static final String COMMA_SEP = ",";
 
-    public static GCSavedSetDatabase SAVED_SET_DATABASE;
-    public static GCPowerLevelDatabase POWER_LEVEL_DATABASE;
-    public static GCColorDatabase COLOR_DATABASE;
-    public static GCChipDatabase CHIP_DATABASE;
-    public static GCModeDatabase MODE_DATABASE;
-    public static GCCollectionDatabase COLLECTION_DATABASE;
+    public GCSavedSetDatabase SAVED_SET_DATABASE;
+    public GCPowerLevelDatabase POWER_LEVEL_DATABASE;
+    public GCColorDatabase COLOR_DATABASE;
+    public GCChipDatabase CHIP_DATABASE;
+    public GCModeDatabase MODE_DATABASE;
+    public GCCollectionDatabase COLLECTION_DATABASE;
 
-    public GCDatabaseHelper(Context context, String name,
-                            SQLiteDatabase.CursorFactory factory, int version, GCDatabaseAdapter dbAdapter) {
-        super(context, name, factory, version);
-        mContext = context;
-        mDbAdapter = dbAdapter;
-        initializeTable(mDbAdapter);
+    private static GCDatabaseHelper dbHelper;
+
+    public static synchronized GCDatabaseHelper getInstance(Context context) {
+        if (dbHelper == null) {
+            dbHelper = new GCDatabaseHelper(context);
+        }
+        return dbHelper;
     }
 
-    private void initializeTable(GCDatabaseAdapter db_adapter) {
-        SAVED_SET_DATABASE = new GCSavedSetDatabase(mContext, db_adapter);
-        POWER_LEVEL_DATABASE = new GCPowerLevelDatabase(mContext, db_adapter);
-        COLOR_DATABASE = new GCColorDatabase(mContext, db_adapter);
-        CHIP_DATABASE = new GCChipDatabase(mContext, db_adapter);
-        MODE_DATABASE = new GCModeDatabase(mContext, db_adapter);
-        COLLECTION_DATABASE = new GCCollectionDatabase(mContext, db_adapter);
+    private GCDatabaseHelper(Context context) {
+        super(context, GCDatabaseHelper.DATABASE_NAME, null, GCDatabaseHelper.DATABASE_VERSION);
+        initializeTable(context, new GCDatabaseAdapter(this));
+    }
+
+    private void initializeTable(Context context, GCDatabaseAdapter db_adapter) {
+        SAVED_SET_DATABASE = new GCSavedSetDatabase(context, db_adapter);
+        POWER_LEVEL_DATABASE = new GCPowerLevelDatabase(db_adapter);
+        COLOR_DATABASE = new GCColorDatabase(db_adapter);
+        CHIP_DATABASE = new GCChipDatabase(db_adapter);
+        MODE_DATABASE = new GCModeDatabase(db_adapter);
+        COLLECTION_DATABASE = new GCCollectionDatabase(context, db_adapter);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
         while (upgradeTo <= newVersion) {
             switch (upgradeTo) {
                 case 2: //upgrade from 1 to 2
-                    db.execSQL("ALTER TABLE " + SAVED_SET_DATABASE.TABLE_NAME +
+                    db.execSQL("ALTER TABLE " + GCSavedSetDatabase.TABLE_NAME +
                             " ADD COLUMN " + GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_CHIP + " " + TEXT_TYPE + ";");
                     break;
                 case 3: //upgrade from 2 to 3
@@ -75,14 +79,14 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
                     MODE_DATABASE.createTable(db);
                     break;
                 case 10: //upgrade from 9 to 10
-                    db.execSQL("ALTER TABLE " + SAVED_SET_DATABASE.TABLE_NAME +
+                    db.execSQL("ALTER TABLE " + GCSavedSetDatabase.TABLE_NAME +
                             " ADD COLUMN " + GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + " " + TEXT_TYPE + ";");
                     break;
                 case 21:
                     String[] ids = {"SP2_REV1", "SP2_REV2", "SP3_REV1", "SP3_REV2"};
-                    db.delete(SAVED_SET_DATABASE.TABLE_NAME, GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_CHIP + " IN (?, ?, ?, ?)", ids);
+                    db.delete(GCSavedSetDatabase.TABLE_NAME, GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_CHIP + " IN (?, ?, ?, ?)", ids);
                 case 22:
-                    db.execSQL("delete from " + SAVED_SET_DATABASE.TABLE_NAME + ";");
+                    db.execSQL("delete from " + GCSavedSetDatabase.TABLE_NAME + ";");
                     break;
                 case 23:
                     COLLECTION_DATABASE.createTable(db);
@@ -94,9 +98,9 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
         }
 
         //for each update, refresh the color, chip, and mode databases
-        db.execSQL("delete from " + COLOR_DATABASE.TABLE_NAME + ";");
-        db.execSQL("delete from " + CHIP_DATABASE.TABLE_NAME + ";");
-        db.execSQL("delete from " + MODE_DATABASE.TABLE_NAME + ";");
+        db.execSQL("delete from " + GCColorDatabase.TABLE_NAME + ";");
+        db.execSQL("delete from " + GCChipDatabase.TABLE_NAME + ";");
+        db.execSQL("delete from " + GCModeDatabase.TABLE_NAME + ";");
     }
 
     @Override

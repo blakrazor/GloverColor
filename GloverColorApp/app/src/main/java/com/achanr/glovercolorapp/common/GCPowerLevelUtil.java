@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.common;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
@@ -17,14 +18,14 @@ public class GCPowerLevelUtil {
 
     private static ArrayList<GCPowerLevel> mPowerLevelArrayList;
 
-    public static void initPowerLevelArrayList() {
-        mPowerLevelArrayList = GCDatabaseHelper.POWER_LEVEL_DATABASE.getAllData();
+    public static void initPowerLevelArrayList(Context context) {
+        mPowerLevelArrayList = GCDatabaseHelper.getInstance(context).POWER_LEVEL_DATABASE.getAllData();
         if (mPowerLevelArrayList == null || mPowerLevelArrayList.isEmpty()) {
-            createDefaultPowerLevels();
+            createDefaultPowerLevels(context);
         }
     }
 
-    private static void createDefaultPowerLevels() {
+    private static void createDefaultPowerLevels(Context context) {
         //Setup default power level values
         mPowerLevelArrayList = new ArrayList<>();
         GCPowerLevel powerLevelHigh = new GCPowerLevel(
@@ -46,17 +47,17 @@ public class GCPowerLevelUtil {
         mPowerLevelArrayList.add(powerLevelLow);
 
         //Clear database and save default values
-        GCDatabaseHelper.POWER_LEVEL_DATABASE.clearTable();
+        GCDatabaseHelper.getInstance(context).POWER_LEVEL_DATABASE.clearTable();
         for (GCPowerLevel powerLevel : mPowerLevelArrayList) {
-            GCDatabaseHelper.POWER_LEVEL_DATABASE.insertData(powerLevel);
+            GCDatabaseHelper.getInstance(context).POWER_LEVEL_DATABASE.insertData(powerLevel);
         }
     }
 
-    public static void updatePowerLevelValue(String powerLevelTitle, float newPowerValue) {
+    public static void updatePowerLevelValue(Context context, String powerLevelTitle, float newPowerValue) {
         GCPowerLevel oldPowerLevel = getPowerLevelUsingTitle(powerLevelTitle);
         if (oldPowerLevel != null) {
-            GCDatabaseHelper.POWER_LEVEL_DATABASE.updateData(oldPowerLevel, newPowerValue);
-            initPowerLevelArrayList();
+            GCDatabaseHelper.getInstance(context).POWER_LEVEL_DATABASE.updateData(oldPowerLevel, newPowerValue);
+            initPowerLevelArrayList(context);
         } else {
             Log.e(GCPowerLevelUtil.class.getSimpleName(), "power level does not exist in array");
         }

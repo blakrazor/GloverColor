@@ -27,7 +27,7 @@ import java.util.List;
 public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListItemViewHolder> {
 
     private ArrayList<GCSavedSet> mSavedSetList;
-    private Context mContext;
+    private final Context mContext;
 
     public GCSavedSetListAdapter(Context context, ArrayList<GCSavedSet> savedSetList) {
         mSavedSetList = new ArrayList<>(savedSetList);
@@ -60,8 +60,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_saved_set, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        GCSavedSetListItemViewHolder vh = new GCSavedSetListItemViewHolder(mContext, v);
-        return vh;
+        return new GCSavedSetListItemViewHolder(mContext, v);
     }
 
     @Override
@@ -74,11 +73,11 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(mSavedSetList.get(position));
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText(GCUtil.convertToCamelcase(mode.getTitle().toString()));
+        holder.txtMode.setText(GCUtil.convertToCamelcase(mContext, mode.getTitle()));
         if (chipSet.getTitle().equalsIgnoreCase("NONE")) {
             holder.txtChipset.setText("No Preset");
         } else {
-            holder.txtChipset.setText(GCUtil.convertToCamelcase(chipSet.getTitle().toString()));
+            holder.txtChipset.setText(GCUtil.convertToCamelcase(mContext, chipSet.getTitle()));
         }
         holder.mSavedSet = mSavedSetList.get(position);
     }
@@ -122,18 +121,17 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         }
     }
 
-    public GCSavedSet removeItem(int position) {
-        final GCSavedSet model = mSavedSetList.remove(position);
+    private void removeItem(int position) {
+        mSavedSetList.remove(position);
         notifyItemRemoved(position);
-        return model;
     }
 
-    public void addItem(int position, GCSavedSet model) {
+    private void addItem(int position, GCSavedSet model) {
         mSavedSetList.add(position, model);
         notifyItemInserted(position);
     }
 
-    public void moveItem(int fromPosition, int toPosition) {
+    private void moveItem(int fromPosition, int toPosition) {
         final GCSavedSet model = mSavedSetList.remove(fromPosition);
         mSavedSetList.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
@@ -141,7 +139,7 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
 
     public void sortList() {
         if (!(mContext instanceof GCEditCollectionActivity)) {
-            mSavedSetList = GCUtil.sortList(mSavedSetList);
+            mSavedSetList = GCUtil.sortList(mContext, mSavedSetList);
         }
     }
 }

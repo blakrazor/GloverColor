@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -19,44 +18,39 @@ import java.util.Arrays;
  */
 public class GCChipDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "CHIP_TBL";
-    static final String CREATE_CHIP_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
-                    TABLE_NAME +
-                    " (" + GCChipEntry._ID + " INTEGER PRIMARY KEY," +
-                    GCChipEntry.CHIP_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCChipEntry.CHIP_COLORS_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCChipEntry.CHIP_MODES_KEY + GCDatabaseHelper.TEXT_TYPE +
-                    " );";
+    static final String TABLE_NAME = "CHIP_TBL";
 
-    private Context mContext;
-
-    public static class GCChipEntry implements BaseColumns {
-        public static final String CHIP_TITLE_KEY = "CHIP_TITLE";
-        public static final String CHIP_COLORS_KEY = "CHIP_COLORS";
-        public static final String CHIP_MODES_KEY = "CHIP_MODES";
+    private static class GCChipEntry implements BaseColumns {
+        static final String CHIP_TITLE_KEY = "CHIP_TITLE";
+        static final String CHIP_COLORS_KEY = "CHIP_COLORS";
+        static final String CHIP_MODES_KEY = "CHIP_MODES";
     }
 
-    public GCChipDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
-        mContext = context;
-        GCChipDatabase.db_adapter = databaseAdapter;
+    GCChipDatabase(GCDatabaseAdapter databaseAdapter) {
+        db_adapter = databaseAdapter;
     }
 
     @Override
     public void createTable(SQLiteDatabase db) {
         synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_CHIP_DATABASE);
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                    TABLE_NAME +
+                    " (" + GCChipEntry._ID + " INTEGER PRIMARY KEY," +
+                    GCChipEntry.CHIP_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCChipEntry.CHIP_COLORS_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCChipEntry.CHIP_MODES_KEY + GCDatabaseHelper.TEXT_TYPE +
+                    " );");
         }
     }
 
-    public long insertData(GCChip chip) {
+    public void insertData(GCChip chip) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCChipEntry.CHIP_TITLE_KEY, chip.getTitle());
         values.put(GCChipEntry.CHIP_COLORS_KEY, TextUtils.join(GCDatabaseHelper.COMMA_SEP, chip.getColors()));
         values.put(GCChipEntry.CHIP_MODES_KEY, TextUtils.join(GCDatabaseHelper.COMMA_SEP, chip.getModes()));
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {
