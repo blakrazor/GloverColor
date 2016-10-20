@@ -8,6 +8,7 @@
     <string-array name="version_info_array">
         <item>@string/whats_new_in_version_1.1</item>
         <item>@string/whats_new_in_version_1.2</item>
+        <item>@string/whats_new_in_version_1.3</item>
     </string-array>
 
     <string-array name="themes">
