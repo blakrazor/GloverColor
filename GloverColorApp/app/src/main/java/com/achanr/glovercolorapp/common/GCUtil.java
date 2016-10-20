@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.models.GCColor;
@@ -50,10 +49,8 @@ import java.util.List;
 public class GCUtil {
 
     public static final String BREAK_CHARACTER_FOR_SHARING = ":";
-    public static final String THEME_KEY = "theme_key";
+    private static final String THEME_KEY = "theme_key";
     public static final String WAS_REFRESHED = "was_refreshed";
-
-    private static Context context = GloverColorApplication.getContext();
 
     public static String convertColorListToShortenedColorString(ArrayList<GCPoweredColor> colorList) {
         String shortenedColorString = "";
@@ -174,14 +171,14 @@ public class GCUtil {
      * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
      */
     public static void changeToTheme(Activity activity, EGCThemeEnum themeEnum) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(THEME_KEY, themeEnum.toString());
         editor.apply();
         refreshActivity(activity);
     }
 
-    public static String getCurrentTheme() {
+    public static String getCurrentTheme(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(THEME_KEY, EGCThemeEnum.DEFAULT_THEME.toString());
     }
@@ -190,7 +187,7 @@ public class GCUtil {
      * Set the theme of the activity, according to the configuration.
      */
     public static void onActivityCreateSetTheme(Activity activity) {
-        String themeString = getCurrentTheme();
+        String themeString = getCurrentTheme(activity);
 
         switch (EGCThemeEnum.valueOf(themeString)) {
             default:
@@ -228,7 +225,7 @@ public class GCUtil {
         return newRgbValues;
     }
 
-    public static String getShareString(GCSavedSet savedSet) {
+    private static String getShareString(GCSavedSet savedSet) {
         String shareString = "";
 
         //Get title
@@ -275,7 +272,7 @@ public class GCUtil {
 
         alert.setPositiveButton(mContext.getString(R.string.copy), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Copied Text", shareString);
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(mContext, "Copied to clipboard", Toast.LENGTH_SHORT).show();
@@ -302,26 +299,24 @@ public class GCUtil {
         alertDialog.show();
     }
 
-    public static String convertToCamelcase(String inputString) {
+    public static String convertToCamelcase(Context context, String inputString) {
         if (inputString != null && !inputString.isEmpty()) {
 
             if (inputString.toLowerCase().contains("dop")) {
                 int dopIndex = inputString.toLowerCase().indexOf("dop");
-                String dopMode = convertToCamelcase(inputString.substring(0, dopIndex)) + "DOP" + convertToCamelcase(inputString.substring(dopIndex + 3).toLowerCase());
-                return dopMode;
+                return convertToCamelcase(context, inputString.substring(0, dopIndex)) + "DOP" + convertToCamelcase(context, inputString.substring(dopIndex + 3).toLowerCase());
             }
 
-            if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.OG_CHROMA))) {
+            if (inputString.equalsIgnoreCase(context.getString(R.string.OG_CHROMA))) {
                 return "OG Chroma";
             }
 
-            if (inputString.equalsIgnoreCase(GloverColorApplication.getContext().getString(R.string.EZLITE_2))) {
+            if (inputString.equalsIgnoreCase(context.getString(R.string.EZLITE_2))) {
                 return "ezLite 2.0";
             }
 
             if (inputString.toLowerCase().startsWith("sp")) {
-                String spChip = "SP" + convertToCamelcase(inputString.substring(2).toLowerCase());
-                return spChip;
+                return "SP" + convertToCamelcase(context, inputString.substring(2).toLowerCase());
             }
 
 
@@ -383,7 +378,7 @@ public class GCUtil {
         return customColorArray;
     }
 
-    public static String getCustomColorShareString(GCSavedSet savedSet) {
+    private static String getCustomColorShareString(GCSavedSet savedSet) {
         ArrayList<Integer> indexList = new ArrayList<>();
         String customColorString = "";
         int index = 0;
@@ -447,6 +442,7 @@ public class GCUtil {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             final View child = viewGroup.getChildAt(i);
             if (clazz.isAssignableFrom(child.getClass())) {
+                //noinspection unchecked
                 childrenFound.add((V) child);
             }
             if (child instanceof ViewGroup) {
@@ -457,9 +453,9 @@ public class GCUtil {
         return childrenFound;
     }
 
-    public static ArrayList<GCSavedSet> sortList(ArrayList<GCSavedSet> savedSetArrayList) {
+    public static ArrayList<GCSavedSet> sortList(Context context, ArrayList<GCSavedSet> savedSetArrayList) {
         ArrayList<GCSavedSet> sortedSetList = new ArrayList<>(savedSetArrayList);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GloverColorApplication.getContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
         GCSavedSetListActivity.SortEnum sortType = GCSavedSetListActivity.SortEnum.values()[sortTypeInt];
 
@@ -500,9 +496,9 @@ public class GCUtil {
         return sortedSetList;
     }
 
-    public static ArrayList<GCCollection> sortCollectionList(ArrayList<GCCollection> collectionList) {
+    public static ArrayList<GCCollection> sortCollectionList(Context context, ArrayList<GCCollection> collectionList) {
         ArrayList<GCCollection> sortedCollectionList = new ArrayList<>(collectionList);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GloverColorApplication.getContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int sortTypeInt = prefs.getInt(GCConstants.COLLECTION_SORTING_KEY, 0);
         GCCollectionsActivity.SortEnum sortType = GCCollectionsActivity.SortEnum.values()[sortTypeInt];
 
@@ -536,10 +532,10 @@ public class GCUtil {
         return setListString;
     }
 
-    public static ArrayList<GCSavedSet> convertStringToSetList(String setListString) {
+    public static ArrayList<GCSavedSet> convertStringToSetList(Context context, String setListString) {
         ArrayList<GCSavedSet> setArrayList = new ArrayList<>();
         String[] stringParts = setListString.split(",");
-        ArrayList<GCSavedSet> allSavedSets = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
+        ArrayList<GCSavedSet> allSavedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
         for (String part : stringParts) {
             for (GCSavedSet set : allSavedSets) {
                 if (set.getId() == Integer.parseInt(part)) {

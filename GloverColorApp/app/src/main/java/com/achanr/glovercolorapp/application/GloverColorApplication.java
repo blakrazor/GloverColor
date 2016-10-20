@@ -1,15 +1,13 @@
 package com.achanr.glovercolorapp.application;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCColorUtil;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
-import com.achanr.glovercolorapp.database.GCDatabaseAdapter;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.crashlytics.android.Crashlytics;
-
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -20,21 +18,14 @@ import io.fabric.sdk.android.Fabric;
  */
 public class GloverColorApplication extends Application {
 
-    private static Context mContext;
-
     @Override
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        mContext = this;
-        GCDatabaseAdapter.getInstance(getApplicationContext());
-        GCColorUtil.initColorArrayList();
-        GCPowerLevelUtil.initPowerLevelArrayList();
-        GCChipUtil.initChipArrayList();
-        GCModeUtil.initModeArrayList();
-    }
-
-    public static Context getContext() {
-        return mContext;
+        GCDatabaseHelper.getInstance(getApplicationContext());
+        GCColorUtil.initColorArrayList(this);
+        GCPowerLevelUtil.initPowerLevelArrayList(this);
+        GCChipUtil.initChipArrayList(this);
+        GCModeUtil.initModeArrayList(this);
     }
 }

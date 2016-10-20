@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -17,38 +16,33 @@ import java.util.ArrayList;
  */
 public class GCModeDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "MODE_TBL";
-    static final String CREATE_MODE_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
-                    TABLE_NAME +
-                    " (" + GCModeEntry._ID + " INTEGER PRIMARY KEY," +
-                    GCModeEntry.MODE_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE +
-                    " );";
+    static final String TABLE_NAME = "MODE_TBL";
 
-    private Context mContext;
-
-    public static class GCModeEntry implements BaseColumns {
-        public static final String MODE_TITLE_KEY = "MODE_TITLE";
+    private static class GCModeEntry implements BaseColumns {
+        static final String MODE_TITLE_KEY = "MODE_TITLE";
     }
 
-    public GCModeDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
-        mContext = context;
-        GCModeDatabase.db_adapter = databaseAdapter;
+    GCModeDatabase(GCDatabaseAdapter databaseAdapter) {
+        db_adapter = databaseAdapter;
     }
 
     @Override
     public void createTable(SQLiteDatabase db) {
         synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_MODE_DATABASE);
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                    TABLE_NAME +
+                    " (" + GCModeEntry._ID + " INTEGER PRIMARY KEY," +
+                    GCModeEntry.MODE_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE +
+                    " );");
         }
     }
 
-    public long insertData(GCMode mode) {
+    public void insertData(GCMode mode) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCModeEntry.MODE_TITLE_KEY, mode.getTitle());
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {

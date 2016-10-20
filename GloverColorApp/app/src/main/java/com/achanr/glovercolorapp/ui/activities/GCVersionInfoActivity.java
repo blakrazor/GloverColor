@@ -40,11 +40,6 @@ public class GCVersionInfoActivity extends GCBaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onBackPressed() {
         finish();
     }
@@ -70,12 +65,12 @@ public class GCVersionInfoActivity extends GCBaseActivity {
 
     private class VersionInfoAdapter extends RecyclerView.Adapter<VersionInfoItemViewHolder> {
 
-        String[] versionInfoArray;
-        String[] versionNumberArray;
-        String currentVersion;
-        Context mContext;
+        final String[] versionInfoArray;
+        final String[] versionNumberArray;
+        final String currentVersion;
+        final Context mContext;
 
-        public VersionInfoAdapter(Context context, String[] versionInfoList, String[] versionNumberList,
+        VersionInfoAdapter(Context context, String[] versionInfoList, String[] versionNumberList,
                                   String currentVersion) {
             mContext = context;
             versionInfoArray = versionInfoList;
@@ -88,8 +83,7 @@ public class GCVersionInfoActivity extends GCBaseActivity {
             // create a new view
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_version_info, parent, false);
             // set the view's size, margins, paddings and layout parameters
-            VersionInfoItemViewHolder vh = new VersionInfoItemViewHolder(mContext, v);
-            return vh;
+            return new VersionInfoItemViewHolder(v);
         }
 
         @Override
@@ -110,10 +104,10 @@ public class GCVersionInfoActivity extends GCBaseActivity {
 
     private class VersionInfoItemViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView txtTitle;
-        public TextView txtDesc;
+        final TextView txtTitle;
+        final TextView txtDesc;
 
-        public VersionInfoItemViewHolder(Context context, View itemView) {
+        VersionInfoItemViewHolder(View itemView) {
             super(itemView);
             txtTitle = (TextView) itemView.findViewById(R.id.list_item_version_info_title);
             txtDesc = (TextView) itemView.findViewById(R.id.list_item_version_info_desc);

@@ -23,9 +23,27 @@ import java.util.ArrayList;
  */
 public class GCSavedSetDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "savedsets";
-    static final String CREATE_SAVED_SET_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
+    static final String TABLE_NAME = "savedsets";
+
+    static class GCSavedSetEntry implements BaseColumns {
+        static final String SAVED_SET_TITLE = "title";
+        static final String SAVED_SET_COLORS = "colors";
+        static final String SAVED_SET_MODE = "mode";
+        static final String SAVED_SET_CHIP = "chip";
+        static final String SAVED_SET_CUSTOM_COLORS = "custom_colors";
+    }
+
+    private final Context mContext;
+
+    GCSavedSetDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
+        mContext = context;
+        db_adapter = databaseAdapter;
+    }
+
+    @Override
+    public void createTable(SQLiteDatabase db) {
+        synchronized (GCDatabaseAdapter.Lock) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
                     TABLE_NAME +
                     " (" + GCSavedSetEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     GCSavedSetEntry.SAVED_SET_TITLE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
@@ -33,31 +51,11 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                     GCSavedSetEntry.SAVED_SET_MODE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_CHIP + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + GCDatabaseHelper.TEXT_TYPE +
-                    " );";
-
-    private Context mContext;
-
-    public static class GCSavedSetEntry implements BaseColumns {
-        public static final String SAVED_SET_TITLE = "title";
-        public static final String SAVED_SET_COLORS = "colors";
-        public static final String SAVED_SET_MODE = "mode";
-        public static final String SAVED_SET_CHIP = "chip";
-        public static final String SAVED_SET_CUSTOM_COLORS = "custom_colors";
-    }
-
-    public GCSavedSetDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
-        mContext = context;
-        GCSavedSetDatabase.db_adapter = databaseAdapter;
-    }
-
-    @Override
-    public void createTable(SQLiteDatabase db) {
-        synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_SAVED_SET_DATABASE);
+                    " );");
         }
     }
 
-    public long insertData(GCSavedSet savedSet) {
+    public void insertData(GCSavedSet savedSet) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.SAVED_SET_TITLE, savedSet.getTitle());
@@ -66,7 +64,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {
@@ -118,7 +116,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                         savedSet.setId(id);
                         savedSet.setTitle(title);
                         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-                        savedSet.setMode(GCModeUtil.getModeUsingTitle(modeString.toUpperCase()));
+                        savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
                         if (customColorString != null) {
                             savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
                         } else {
@@ -151,16 +149,16 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         return savedSetList;
     }
 
-    public boolean deleteData(GCSavedSet savedSet) {
+    public void deleteData(GCSavedSet savedSet) {
         // Define 'where' part of query.
         String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
         // Specify arguments in placeholder order.
         String[] selectionArgs = {String.valueOf(savedSet.getTitle())};
         // Issue SQL statement.
-        return db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs) > 0;
+        db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs);
     }
 
-    public int updateData(GCSavedSet oldSavedSet, GCSavedSet newSavedSet) {
+    public void updateData(GCSavedSet oldSavedSet, GCSavedSet newSavedSet) {
 
         // New value for one column
         ContentValues values = new ContentValues();
@@ -174,6 +172,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
         String[] selectionArgs = {String.valueOf(oldSavedSet.getTitle())};
 
-        return db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
+        db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }
 }

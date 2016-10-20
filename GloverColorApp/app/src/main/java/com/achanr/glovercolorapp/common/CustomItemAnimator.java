@@ -15,8 +15,7 @@ import java.util.List;
 /**
  * Glover Color App Project
  *
- * @author Andrew Chanrasmi
- * @created 4/27/16 11:10 AM
+ * @author Andrew Chanrasmi on 4/27/16
  */
 public class CustomItemAnimator extends SimpleItemAnimator {
     private static final String TAG = "DefaultItemAnimator";
@@ -411,7 +410,7 @@ public class CustomItemAnimator extends SimpleItemAnimator {
         dispatchAnimationsFinished();
     }
 
-    void cancelAll(List<RecyclerView.ViewHolder> viewHolders) {
+    private void cancelAll(List<RecyclerView.ViewHolder> viewHolders) {
         for (int i = viewHolders.size() - 1; i >= 0; i--) {
             ViewCompat.animate(viewHolders.get(i).itemView).cancel();
         }

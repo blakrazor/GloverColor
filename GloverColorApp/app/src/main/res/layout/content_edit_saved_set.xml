@@ -50,7 +50,6 @@
                     android:inputType="text"
                     android:maxLength="100"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:textSize="24sp"
                     android:transitionName="@string/transition_name_saved_set_title"
                     android:visibility="visible"/>
@@ -77,7 +76,8 @@
             android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:id="@+id/chip_preset_layout"
@@ -151,7 +151,8 @@
                     android:layout_height="40dp"
                     android:gravity="left"
                     android:orientation="horizontal"
-                    android:weightSum="8">
+                    android:weightSum="8"
+                    android:baselineAligned="false">
 
                     <RelativeLayout
                         android:id="@+id/color_swatch_1"
@@ -338,7 +339,8 @@
                     android:gravity="left"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    android:weightSum="8">
+                    android:weightSum="8"
+                    android:baselineAligned="false">
 
                     <RelativeLayout
                         android:id="@+id/color_swatch_9"
@@ -524,7 +526,8 @@
                 android:layout_height="@dimen/edit_set_color_height"
                 android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:id="@+id/color_1_layout"
@@ -576,7 +579,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edit_set_color_height"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:id="@+id/color_3_layout"
@@ -628,7 +632,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edit_set_color_height"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:id="@+id/color_5_layout"
@@ -680,7 +685,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edit_set_color_height"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:id="@+id/color_7_layout"
@@ -741,7 +747,8 @@
                     android:layout_height="@dimen/edit_set_color_height"
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:id="@+id/color_9_layout"
@@ -793,7 +800,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edit_set_color_height"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:id="@+id/color_11_layout"
@@ -845,7 +853,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edit_set_color_height"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:id="@+id/color_13_layout"
@@ -897,7 +906,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edit_set_color_height"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:id="@+id/color_15_layout"
