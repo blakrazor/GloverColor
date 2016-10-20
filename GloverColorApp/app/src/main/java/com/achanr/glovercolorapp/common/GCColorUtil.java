@@ -361,7 +361,7 @@ public class GCColorUtil {
     static GCColor getColorUsingAbbrev(String abbrev) {
         GCColor color = null;
         for (GCColor colorItem : mColorArrayList) {
-            if (abbrev.equalsIgnoreCase(colorItem.getAbbreviation())) {
+            if (abbrev.equals(colorItem.getAbbreviation())) {
                 color = colorItem;
                 break;
             }
