@@ -63,6 +63,7 @@ import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Glover Color App Project
@@ -426,7 +427,9 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private void matchColorSpinnerToSwatch() {
         int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            GCColor colorEnum = GCColorUtil.getColorUsingTitle((String) colorSpinnerHolder.getColorSpinner().getSelectedItem());
+            String colorString = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+            colorString = colorString.substring(colorString.indexOf(". ") + 2);
+            GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
             int[] rgbValues;
             if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
                 rgbValues = GCUtil.convertRgbToPowerLevel(mCustomColorArrayList.get(index), colorSpinnerHolder.getPowerLevel());
@@ -445,7 +448,11 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillSpinnersWithEnums(final ArrayList<String> colorArray, ArrayList<String> modeArray) {
 
-        mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, modeArray));
+        ArrayList<String> modeArrayCopy = new ArrayList<>();
+        for (int i = 0; i < modeArray.size(); i++) {
+            modeArrayCopy.add(i, String.format(Locale.getDefault(), "%d. " + modeArray.get(i), i + 1));
+        }
+        mModeSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, modeArrayCopy));
 
         mModeSpinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -455,8 +462,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         });
 
+        ArrayList<String> colorArrayCopy = new ArrayList<>();
+        for (int i = 0; i < colorArray.size(); i++) {
+            colorArrayCopy.add(i, String.format(Locale.getDefault(), "%d. " + colorArray.get(i), i));
+        }
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
-            ArrayAdapter<String> customAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_color_item, colorArray) {
+            ArrayAdapter<String> customAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_color_item, colorArrayCopy) {
                 @Override
                 public View getDropDownView(int position, View convertView, @NonNull android.view.ViewGroup parent) {
                     View v = convertView;
@@ -470,13 +481,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     TextView tv = (TextView) v.findViewById(R.id.spinner_color_dropdown_item_title);
                     RelativeLayout dropdownItemBackground = (RelativeLayout) v.findViewById(R.id.spinner_color_dropdown_item_background);
                     if (colorArray.get(position).equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
-                        tv.setText(GCConstants.COLOR_CUSTOM);
+                        tv.setText(String.format(Locale.getDefault(), "%d. " + GCConstants.COLOR_CUSTOM, position));
                         tv.setTextColor(Color.BLACK);
                         int[] rgbValues = new int[]{255, 255, 255};
                         dropdownItemBackground.setBackgroundColor(Color.argb(255, rgbValues[0], rgbValues[1], rgbValues[2]));
                     } else {
                         GCColor color = GCColorUtil.getColorUsingTitle(colorArray.get(position));
-                        tv.setText(color.getTitle());
+                        tv.setText(String.format(Locale.getDefault(), "%d. " + color.getTitle(), position));
                         if (color.getTitle().equalsIgnoreCase(GCConstants.COLOR_BLANK)) {
                             tv.setTextColor(Color.WHITE);
                         } else {
@@ -740,6 +751,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         if (view != null && parent != null) {
             TextView spinnerTv = ((TextView) view.findViewById(R.id.spinner_color_item_title));
             String colorString = spinnerTv.getText().toString();
+            colorString = colorString.substring(colorString.indexOf(". ") + 2);
             GCColor colorEnum = GCColorUtil.getColorUsingTitle(colorString);
             ColorSpinnerHolder colorSpinnerHolder = getColorSpinnerHolder(parent);
             if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
