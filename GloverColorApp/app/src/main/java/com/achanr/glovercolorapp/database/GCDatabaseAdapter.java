@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,42 +11,28 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Andrew Chanrasmi
  * @created 3/1/16 11:01 AM
  */
-public class GCDatabaseAdapter {
+class GCDatabaseAdapter {
 
-    public static String Lock = "dblock";
-    private static GCDatabaseAdapter dbInstance;
-    private static Context mContext;
+    static final String Lock = "dblock";
     private static SQLiteDatabase mSQLDb = null;
-    private GCDatabaseHelper mDbHelper;
+    private final GCDatabaseHelper mDbHelper;
 
-    public static synchronized GCDatabaseAdapter getInstance(Context context) {
-        if (dbInstance == null) {
-            dbInstance = new GCDatabaseAdapter(context);
-        }
-
-        return dbInstance;
-    }
-
-    private GCDatabaseAdapter(Context context) {
-        mContext = context;
-        if (mDbHelper == null)
-            mDbHelper = new GCDatabaseHelper(mContext, GCDatabaseHelper.DATABASE_NAME, null,
-                    GCDatabaseHelper.DATABASE_VERSION, this);
+    GCDatabaseAdapter(GCDatabaseHelper dbHelper) {
+        mDbHelper = dbHelper;
     }
 
     public SQLiteDatabase getDatabase() {
         return mSQLDb;
     }
 
-    public GCDatabaseAdapter open() throws SQLException {
+    private void open() throws SQLException {
         synchronized (GCDatabaseAdapter.Lock) {
             if (mSQLDb == null || !mSQLDb.isOpen())
                 mSQLDb = mDbHelper.getWritableDatabase();
-            return this;
         }
     }
 
-    public void close() {
+    void close() {
         synchronized (GCDatabaseAdapter.Lock) {
             mDbHelper.close();
         }
@@ -57,25 +42,21 @@ public class GCDatabaseAdapter {
         return mSQLDb != null && mSQLDb.isOpen();
     }
 
-    public static void Close() {
+    public void Close() {
         synchronized (GCDatabaseAdapter.Lock) {
-            if (dbInstance != null && dbInstance.isOpen())
-                dbInstance.close();
-            dbInstance = null;
+            if (isOpen()) close();
         }
     }
 
-    public long insertEntryInDB(String tableName, ContentValues initialValues) {
+    void insertEntryInDB(String tableName, ContentValues initialValues) {
         synchronized (GCDatabaseAdapter.Lock) {
-            long retValue;
             open();
-            retValue = mSQLDb.insert(tableName, null, initialValues);
+            mSQLDb.insert(tableName, null, initialValues);
             close();
-            return retValue;
         }
     }
 
-    public Cursor getEntryFromDB(String tableName, String[] columns, String selection, String[] selectionArgs,
+    Cursor getEntryFromDB(String tableName, String[] columns, String selection, String[] selectionArgs,
                                  String groupBy, String having, String orderBy) {
         synchronized (GCDatabaseAdapter.Lock) {
             open();
@@ -95,7 +76,7 @@ public class GCDatabaseAdapter {
         }
     }
 
-    public int deleteRow(String tableName, String selection, String[] whereArgs) {
+    int deleteRow(String tableName, String selection, String[] whereArgs) {
         synchronized (GCDatabaseAdapter.Lock) {
             int retValue;
             open();
@@ -105,7 +86,7 @@ public class GCDatabaseAdapter {
         }
     }
 
-    public int updateEntryInDB(String tableName, ContentValues updatedValues, String selection, String[] whereArgs) {
+    int updateEntryInDB(String tableName, ContentValues updatedValues, String selection, String[] whereArgs) {
         synchronized (GCDatabaseAdapter.Lock) {
             int retValue;
             open();

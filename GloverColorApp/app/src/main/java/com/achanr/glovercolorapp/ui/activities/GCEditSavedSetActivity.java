@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -72,9 +73,8 @@ import java.util.ArrayList;
 
 public class GCEditSavedSetActivity extends GCBaseActivity {
 
-    public Context mContext;
+    private Context mContext;
     private GCSavedSet mSavedSet;
-    private GCSavedSet mNewSet;
     private EditText mTitleEditText;
     //private TextView mTitleTextView;
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
@@ -94,13 +94,13 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     public static final String IS_NEW_SET_KEY = "is_new_set_key";
     public static final String FROM_NAVIGATION = "from_navigation";
 
-    public static final int MAX_TITLE_LENGTH = 100;
+    private static final int MAX_TITLE_LENGTH = 100;
 
     private interface CustomColorCallback {
         void valueChanged();
     }
 
-    private InputFilter titleFilter = new InputFilter() {
+    private final InputFilter titleFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5) {
             for (int k = arg1; k < arg2; k++) {
@@ -143,10 +143,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     };*/
 
     private class ColorSpinnerHolder {
-        private LinearLayout mColorLayout;
-        private Spinner mColorSpinner;
-        private RelativeLayout mColorSwatch;
-        private TextView mColorSwatchTextView;
+        private final LinearLayout mColorLayout;
+        private final Spinner mColorSpinner;
+        private final RelativeLayout mColorSwatch;
+        private final TextView mColorSwatchTextView;
         private String mPowerLevel;
 
         public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
@@ -285,7 +285,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
     }
 
-    public boolean validateFields() {
+    private boolean validateFields() {
         String newTitle = mTitleEditText.getText().toString().trim();
         if (newTitle.isEmpty()) {
             showErrorDialog(mContext.getString(R.string.error_title_empty));
@@ -381,7 +381,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void setupChipSetSpinner() {
         mChipSetSpinner.setAdapter(new ArrayAdapter<>(mContext, R.layout.spinner_color_item, GCChipUtil.getAllChipTitles()));
-        String chipTitle = "";
+        String chipTitle;
         if (mSavedSet != null) {
             GCChip chipSet = mSavedSet.getChipSet();
             chipTitle = chipSet.getTitle();
@@ -458,7 +458,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             ArrayAdapter<String> customAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_color_item, colorArray) {
                 @Override
-                public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
+                public View getDropDownView(int position, View convertView, @NonNull android.view.ViewGroup parent) {
                     View v = convertView;
                     if (v == null) {
                         Context mContext = this.getContext();
@@ -717,7 +717,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }*/
 
 
-    private AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (spinnerSelectionCount <= 0) {
@@ -773,7 +773,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
     }
 
-    private View.OnClickListener mColorSwatchClickListener = new View.OnClickListener() {
+    private final View.OnClickListener mColorSwatchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             TextView colorSwatchTv = (TextView) v;
@@ -875,7 +875,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         ArrayList<String> modes = mChipSet.getModes();
         int modePosition = mModeSpinner.getSelectedItemPosition();
-        GCMode newMode = GCModeUtil.getModeUsingTitle(modes.get(modePosition));
+        GCMode newMode = GCModeUtil.getModeUsingTitle(mContext, modes.get(modePosition));
 
         ArrayList<int[]> customColorArray = new ArrayList<>();
         int index = getActualColorCountFromList(newColorList);
@@ -888,7 +888,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         }
 
-        mNewSet = new GCSavedSet();
+        GCSavedSet mNewSet = new GCSavedSet();
         mNewSet.setTitle(newTitle);
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
@@ -936,7 +936,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private boolean validateTitleAgainstDatabase(String title) {
-        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.getInstance(mContext).SAVED_SET_DATABASE.getAllData();
         for (GCSavedSet savedSet : savedSetList) {
             if (savedSet.getTitle().equals(title)) {
                 return true;
@@ -1050,7 +1050,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 .show();
     }
 
-    public void showChangingChipDialog() {
+    private void showChangingChipDialog() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (!prefs.getBoolean(GCConstants.DONT_SHOW_CHIP_PRESET_DIALOG_KEY, false)) {
             View checkBoxView = View.inflate(this, R.layout.dialog_with_checkbox, null);
@@ -1093,7 +1093,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
     }
 
-    public void showLeavingDialog() {
+    private void showLeavingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(mContext.getString(R.string.unsaved_changes));
         builder.setMessage(mContext.getString(R.string.unsaved_changes_dialog));
@@ -1119,7 +1119,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         builder.show();
     }
 
-    public boolean madeChanges() {
+    private boolean madeChanges() {
         if (mSavedSet == null) {
             return true;
         }

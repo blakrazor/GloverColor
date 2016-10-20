@@ -86,9 +86,9 @@ public class GCSettingsActivity extends GCBaseActivity {
 
         private void setupThemePreference() {
             ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.theme_preference));
-            String oldThemeString = GCUtil.getCurrentTheme();
+            String oldThemeString = GCUtil.getCurrentTheme(getActivity());
             String shortThemeString = oldThemeString.substring(0, oldThemeString.indexOf("_THEME"));
-            listPreference.setSummary(GCUtil.convertToCamelcase(shortThemeString));
+            listPreference.setSummary(GCUtil.convertToCamelcase(getActivity(), shortThemeString));
             listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -243,12 +243,12 @@ public class GCSettingsActivity extends GCBaseActivity {
             ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.default_chip_preference));
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String oldDefaultChip = prefs.getString(getString(R.string.default_chip_preference), getString(R.string.NO_CHIP));
-            listPreference.setSummary(GCUtil.convertToCamelcase(oldDefaultChip));
+            listPreference.setSummary(GCUtil.convertToCamelcase(getActivity(), oldDefaultChip));
             listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String newDefaultChipString = (String) newValue;
-                    preference.setSummary(GCUtil.convertToCamelcase(newDefaultChipString));
+                    preference.setSummary(GCUtil.convertToCamelcase(getActivity(), newDefaultChipString));
                     return true;
                 }
             });

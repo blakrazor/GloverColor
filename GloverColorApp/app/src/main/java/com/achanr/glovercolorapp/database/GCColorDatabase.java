@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -17,9 +16,24 @@ import java.util.ArrayList;
  */
 public class GCColorDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "COLOR_TBL";
-    static final String CREATE_COLOR_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
+    static final String TABLE_NAME = "COLOR_TBL";
+
+    private static class GCColorEntry implements BaseColumns {
+        static final String COLOR_TITLE_KEY = "COLOR_TITLE";
+        static final String COLOR_ABBREV_KEY = "COLOR_ABBREV";
+        static final String RED_VALUE_KEY = "RED_VALUE";
+        static final String GREEN_VALUE_KEY = "GREEN_VALUE";
+        static final String BLUE_VALUE_KEY = "BLUE_VALUE";
+    }
+
+    GCColorDatabase(GCDatabaseAdapter databaseAdapter) {
+        db_adapter = databaseAdapter;
+    }
+
+    @Override
+    public void createTable(SQLiteDatabase db) {
+        synchronized (GCDatabaseAdapter.Lock) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
                     TABLE_NAME +
                     " (" + GCColorEntry._ID + " INTEGER PRIMARY KEY," +
                     GCColorEntry.COLOR_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
@@ -27,31 +41,11 @@ public class GCColorDatabase extends GCAbstractDatabase {
                     GCColorEntry.RED_VALUE_KEY + GCDatabaseHelper.INT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCColorEntry.GREEN_VALUE_KEY + GCDatabaseHelper.INT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCColorEntry.BLUE_VALUE_KEY + GCDatabaseHelper.INT_TYPE +
-                    " );";
-
-    private Context mContext;
-
-    public static class GCColorEntry implements BaseColumns {
-        public static final String COLOR_TITLE_KEY = "COLOR_TITLE";
-        public static final String COLOR_ABBREV_KEY = "COLOR_ABBREV";
-        public static final String RED_VALUE_KEY = "RED_VALUE";
-        public static final String GREEN_VALUE_KEY = "GREEN_VALUE";
-        public static final String BLUE_VALUE_KEY = "BLUE_VALUE";
-    }
-
-    public GCColorDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
-        mContext = context;
-        GCColorDatabase.db_adapter = databaseAdapter;
-    }
-
-    @Override
-    public void createTable(SQLiteDatabase db) {
-        synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_COLOR_DATABASE);
+                    " );");
         }
     }
 
-    public long insertData(GCColor color) {
+    public void insertData(GCColor color) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCColorEntry.COLOR_TITLE_KEY, color.getTitle());
@@ -60,7 +54,7 @@ public class GCColorDatabase extends GCAbstractDatabase {
         values.put(GCColorEntry.GREEN_VALUE_KEY, color.getRGBValues()[1]);
         values.put(GCColorEntry.BLUE_VALUE_KEY, color.getRGBValues()[2]);
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {

@@ -3,7 +3,6 @@ package com.achanr.glovercolorapp.common;
 import android.content.Context;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCChip;
 
@@ -17,113 +16,112 @@ import java.util.Arrays;
 public class GCChipUtil {
 
     private static ArrayList<GCChip> mChipArrayList;
-    private static Context mContext = GloverColorApplication.getContext();
 
-    public static void initChipArrayList() {
-        mChipArrayList = GCDatabaseHelper.CHIP_DATABASE.getAllData();
+    public static void initChipArrayList(Context context) {
+        mChipArrayList = GCDatabaseHelper.getInstance(context).CHIP_DATABASE.getAllData();
         if (mChipArrayList == null || mChipArrayList.isEmpty()
-                || !mChipArrayList.get(0).getTitle().equalsIgnoreCase(mContext.getString(R.string.NO_CHIP))) {
-            createDefaultChips();
+                || !mChipArrayList.get(0).getTitle().equalsIgnoreCase(context.getString(R.string.NO_CHIP))) {
+            createDefaultChips(context);
         }
     }
 
-    private static void createDefaultChips() {
+    private static void createDefaultChips(Context context) {
         mChipArrayList = new ArrayList<>();
 
-        String[] allChipsStringArray = mContext.getResources().getStringArray(R.array.all_chips);
+        String[] allChipsStringArray = context.getResources().getStringArray(R.array.all_chips);
         for (String chipItem : allChipsStringArray) {
             String[] colorStringArray = new String[]{};
             String[] modeStringArray = new String[]{};
-            if (chipItem.equalsIgnoreCase(mContext.getString(R.string.NO_CHIP))) {
+            if (chipItem.equalsIgnoreCase(context.getString(R.string.NO_CHIP))) {
                 //Default colors and modes (all colors and modes)
-                colorStringArray = mContext.getResources().getStringArray(R.array.default_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.default_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.CHROMA_24))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.chroma24_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.chroma24_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ENOVA))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.enova_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.enova_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.EZLITE_2))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.ezlite_2_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.ezlite_2_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.FLOW))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.flow_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.flow_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.CHROMA_CTRL))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.chroma_ctrl_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.chroma_ctrl_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ELEMENT_V2))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.element_v2_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.element_v2_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.MATRIX))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.matrix_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.matrix_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.AURORA))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.aurora_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.FLUX))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.aurora_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.PULSAR))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.pulsar_simplex_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SIMPLEX))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.aurora_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.pulsar_simplex_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_INTENSITY))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_SIMPLICITY))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_simplicity_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ARCLITE_GALAXY))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.arclite_intensity_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.arclite_galaxy_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ORACLE))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.oracle_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP2_REV1))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.sp2_rev1_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.sp2_rev1_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP2_REV2))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.sp2_rev2_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.sp2_rev2_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP3_REV1))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.sp3_rev1_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.sp3_rev1_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.SP3_REV2))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.sp3_rev2_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.OG_CHROMA))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.oracle_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.chroma24_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.KINETIC))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.kinetic_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.kinetic_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.AETHER))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.aether_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.aether_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ELEMENT_V1))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.element_v1_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.element_v1_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.ELEMENT_V2_LOYALTY))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.element_v2_loyalty_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.element_v2_loyalty_modes);
-            } else if (chipItem.equalsIgnoreCase(mContext.getString(R.string.CHROMA_36))) {
-                colorStringArray = mContext.getResources().getStringArray(R.array.chroma36_colors);
-                modeStringArray = mContext.getResources().getStringArray(R.array.chroma36_modes);
+                colorStringArray = context.getResources().getStringArray(R.array.default_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.default_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.CHROMA_24))) {
+                colorStringArray = context.getResources().getStringArray(R.array.chroma24_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.chroma24_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ENOVA))) {
+                colorStringArray = context.getResources().getStringArray(R.array.enova_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.enova_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.EZLITE_2))) {
+                colorStringArray = context.getResources().getStringArray(R.array.ezlite_2_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.ezlite_2_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.FLOW))) {
+                colorStringArray = context.getResources().getStringArray(R.array.flow_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.flow_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.CHROMA_CTRL))) {
+                colorStringArray = context.getResources().getStringArray(R.array.chroma_ctrl_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.chroma_ctrl_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ELEMENT_V2))) {
+                colorStringArray = context.getResources().getStringArray(R.array.element_v2_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.element_v2_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.MATRIX))) {
+                colorStringArray = context.getResources().getStringArray(R.array.matrix_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.matrix_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.AURORA))) {
+                colorStringArray = context.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.aurora_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.FLUX))) {
+                colorStringArray = context.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.aurora_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.PULSAR))) {
+                colorStringArray = context.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.pulsar_simplex_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.SIMPLEX))) {
+                colorStringArray = context.getResources().getStringArray(R.array.aurora_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.pulsar_simplex_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ARCLITE_INTENSITY))) {
+                colorStringArray = context.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.arclite_intensity_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ARCLITE_SIMPLICITY))) {
+                colorStringArray = context.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.arclite_simplicity_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ARCLITE_GALAXY))) {
+                colorStringArray = context.getResources().getStringArray(R.array.arclite_intensity_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.arclite_galaxy_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ORACLE))) {
+                colorStringArray = context.getResources().getStringArray(R.array.oracle_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.oracle_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.SP2_REV1))) {
+                colorStringArray = context.getResources().getStringArray(R.array.sp2_rev1_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.sp2_rev1_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.SP2_REV2))) {
+                colorStringArray = context.getResources().getStringArray(R.array.sp2_rev2_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.sp2_rev2_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.SP3_REV1))) {
+                colorStringArray = context.getResources().getStringArray(R.array.sp3_rev1_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.sp3_rev1_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.SP3_REV2))) {
+                colorStringArray = context.getResources().getStringArray(R.array.sp3_rev2_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.sp3_rev2_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.OG_CHROMA))) {
+                colorStringArray = context.getResources().getStringArray(R.array.oracle_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.chroma24_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.KINETIC))) {
+                colorStringArray = context.getResources().getStringArray(R.array.kinetic_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.kinetic_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.AETHER))) {
+                colorStringArray = context.getResources().getStringArray(R.array.aether_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.aether_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ELEMENT_V1))) {
+                colorStringArray = context.getResources().getStringArray(R.array.element_v1_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.element_v1_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.ELEMENT_V2_LOYALTY))) {
+                colorStringArray = context.getResources().getStringArray(R.array.element_v2_loyalty_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.element_v2_loyalty_modes);
+            } else if (chipItem.equalsIgnoreCase(context.getString(R.string.CHROMA_36))) {
+                colorStringArray = context.getResources().getStringArray(R.array.chroma36_colors);
+                modeStringArray = context.getResources().getStringArray(R.array.chroma36_modes);
             }
             GCChip chip = new GCChip(chipItem,
-                    new ArrayList(Arrays.asList(colorStringArray)),
-                    new ArrayList(Arrays.asList(modeStringArray)));
+                    new ArrayList<>(Arrays.asList(colorStringArray)),
+                    new ArrayList<>(Arrays.asList(modeStringArray)));
             mChipArrayList.add(chip);
         }
 
         //Clear database and save default values
-        GCDatabaseHelper.CHIP_DATABASE.clearTable();
+        GCDatabaseHelper.getInstance(context).CHIP_DATABASE.clearTable();
         for (GCChip chip : mChipArrayList) {
-            GCDatabaseHelper.CHIP_DATABASE.insertData(chip);
+            GCDatabaseHelper.getInstance(context).CHIP_DATABASE.insertData(chip);
         }
     }
 

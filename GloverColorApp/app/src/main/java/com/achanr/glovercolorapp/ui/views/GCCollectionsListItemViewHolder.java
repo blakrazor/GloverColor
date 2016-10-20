@@ -23,12 +23,12 @@ import java.util.HashMap;
  */
 public class GCCollectionsListItemViewHolder extends RecyclerView.ViewHolder {
 
-    public Context mContext;
-    public TextView txtTitle;
-    public TextView txtDesc;
-    public TextView txtSetNum;
+    private final Context mContext;
+    public final TextView txtTitle;
+    public final TextView txtDesc;
+    public final TextView txtSetNum;
     public GCCollection mCollection;
-    public CardView mCardView;
+    private final CardView mCardView;
 
     public GCCollectionsListItemViewHolder(Context context, View itemView) {
         super(itemView);
@@ -59,7 +59,7 @@ public class GCCollectionsListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onNavigateToEditItem() {
-        HashMap<String, View> transitionViews = new HashMap<String, View>();
+        HashMap<String, View> transitionViews = new HashMap<>();
         transitionViews.put(mContext.getString(R.string.transition_name_collection_title), txtTitle);
         transitionViews.put(mContext.getString(R.string.transition_name_collection_desc), txtDesc);
         transitionViews.put(mContext.getString(R.string.transition_name_collection_cardview), mCardView);

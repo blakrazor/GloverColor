@@ -33,6 +33,6 @@ public class GCConstants {
 
     //Other constants
     public static final String CUSTOM_PREFIX = "??";
-    public static int MAX_COLORS = 16;
-    public static int HALF_COLORS = 8;
+    public static final int MAX_COLORS = 16;
+    public static final int HALF_COLORS = 8;
 }

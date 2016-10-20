@@ -59,7 +59,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         TITLE_ASC("Sort by title ascending"),
         TITLE_DESC("Sort by title descending");
 
-        String description;
+        final String description;
 
         SortEnum(String desc) {
             description = desc;
@@ -70,7 +70,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
     }
 
-    private Context mContext;
     private ArrayList<GCCollection> mCollectionsList;
     private GridRecyclerView mCollectionsListRecyclerView;
     private GCCollectionsListAdapter mCollectionsListAdapter;
@@ -85,8 +84,8 @@ public class GCCollectionsActivity extends GCBaseActivity {
     public static final String OLD_COLLECTION_KEY = "old_collection_key";
     public static final String IS_DELETE_KEY = "is_delete_key";
     public static final String NEW_COLLECTION_KEY = "new_collection_key";
-    public static final int ADD_NEW_COLLECTION_REQUEST_CODE = 1000;
-    public static final int UPDATE_COLLECTION_REQUEST_CODE = 1001;
+    private static final int ADD_NEW_COLLECTION_REQUEST_CODE = 1000;
+    private static final int UPDATE_COLLECTION_REQUEST_CODE = 1001;
 
     public interface AnimationCompleteListener {
         void onComplete();
@@ -124,7 +123,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_collections, mFrameLayout);
-        mContext = this;
         setupToolbar(getString(R.string.title_collections));
 
         getCollectionListFromDatabase();
@@ -239,12 +237,12 @@ public class GCCollectionsActivity extends GCBaseActivity {
     }
 
     private void getCollectionListFromDatabase() {
-        ArrayList<GCCollection> collectionArrayList = GCDatabaseHelper.COLLECTION_DATABASE.getAllData();
+        ArrayList<GCCollection> collectionArrayList = GCDatabaseHelper.getInstance(this).COLLECTION_DATABASE.getAllData();
         if (mCollectionsList == null || mCollectionsList.size() <= 0) {
             mCollectionsList = new ArrayList<>();
         }
         mCollectionsList = collectionArrayList;
-        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
+        mCollectionsList = GCUtil.sortCollectionList(this, mCollectionsList);
     }
 
     private List<GCCollection> filter(List<GCCollection> models, String query) {
@@ -266,17 +264,17 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mCollectionsListLayoutManager = new GridLayoutManager(mContext, 1);
+        mCollectionsListLayoutManager = new GridLayoutManager(this, 1);
         mCollectionsListRecyclerView.setLayoutManager(mCollectionsListLayoutManager);
         mCollectionsListRecyclerView.setItemAnimator(new CustomItemAnimator());
-        mCollectionsListAdapter = new GCCollectionsListAdapter(mContext, mCollectionsList);
+        mCollectionsListAdapter = new GCCollectionsListAdapter(this, mCollectionsList);
         mCollectionsListRecyclerView.setAdapter(mCollectionsListAdapter);
     }
 
     public void onEditCollectionListItemClicked(GCCollection collection, HashMap<String, View> transitionViews) {
         isFromEditing = true;
         isLeaving = true;
-        Intent intent = new Intent(mContext, GCEditCollectionActivity.class);
+        Intent intent = new Intent(this, GCEditCollectionActivity.class);
         intent.putExtra(GCEditCollectionActivity.SAVED_COLLECTION_KEY, collection);
         startEditSetActivityTransition(intent, transitionViews);
     }
@@ -306,9 +304,9 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
     }
 
-    public void onAddCollectionClicked() {
+    private void onAddCollectionClicked() {
         isLeaving = true;
-        Intent intent = new Intent(mContext, GCEditCollectionActivity.class);
+        Intent intent = new Intent(this, GCEditCollectionActivity.class);
         intent.putExtra(GCEditCollectionActivity.IS_NEW_COLLECTION_KEY, true);
         startAddCollectionActivityTransition(intent);
     }
@@ -318,7 +316,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
             getWindow().setExitTransition(new Fade());
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivityForResult(intent, ADD_NEW_COLLECTION_REQUEST_CODE, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -327,32 +325,32 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
     }
 
-    public void onCollectionUpdated(GCCollection oldCollection, GCCollection newCollection) {
-        GCDatabaseHelper.COLLECTION_DATABASE.updateData(oldCollection, newCollection);
+    private void onCollectionUpdated(GCCollection oldCollection, GCCollection newCollection) {
+        GCDatabaseHelper.getInstance(this).COLLECTION_DATABASE.updateData(oldCollection, newCollection);
         mCollectionsListAdapter.update(oldCollection, newCollection);
         int position = mCollectionsList.indexOf(oldCollection);
         mCollectionsList.set(position, newCollection);
-        Toast.makeText(mContext, R.string.collection_updated, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.collection_updated, Toast.LENGTH_SHORT).show();
     }
 
     public void onCollectionDeleted(GCCollection savedCollection) {
-        GCDatabaseHelper.COLLECTION_DATABASE.deleteData(savedCollection);
+        GCDatabaseHelper.getInstance(this).COLLECTION_DATABASE.deleteData(savedCollection);
         mCollectionsListAdapter.remove(savedCollection);
         int position = mCollectionsList.indexOf(savedCollection);
         mCollectionsList.remove(position);
-        Toast.makeText(mContext, R.string.collection_deleted, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.collection_deleted, Toast.LENGTH_SHORT).show();
     }
 
-    public void onCollectionAdded(GCCollection newCollection) {
-        GCDatabaseHelper.COLLECTION_DATABASE.insertData(newCollection);
+    private void onCollectionAdded(GCCollection newCollection) {
+        GCDatabaseHelper.getInstance(this).COLLECTION_DATABASE.insertData(newCollection);
         mCollectionsListAdapter.add(mCollectionsList.size(), newCollection);
         mCollectionsList.add(mCollectionsList.size(), newCollection);
-        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
-        Toast.makeText(mContext, R.string.collection_added, Toast.LENGTH_SHORT).show();
+        mCollectionsList = GCUtil.sortCollectionList(this, mCollectionsList);
+        Toast.makeText(this, R.string.collection_added, Toast.LENGTH_SHORT).show();
     }
 
     private void showSortDialog() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         int sortTypeInt = prefs.getInt(GCConstants.COLLECTION_SORTING_KEY, 0);
 
         SortEnum[] sortEnums = SortEnum.values();
@@ -370,7 +368,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GCCollectionsActivity.this);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(GCConstants.COLLECTION_SORTING_KEY, item);
                 editor.apply();
@@ -386,7 +384,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         int lastVisible = mCollectionsListLayoutManager.findLastVisibleItemPosition();
         int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
         int start = firstVisible - itemsChanged > 0 ? firstVisible - itemsChanged : 0;
-        mCollectionsList = GCUtil.sortCollectionList(mCollectionsList);
+        mCollectionsList = GCUtil.sortCollectionList(this, mCollectionsList);
         mCollectionsListAdapter.sortList();
         mCollectionsListAdapter.notifyItemRangeChanged(start, itemsChanged + itemsChanged);
     }
@@ -459,7 +457,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
         if (isEntering) {
             isLeaving = false;
             mCollectionsListRecyclerView.setVisibility(View.VISIBLE);
-            mCollectionsListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_in_animation));
+            mCollectionsListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.grid_layout_in_animation));
             mCollectionsListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -481,7 +479,7 @@ public class GCCollectionsActivity extends GCBaseActivity {
             mCollectionsListRecyclerView.scheduleLayoutAnimation();
         } else {
             isLeaving = true;
-            mCollectionsListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_out_animation));
+            mCollectionsListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.grid_layout_out_animation));
             mCollectionsListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {

@@ -48,9 +48,11 @@ public class GCPowerLevelPreference extends DialogPreference {
 
     private boolean wasDefaultClicked = false;
     private PowerLevelCallback mPowerLevelCallback;
+    private final Context mContext;
 
     public GCPowerLevelPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         setPersistent(false);
         setDialogLayoutResource(R.layout.preference_power_level);
     }
@@ -63,11 +65,6 @@ public class GCPowerLevelPreference extends DialogPreference {
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         builder.setNeutralButton("Default", this);
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
     }
 
     @Override
@@ -106,9 +103,9 @@ public class GCPowerLevelPreference extends DialogPreference {
 
         if (positiveResult || wasDefaultClicked) {
             wasDefaultClicked = false;
-            GCPowerLevelUtil.updatePowerLevelValue(GCConstants.POWER_LEVEL_HIGH_TITLE, (float) mSeekBarHigh.getProgress() / 10);
-            GCPowerLevelUtil.updatePowerLevelValue(GCConstants.POWER_LEVEL_MEDIUM_TITLE, (float) mSeekBarMedium.getProgress() / 10);
-            GCPowerLevelUtil.updatePowerLevelValue(GCConstants.POWER_LEVEL_LOW_TITLE, (float) mSeekBarLow.getProgress() / 10);
+            GCPowerLevelUtil.updatePowerLevelValue(mContext, GCConstants.POWER_LEVEL_HIGH_TITLE, (float) mSeekBarHigh.getProgress() / 10);
+            GCPowerLevelUtil.updatePowerLevelValue(mContext, GCConstants.POWER_LEVEL_MEDIUM_TITLE, (float) mSeekBarMedium.getProgress() / 10);
+            GCPowerLevelUtil.updatePowerLevelValue(mContext, GCConstants.POWER_LEVEL_LOW_TITLE, (float) mSeekBarLow.getProgress() / 10);
             mPowerLevelCallback.onPowerLevelChanged();
         }
     }

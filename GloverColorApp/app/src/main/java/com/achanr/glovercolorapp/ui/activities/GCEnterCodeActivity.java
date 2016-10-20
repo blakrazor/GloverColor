@@ -1,6 +1,5 @@
 package com.achanr.glovercolorapp.ui.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,7 +30,6 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
     private TextInputLayout mEnterCodeEditText;
     private Button mSubmitCodeButton;
-    private Context mContext;
 
     private boolean isTextEntered = false;
 
@@ -40,7 +38,6 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_enter_code, mFrameLayout);
         setupToolbar(getString(R.string.title_enter_code));
-        mContext = this;
 
         mEnterCodeEditText = (TextInputLayout) findViewById(R.id.edit_text_enter_code);
         mSubmitCodeButton = (Button) findViewById(R.id.submit_code_button);
@@ -54,11 +51,11 @@ public class GCEnterCodeActivity extends GCBaseActivity {
             if (data != null) {
                 String matchString = "entercode/";
                 String setString = data.toString().substring(data.toString().indexOf(matchString) + matchString.length());
-                if (setString != null && !setString.trim().isEmpty()) {
+                if (!setString.trim().isEmpty()) {
                     mEnterCodeEditText.getEditText().setText(setString);
-                    Toast.makeText(mContext, "Successfully prefilled shared code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.prefill_share_code_success, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "Failed to prefill shared code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.prefill_share_code_failure, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -89,11 +86,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    isTextEntered = true;
-                } else {
-                    isTextEntered = false;
-                }
+                isTextEntered = s.length() > 0;
                 updateButton();
             }
         });
@@ -128,7 +121,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
         GCSavedSet newSet = convertStringToSavedSet(setString);
         if (newSet != null) {
             mEnterCodeEditText.getEditText().setText("");
-            Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
+            Intent intent = new Intent(this, GCSavedSetListActivity.class);
             intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEnterCodeActivity.class.getName());
             intent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, newSet);
             startActivity(intent);
@@ -157,7 +150,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
         ArrayList<GCPoweredColor> newColorList = GCUtil.convertShortenedColorStringToColorList(shortenedColorString);
         GCChip chipSet = GCChipUtil.getChipUsingTitle(chipsetString.replace("_", " "));
-        GCMode newMode = GCModeUtil.getModeUsingTitle(mode.replace("_", " "));
+        GCMode newMode = GCModeUtil.getModeUsingTitle(this, mode.replace("_", " "));
         if (newColorList == null || chipSet == null || newMode == null) {
             return null;
         }
@@ -191,7 +184,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
     }
 
     private void showErrorDialog(String message) {
-        new AlertDialog.Builder(mContext)
+        new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.error))
                 .setMessage(message)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
