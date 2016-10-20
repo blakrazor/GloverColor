@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollectionsListItemViewHolder> {
     private ArrayList<GCCollection> mCollectionList;
-    private Context mContext;
+    private final Context mContext;
 
     public GCCollectionsListAdapter(Context context, ArrayList<GCCollection> collectionList) {
         mCollectionList = new ArrayList<>(collectionList);
@@ -30,7 +30,7 @@ public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollections
     }
 
     public void sortList() {
-        mCollectionList = GCUtil.sortCollectionList(mCollectionList);
+        mCollectionList = GCUtil.sortCollectionList(mContext, mCollectionList);
     }
 
     public void add(int position, GCCollection savedCollection) {
@@ -59,8 +59,7 @@ public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollections
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_collections, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        GCCollectionsListItemViewHolder vh = new GCCollectionsListItemViewHolder(mContext, v);
-        return vh;
+        return new GCCollectionsListItemViewHolder(mContext, v);
     }
 
     @Override
@@ -114,18 +113,17 @@ public class GCCollectionsListAdapter extends RecyclerView.Adapter<GCCollections
         }
     }
 
-    public GCCollection removeItem(int position) {
-        final GCCollection model = mCollectionList.remove(position);
+    private void removeItem(int position) {
+        mCollectionList.remove(position);
         notifyItemRemoved(position);
-        return model;
     }
 
-    public void addItem(int position, GCCollection model) {
+    private void addItem(int position, GCCollection model) {
         mCollectionList.add(position, model);
         notifyItemInserted(position);
     }
 
-    public void moveItem(int fromPosition, int toPosition) {
+    private void moveItem(int fromPosition, int toPosition) {
         final GCCollection model = mCollectionList.remove(fromPosition);
         mCollectionList.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);

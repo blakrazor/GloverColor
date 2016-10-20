@@ -2,7 +2,6 @@ package com.achanr.glovercolorapp.ui.activities;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,17 +31,14 @@ import com.achanr.glovercolorapp.common.GCUtil;
 public class GCBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected FrameLayout mFrameLayout;
-    protected Toolbar mToolbar;
-    protected ActionBarDrawerToggle mToggle;
-    protected static int mPosition;
-    protected NavigationView mNavigationView;
-    private Context mContext;
+    FrameLayout mFrameLayout;
+    Toolbar mToolbar;
+    private static int mPosition;
+    private NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
@@ -57,20 +53,20 @@ public class GCBaseActivity extends AppCompatActivity
     private void checkIfThemeCorrect() {
         TypedValue outValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.themeName, outValue, true);
-        String themeString = GCUtil.getCurrentTheme();
+        String themeString = GCUtil.getCurrentTheme(this);
         if (!themeString.equals(outValue.string)) {
             GCUtil.refreshActivity(this);
         }
     }
 
-    protected void setupToolbar(String title) {
+    void setupToolbar(String title) {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(title);
         setCustomTitle(title);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this, drawer, mToolbar,
+        ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, drawer, mToolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(mToggle);
         mToggle.syncState();
@@ -80,11 +76,11 @@ public class GCBaseActivity extends AppCompatActivity
         mNavigationView.setCheckedItem(mPosition);
     }
 
-    protected void setCustomTitle(String title) {
+    void setCustomTitle(String title) {
         ((TextView) findViewById(R.id.toolbar_title)).setText(title);
     }
 
-    protected void setPosition(int position) {
+    void setPosition(int position) {
         mPosition = position;
         mNavigationView.setCheckedItem(mPosition);
     }
@@ -100,25 +96,10 @@ public class GCBaseActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.home_screen, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -127,30 +108,30 @@ public class GCBaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Intent intent = null;
+        Intent intent;
         if (id == R.id.nav_home && mPosition != R.id.nav_home) {
             mPosition = R.id.nav_home;
-            intent = new Intent(mContext, GCHomeActivity.class);
+            intent = new Intent(this, GCHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
         } else if (id == R.id.nav_saved_color_sets && mPosition != R.id.nav_saved_color_sets) {
             mPosition = R.id.nav_saved_color_sets;
-            intent = new Intent(mContext, GCSavedSetListActivity.class);
+            intent = new Intent(this, GCSavedSetListActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
         } else if (id == R.id.nav_collections && mPosition != R.id.nav_collections) {
             mPosition = R.id.nav_collections;
-            intent = new Intent(mContext, GCCollectionsActivity.class);
+            intent = new Intent(this, GCCollectionsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
         } else if (id == R.id.nav_enter_code && mPosition != R.id.nav_enter_code) {
             mPosition = R.id.nav_enter_code;
-            intent = new Intent(mContext, GCEnterCodeActivity.class);
+            intent = new Intent(this, GCEnterCodeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityTransition(intent);
         } else if (id == R.id.nav_settings && mPosition != R.id.nav_settings) {
             mPosition = R.id.nav_settings;
-            intent = new Intent(mContext, GCSettingsActivity.class);
+            intent = new Intent(this, GCSettingsActivity.class);
             startActivityTransition(intent);
             //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
@@ -179,14 +160,14 @@ public class GCBaseActivity extends AppCompatActivity
                 .show();
     }*/
 
-    public void startActivityTransition(final Intent intent) {
+    void startActivityTransition(final Intent intent) {
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mContext instanceof GCSavedSetListActivity) {
-                ((GCSavedSetListActivity) mContext).animateFab(false, new GCSavedSetListActivity.AnimationCompleteListener() {
+            if (this instanceof GCSavedSetListActivity) {
+                ((GCSavedSetListActivity) this).animateFab(false, new GCSavedSetListActivity.AnimationCompleteListener() {
                     @Override
                     public void onComplete() {
-                        ((GCSavedSetListActivity) mContext).animateListView(false, new GCSavedSetListActivity.AnimationCompleteListener() {
+                        ((GCSavedSetListActivity) GCBaseActivity.this).animateListView(false, new GCSavedSetListActivity.AnimationCompleteListener() {
 
                             @Override
                             public void onComplete() {
@@ -195,11 +176,11 @@ public class GCBaseActivity extends AppCompatActivity
                         });
                     }
                 });
-            } else if (mContext instanceof GCCollectionsActivity) {
-                ((GCCollectionsActivity) mContext).animateFab(false, new GCCollectionsActivity.AnimationCompleteListener() {
+            } else if (this instanceof GCCollectionsActivity) {
+                ((GCCollectionsActivity) this).animateFab(false, new GCCollectionsActivity.AnimationCompleteListener() {
                     @Override
                     public void onComplete() {
-                        ((GCCollectionsActivity) mContext).animateListView(false, new GCCollectionsActivity.AnimationCompleteListener() {
+                        ((GCCollectionsActivity) GCBaseActivity.this).animateListView(false, new GCCollectionsActivity.AnimationCompleteListener() {
 
                             @Override
                             public void onComplete() {
@@ -224,7 +205,7 @@ public class GCBaseActivity extends AppCompatActivity
         } else {
             getWindow().setExitTransition(new Explode());
         }
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+        @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
         startActivity(intent, options.toBundle());
     }
 }

@@ -1,6 +1,5 @@
 package com.achanr.glovercolorapp.database;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -9,9 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Andrew Chanrasmi
  * @created 3/1/16 11:21 AM
  */
-public abstract class GCAbstractDatabase {
-    static GCDatabaseAdapter db_adapter;
-    protected Context mContext;
+abstract class GCAbstractDatabase {
+    GCDatabaseAdapter db_adapter;
 
     public abstract void createTable(SQLiteDatabase db);
 }

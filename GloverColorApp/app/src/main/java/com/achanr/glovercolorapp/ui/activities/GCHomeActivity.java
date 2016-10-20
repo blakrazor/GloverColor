@@ -88,7 +88,7 @@ public class GCHomeActivity extends GCBaseActivity {
         }
 
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("CHECK_UPDATE_VERSION", currentVersion.toString());
+        editor.putString("CHECK_UPDATE_VERSION", currentVersion);
         editor.apply();
     }
 

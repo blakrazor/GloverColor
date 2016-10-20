@@ -61,7 +61,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         CHIP_ASC("Sort by chip ascending"),
         CHIP_DESC("Sort by chip descending");
 
-        String description;
+        final String description;
 
         SortEnum(String desc) {
             description = desc;
@@ -72,7 +72,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
     }
 
-    private Context mContext;
     private ArrayList<GCSavedSet> mSavedSetList;
     private GridRecyclerView mSavedSetListRecyclerView;
     private GCSavedSetListAdapter mSavedSetListAdapter;
@@ -89,8 +88,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     public static final String OLD_SET_KEY = "old_set_key";
     public static final String IS_DELETE_KEY = "is_delete_key";
 
-    public static final int ADD_NEW_SET_REQUEST_CODE = 1001;
-    public static final int UPDATE_SET_REQUEST_CODE = 1002;
+    private static final int ADD_NEW_SET_REQUEST_CODE = 1001;
+    private static final int UPDATE_SET_REQUEST_CODE = 1002;
 
     public interface AnimationCompleteListener {
         void onComplete();
@@ -127,7 +126,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
-        mContext = this;
         setupToolbar(getString(R.string.title_your_saved_sets));
 
         getSavedSetListFromDatabase();
@@ -177,7 +175,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                         || mFromNavigation.equalsIgnoreCase(GCHomeActivity.class.getName())) {
                     isFromEnterCode = true;
                     GCSavedSet newSet = (GCSavedSet) intent.getSerializableExtra(NEW_SET_KEY);
-                    Intent newIntent = new Intent(mContext, GCEditSavedSetActivity.class);
+                    Intent newIntent = new Intent(this, GCEditSavedSetActivity.class);
                     newIntent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
                     newIntent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, newSet);
                     startActivityForResult(newIntent, ADD_NEW_SET_REQUEST_CODE);
@@ -205,7 +203,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         super.onResume();
         setPosition(R.id.nav_saved_color_sets);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false)) {
             setupSavedSetList();
             SharedPreferences.Editor editor = prefs.edit();
@@ -290,7 +288,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     private void showSortDialog() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         int sortTypeInt = prefs.getInt(GCConstants.SORTING_KEY, 0);
 
         SortEnum[] sortEnums = SortEnum.values();
@@ -308,7 +306,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         builder.setItems(sortDescs, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GCSavedSetListActivity.this);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt(GCConstants.SORTING_KEY, item);
                 editor.apply();
@@ -320,12 +318,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     private void getSavedSetListFromDatabase() {
-        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.SAVED_SET_DATABASE.getAllData();
+        ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getAllData();
         if (mSavedSetList == null || mSavedSetList.size() <= 0) {
             mSavedSetList = new ArrayList<>();
         }
         mSavedSetList = savedSetList;
-        mSavedSetList = GCUtil.sortList(mSavedSetList);
+        mSavedSetList = GCUtil.sortList(this, mSavedSetList);
     }
 
     private void setupSavedSetList() {
@@ -334,10 +332,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mSavedSetListLayoutManager = new GridLayoutManager(mContext, 1);
+        mSavedSetListLayoutManager = new GridLayoutManager(this, 1);
         mSavedSetListRecyclerView.setLayoutManager(mSavedSetListLayoutManager);
         mSavedSetListRecyclerView.setItemAnimator(new CustomItemAnimator());
-        mSavedSetListAdapter = new GCSavedSetListAdapter(mContext, mSavedSetList);
+        mSavedSetListAdapter = new GCSavedSetListAdapter(this, mSavedSetList);
         mSavedSetListAdapter.sortList();
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
@@ -351,15 +349,15 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         } else {
-            Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+            Intent intent = new Intent(this, GCEditSavedSetActivity.class);
             intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
             startEditSetActivityTransition(intent, transitionViews);
         }
     }
 
-    public void onAddSetListItemClicked() {
+    private void onAddSetListItemClicked() {
         isLeaving = true;
-        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+        Intent intent = new Intent(this, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.IS_NEW_SET_KEY, true);
         startAddSetActivityTransition(intent);
     }
@@ -369,7 +367,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
             getWindow().setExitTransition(new Fade());
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivityForResult(intent, ADD_NEW_SET_REQUEST_CODE, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -405,28 +403,28 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
     }
 
-    public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
-        GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
+    private void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
+        GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSavedSetListAdapter.update(oldSet, newSet);
         int position = mSavedSetList.indexOf(oldSet);
         mSavedSetList.set(position, newSet);
-        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
-        GCDatabaseHelper.SAVED_SET_DATABASE.deleteData(savedSet);
+        GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.deleteData(savedSet);
         mSavedSetListAdapter.remove(savedSet);
         int position = mSavedSetList.indexOf(savedSet);
         mSavedSetList.remove(position);
-        Toast.makeText(mContext, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
     }
 
-    public void onSetAdded(GCSavedSet newSet) {
-        GCDatabaseHelper.SAVED_SET_DATABASE.insertData(newSet);
+    private void onSetAdded(GCSavedSet newSet) {
+        GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.insertData(newSet);
         mSavedSetListAdapter.add(mSavedSetList.size(), newSet);
         mSavedSetList.add(mSavedSetList.size(), newSet);
-        mSavedSetList = GCUtil.sortList(mSavedSetList);
-        Toast.makeText(mContext, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+        mSavedSetList = GCUtil.sortList(this, mSavedSetList);
+        Toast.makeText(this, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
     }
 
     private void sort() {
@@ -434,7 +432,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         int lastVisible = mSavedSetListLayoutManager.findLastVisibleItemPosition();
         int itemsChanged = lastVisible - firstVisible + 1; // + 1 because we start count items from 0
         int start = firstVisible - itemsChanged > 0 ? firstVisible - itemsChanged : 0;
-        mSavedSetList = GCUtil.sortList(mSavedSetList);
+        mSavedSetList = GCUtil.sortList(this, mSavedSetList);
         mSavedSetListAdapter.sortList();
         mSavedSetListAdapter.notifyItemRangeChanged(start, itemsChanged + itemsChanged);
     }
@@ -515,7 +513,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         if (isEntering) {
             isLeaving = false;
             mSavedSetListRecyclerView.setVisibility(View.VISIBLE);
-            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_in_animation));
+            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.grid_layout_in_animation));
             mSavedSetListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -537,7 +535,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             mSavedSetListRecyclerView.scheduleLayoutAnimation();
         } else {
             isLeaving = true;
-            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(mContext, R.anim.grid_layout_out_animation));
+            mSavedSetListRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(this, R.anim.grid_layout_out_animation));
             mSavedSetListRecyclerView.setLayoutAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {

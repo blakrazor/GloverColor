@@ -7,7 +7,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -58,14 +57,12 @@ import java.util.Map;
  */
 public class GCEditCollectionActivity extends GCBaseActivity {
 
-    private Context mContext;
     private TextView mTitleEditText;
     private TextView mDescEditText;
     private GCCollection mCollection;
     private Button mAddSetButton;
     private GridRecyclerView mSetsListRecyclerView;
     private GCSavedSetListAdapter mSetsListListAdapter;
-    private GridLayoutManager mSetsListLayoutManager;
     private ArrayList<GCSavedSet> mSetsList;
     private boolean enterFinished = false;
     private boolean isNewSet = false;
@@ -76,14 +73,14 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     public static final String IS_NEW_COLLECTION_KEY = "IS_NEW_COLLECTION_KEY";
     public static final String ADD_SET_KEY = "add_set_key";
     public static final String IS_REMOVE_KEY = "is_delete_key";
-    public static final String NEW_SET_KEY = "new_set_key";
+    private static final String NEW_SET_KEY = "new_set_key";
     public static final String OLD_SET_KEY = "old_set_key";
-    public static final int MAX_TITLE_LENGTH = 100;
-    public static final int MAX_DESC_LENGTH = 500;
-    public static final int COLLECTIONS_ADD_SET_RESULT = 1000;
-    public static final int UPDATE_SET_REQUEST_CODE = 1001;
+    private static final int MAX_TITLE_LENGTH = 100;
+    private static final int MAX_DESC_LENGTH = 500;
+    private static final int COLLECTIONS_ADD_SET_RESULT = 1000;
+    private static final int UPDATE_SET_REQUEST_CODE = 1001;
 
-    private InputFilter titleFilter = new InputFilter() {
+    private final InputFilter titleFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence arg0, int arg1, int arg2, Spanned arg3, int arg4, int arg5) {
             for (int k = arg1; k < arg2; k++) {
@@ -134,7 +131,6 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_collection, mFrameLayout);
-        mContext = this;
         setupToolbar(getString(R.string.title_edit_collection));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -201,9 +197,9 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             case 2: //Save
                 if (validateFields()) {
                     if (isNewSet) {
-                        showSaveDialog(mContext.getString(R.string.add_new_set), mContext.getString(R.string.add_new_set_dialog));
+                        showSaveDialog(getString(R.string.add_new_set), getString(R.string.add_new_set_dialog));
                     } else {
-                        showSaveDialog(mContext.getString(R.string.save_changes), mContext.getString(R.string.save_changes_dialog));
+                        showSaveDialog(getString(R.string.save_changes), getString(R.string.save_changes_dialog));
                     }
                 }
                 return true;
@@ -244,10 +240,10 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         mSetsListRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mSetsListLayoutManager = new GridLayoutManager(mContext, 1);
+        GridLayoutManager mSetsListLayoutManager = new GridLayoutManager(this, 1);
         mSetsListRecyclerView.setLayoutManager(mSetsListLayoutManager);
         mSetsListRecyclerView.setItemAnimator(new CustomItemAnimator());
-        mSetsListListAdapter = new GCSavedSetListAdapter(mContext, mSetsList);
+        mSetsListListAdapter = new GCSavedSetListAdapter(this, mSetsList);
         mSetsListRecyclerView.setAdapter(mSetsListListAdapter);
     }
 
@@ -306,13 +302,13 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
     private void navigateToSavedSetList() {
         setPosition(R.id.nav_saved_color_sets);
-        Intent intent = new Intent(mContext, GCSavedSetListActivity.class);
+        Intent intent = new Intent(this, GCSavedSetListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(GCSavedSetListActivity.FROM_NAVIGATION, GCEditCollectionActivity.class.getName());
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setExitTransition(new Explode());
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivityForResult(intent, COLLECTIONS_ADD_SET_RESULT, options.toBundle());
         } else {
             // Implement this feature without material design
@@ -320,19 +316,19 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         }
     }
 
-    public boolean validateFields() {
+    private boolean validateFields() {
         String newTitle = mTitleEditText.getText().toString().trim();
         if (newTitle.isEmpty()) {
-            showErrorDialog(mContext.getString(R.string.error_title_empty));
+            showErrorDialog(getString(R.string.error_title_empty));
             return false;
         } else if (newTitle.length() > MAX_TITLE_LENGTH) {
-            showErrorDialog(String.format(mContext.getString(R.string.error_title_length), MAX_TITLE_LENGTH));
+            showErrorDialog(String.format(getString(R.string.error_title_length), MAX_TITLE_LENGTH));
             return false;
         }
 
         String newDesc = mDescEditText.getText().toString().trim();
         if (newDesc.length() > MAX_DESC_LENGTH) {
-            showErrorDialog(String.format(mContext.getString(R.string.error_desc_length), MAX_DESC_LENGTH));
+            showErrorDialog(String.format(getString(R.string.error_desc_length), MAX_DESC_LENGTH));
             return false;
         }
 
@@ -358,7 +354,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         }
     }
 
-    public boolean madeChanges() {
+    private boolean madeChanges() {
         if (mCollection == null) {
             return true;
         }
@@ -371,6 +367,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
             return true;
         }
 
+        //noinspection RedundantIfStatement made for readability
         if (mCollection.getSavedSetList().size() != mSetsList.size()) {
             return true;
         }
@@ -381,7 +378,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void saveCollection() {
         String newTitle = mTitleEditText.getText().toString().trim();
         if (validateTitleAgainstDatabase(newTitle) && isNewSet) {
-            showErrorDialog(mContext.getString(R.string.error_title_exists));
+            showErrorDialog(getString(R.string.error_title_exists));
             return;
         }
 
@@ -405,7 +402,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     private boolean validateTitleAgainstDatabase(String title) {
-        ArrayList<GCCollection> collectionList = GCDatabaseHelper.COLLECTION_DATABASE.getAllData();
+        ArrayList<GCCollection> collectionList = GCDatabaseHelper.getInstance(this).COLLECTION_DATABASE.getAllData();
         for (GCCollection collection : collectionList) {
             if (collection.getTitle().equals(title)) {
                 return true;
@@ -415,10 +412,10 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     private void showSaveDialog(String title, String body) {
-        new AlertDialog.Builder(mContext)
+        new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(body)
-                .setPositiveButton(mContext.getString(R.string.save), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         saveCollection();
                     }
@@ -433,10 +430,10 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     private void showDeleteDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.delete))
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.delete))
                 .setMessage(getString(R.string.delete_collection))
-                .setPositiveButton(mContext.getString(R.string.delete), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra(GCCollectionsActivity.OLD_COLLECTION_KEY, mCollection);
@@ -454,8 +451,8 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     private void showErrorDialog(String message) {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.error))
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.error))
                 .setMessage(message)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -467,10 +464,10 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     private void showResetDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle(mContext.getString(R.string.revert_changes))
-                .setMessage(mContext.getString(R.string.revert_changes_dialog))
-                .setPositiveButton(mContext.getString(R.string.reset), new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.revert_changes))
+                .setMessage(getString(R.string.revert_changes_dialog))
+                .setPositiveButton(getString(R.string.reset), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         wasChangeDialogCanceled = true;
                         if (mCollection == null) {
@@ -490,11 +487,11 @@ public class GCEditCollectionActivity extends GCBaseActivity {
                 .show();
     }
 
-    public void showLeavingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getString(R.string.unsaved_changes));
-        builder.setMessage(mContext.getString(R.string.unsaved_changes_dialog));
-        builder.setPositiveButton(mContext.getString(R.string.exit), new DialogInterface.OnClickListener() {
+    private void showLeavingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.unsaved_changes));
+        builder.setMessage(getString(R.string.unsaved_changes_dialog));
+        builder.setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 finishActivityTransition(RESULT_CANCELED, null);
             }
@@ -658,7 +655,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     }
 
     public void onEditSetListItemClicked(GCSavedSet savedSet, HashMap<String, View> transitionViews) {
-        Intent intent = new Intent(mContext, GCEditSavedSetActivity.class);
+        Intent intent = new Intent(this, GCEditSavedSetActivity.class);
         intent.putExtra(GCEditSavedSetActivity.SAVED_SET_KEY, savedSet);
         intent.putExtra(GCEditSavedSetActivity.FROM_NAVIGATION, GCEditCollectionActivity.class.getName());
         startEditSetActivityTransition(intent, transitionViews);
@@ -690,18 +687,18 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         }
     }
 
-    public void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
-        GCDatabaseHelper.SAVED_SET_DATABASE.updateData(oldSet, newSet);
+    private void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
+        GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSetsListListAdapter.update(oldSet, newSet);
         int position = mSetsList.indexOf(oldSet);
         mSetsList.set(position, newSet);
-        Toast.makeText(mContext, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     public void onSetRemoved(GCSavedSet savedSet) {
         mSetsListListAdapter.remove(savedSet);
         int position = mSetsList.indexOf(savedSet);
         mSetsList.remove(position);
-        Toast.makeText(mContext, R.string.removed_set_from_collection, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.removed_set_from_collection, Toast.LENGTH_SHORT).show();
     }
 }

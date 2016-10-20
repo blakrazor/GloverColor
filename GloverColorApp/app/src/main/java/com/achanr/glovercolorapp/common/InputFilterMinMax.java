@@ -2,6 +2,7 @@ package com.achanr.glovercolorapp.common;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 
 /**
  * @author Andrew Chanrasmi
@@ -9,7 +10,7 @@ import android.text.Spanned;
  */
 public class InputFilterMinMax implements InputFilter {
 
-    private int min, max;
+    private final int min, max;
 
     public InputFilterMinMax(int min, int max) {
         this.min = min;
@@ -25,7 +26,7 @@ public class InputFilterMinMax implements InputFilter {
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
         try {
             String destString = dest.toString();
-            if(dstart == 0 && dend == 3){
+            if (dstart == 0 && dend == 3) {
                 destString = "";
             }
             int input = Integer.parseInt(destString + source.toString());
@@ -33,6 +34,7 @@ public class InputFilterMinMax implements InputFilter {
                 return null;
             }
         } catch (NumberFormatException nfe) {
+            Log.e(this.getClass().getSimpleName(), nfe.getMessage());
         }
         return "";
     }

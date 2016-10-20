@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
@@ -48,7 +48,6 @@
                         android:inputType="text"
                         android:maxLength="100"
                         android:maxLines="1"
-                        android:singleLine="true"
                         android:textSize="24sp"
                         android:transitionName="@string/transition_name_collection_title"
                         android:visibility="visible"/>

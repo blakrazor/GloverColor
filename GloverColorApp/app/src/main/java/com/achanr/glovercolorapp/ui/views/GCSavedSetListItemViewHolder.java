@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
@@ -26,15 +25,14 @@ import java.util.HashMap;
  */
 public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView txtTitle;
-    public TextView txtColors;
-    public TextView txtMode;
-    public TextView txtChipset;
-    public RelativeLayout rlSavedSetItem;
+    public final TextView txtTitle;
+    public final TextView txtColors;
+    public final TextView txtMode;
+    public final TextView txtChipset;
     public GCSavedSet mSavedSet;
-    public Context mContext;
+    private final Context mContext;
     //public PopupMenu mPopupMenu;
-    public CardView mCardView;
+    private final CardView mCardView;
 
     public GCSavedSetListItemViewHolder(Context context, View itemView) {
         super(itemView);
@@ -43,7 +41,6 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
         txtColors = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_colors);
         txtMode = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_mode);
         txtChipset = (TextView) itemView.findViewById(R.id.list_item_saved_set_desc_chipset);
-        rlSavedSetItem = (RelativeLayout) itemView.findViewById(R.id.list_item_saved_set_layout);
         mCardView = (CardView) itemView;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -112,7 +109,7 @@ public class GCSavedSetListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onNavigateToEditItem() {
-        HashMap<String, View> transitionViews = new HashMap<String, View>();
+        HashMap<String, View> transitionViews = new HashMap<>();
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_title), txtTitle);
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_chip), txtChipset);
         transitionViews.put(mContext.getString(R.string.transition_name_saved_set_mode), txtMode);

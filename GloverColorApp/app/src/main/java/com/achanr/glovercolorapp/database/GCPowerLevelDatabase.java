@@ -1,7 +1,6 @@
 package com.achanr.glovercolorapp.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
@@ -19,44 +18,39 @@ import java.util.ArrayList;
  */
 public class GCPowerLevelDatabase extends GCAbstractDatabase {
 
-    static String TABLE_NAME = "POWER_LEVEL_TBL";
-    static final String CREATE_POWER_LEVEL_DATABASE =
-            "CREATE TABLE IF NOT EXISTS " +
-                    TABLE_NAME +
-                    " (" + GCPowerLevelEntry._ID + " INTEGER PRIMARY KEY," +
-                    GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCPowerLevelEntry.POWER_LEVEL_ABBREV_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCPowerLevelEntry.POWER_LEVEL_VALUE_KEY + GCDatabaseHelper.INT_TYPE +
-                    " );";
+    private static final String TABLE_NAME = "POWER_LEVEL_TBL";
 
-    private Context mContext;
-
-    public static class GCPowerLevelEntry implements BaseColumns {
-        public static final String POWER_LEVEL_TITLE_KEY = "TITLE";
-        public static final String POWER_LEVEL_ABBREV_KEY = "ABBREV";
-        public static final String POWER_LEVEL_VALUE_KEY = "VALUE";
+    private static class GCPowerLevelEntry implements BaseColumns {
+        static final String POWER_LEVEL_TITLE_KEY = "TITLE";
+        static final String POWER_LEVEL_ABBREV_KEY = "ABBREV";
+        static final String POWER_LEVEL_VALUE_KEY = "VALUE";
     }
 
-    public GCPowerLevelDatabase(Context context, GCDatabaseAdapter databaseAdapter) {
-        mContext = context;
-        GCPowerLevelDatabase.db_adapter = databaseAdapter;
+    GCPowerLevelDatabase(GCDatabaseAdapter databaseAdapter) {
+        db_adapter = databaseAdapter;
     }
 
     @Override
     public void createTable(SQLiteDatabase db) {
         synchronized (GCDatabaseAdapter.Lock) {
-            db.execSQL(CREATE_POWER_LEVEL_DATABASE);
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                    TABLE_NAME +
+                    " (" + GCPowerLevelEntry._ID + " INTEGER PRIMARY KEY," +
+                    GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCPowerLevelEntry.POWER_LEVEL_ABBREV_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCPowerLevelEntry.POWER_LEVEL_VALUE_KEY + GCDatabaseHelper.INT_TYPE +
+                    " );");
         }
     }
 
-    public long insertData(GCPowerLevel powerLevel) {
+    public void insertData(GCPowerLevel powerLevel) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY, powerLevel.getTitle());
         values.put(GCPowerLevelEntry.POWER_LEVEL_ABBREV_KEY, powerLevel.getAbbreviation());
         values.put(GCPowerLevelEntry.POWER_LEVEL_VALUE_KEY, powerLevel.convertValueToInt());
 
-        return db_adapter.insertEntryInDB(TABLE_NAME, values);
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
 
     public void clearTable() {
@@ -130,7 +124,7 @@ public class GCPowerLevelDatabase extends GCAbstractDatabase {
         return db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs) > 0;
     }
 
-    public int updateData(GCPowerLevel oldPowerLevel, float newPowerValue) {
+    public void updateData(GCPowerLevel oldPowerLevel, float newPowerValue) {
 
         // New value for one column
         ContentValues values = new ContentValues();
@@ -142,6 +136,6 @@ public class GCPowerLevelDatabase extends GCAbstractDatabase {
         String selection = GCPowerLevelEntry.POWER_LEVEL_TITLE_KEY + "=?";
         String[] selectionArgs = {String.valueOf(oldPowerLevel.getTitle())};
 
-        return db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
+        db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }
 }
