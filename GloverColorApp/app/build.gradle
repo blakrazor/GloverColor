@@ -28,6 +28,12 @@ android {
     }
 
     signingConfigs {
+        debug {
+            storeFile file("glovercolordebug.keystore")
+            storePassword "DebugGloverColor"
+            keyAlias "GloverColorDebug"
+            keyPassword "DebugGloverColor"
+        }
         release {
             storeFile file("glovercolor.keystore")
             storePassword "ChanrasmiGloverColor"
@@ -41,6 +47,7 @@ android {
             minifyEnabled false
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
