@@ -68,7 +68,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
-    //compile 'com.google.firebase:firebase-core:9.6.1' //TODO: Add Firebase analytics at a later time
+    compile 'com.google.firebase:firebase-core:9.6.1'
 
     // Single target that includes all FirebaseUI libraries
     compile 'com.firebaseui:firebase-ui:0.6.1'
