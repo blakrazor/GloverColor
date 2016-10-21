@@ -17,3 +17,4 @@
 #}
 
 -keep class android.support.v7.widget.SearchView { *; }
+-dontwarn com.squareup.okhttp.**
