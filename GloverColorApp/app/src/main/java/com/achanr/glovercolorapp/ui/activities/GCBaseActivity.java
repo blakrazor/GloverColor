@@ -5,7 +5,9 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,10 +19,21 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.GCAuthUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
+
+import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 /**
  * Glover Color App Project
@@ -42,12 +55,30 @@ public class GCBaseActivity extends AppCompatActivity
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        updateLoginView();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkIfThemeCorrect();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                // user is signed in!
+                updateLoginView();
+                Toast.makeText(GCBaseActivity.this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+            } else {
+                // user is not signed in. Maybe just wait for the user to press
+                // "sign in" again, or show a message
+                Toast.makeText(GCBaseActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void checkIfThemeCorrect() {
@@ -71,7 +102,6 @@ public class GCBaseActivity extends AppCompatActivity
         drawer.setDrawerListener(mToggle);
         mToggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.setCheckedItem(mPosition);
     }
@@ -107,6 +137,11 @@ public class GCBaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        if (id == R.id.nav_login_logout) {
+            loginOrLogout();
+            return true;
+        }
 
         Intent intent;
         if (id == R.id.nav_home && mPosition != R.id.nav_home) {
@@ -207,5 +242,51 @@ public class GCBaseActivity extends AppCompatActivity
         }
         @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
         startActivity(intent, options.toBundle());
+    }
+
+    private void loginOrLogout() {
+        if (GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+            //Currently logged in, so log out
+            GCAuthUtil.INSTANCE.logOut(GCBaseActivity.this, new OnCompleteListener<Void>() {
+                public void onComplete(@NonNull Task<Void> task) {
+                    // user is now signed out
+                    updateLoginView();
+                    Toast.makeText(GCBaseActivity.this, R.string.logout_successful, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            //Currently not logged in, so log in
+            GCAuthUtil.INSTANCE.startLoginActivity(GCBaseActivity.this);
+        }
+
+    }
+
+    private void updateLoginView() {
+        Menu navMenu = mNavigationView.getMenu();
+        TextView textView = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.current_user_textview);
+        ImageView imageView = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.imageView);
+        if (GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+            //User currently logged in
+            navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
+            FirebaseUser currentUser = GCAuthUtil.INSTANCE.getCurrentUser();
+            if (currentUser.getPhotoUrl() != null) {
+                Picasso.with(this).load(currentUser.getPhotoUrl()).into(imageView);
+            }
+            String username = "N/A";
+            if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
+                username = currentUser.getDisplayName();
+            } else if (currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
+                username = currentUser.getEmail();
+            }
+            textView.setText(String.format(
+                    Locale.getDefault(),
+                    "Logged in as:\n%s",
+                    username));
+        } else {
+            //User is not logged in
+            textView.setText(getString(R.string.currently_not_logged_in));
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.glover_color_logo));
+            navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
+        }
     }
 }

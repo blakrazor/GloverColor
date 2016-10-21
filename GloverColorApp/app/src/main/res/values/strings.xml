@@ -84,4 +84,10 @@
     <string name="title_version_info">Version Release Notes</string>
     <string name="prefill_share_code_success">Successfully prefilled shared code</string>
     <string name="prefill_share_code_failure">Failed to prefill shared code</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="logout_successful">Logout Successful</string>
+    <string name="login_successful">Login Successful</string>
+    <string name="login_failed">Login Failed</string>
+    <string name="currently_not_logged_in">Currently Not Logged In</string>
 </resources>
