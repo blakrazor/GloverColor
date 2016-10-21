@@ -70,6 +70,14 @@ dependencies {
         transitive = true;
     }
     //compile 'com.google.firebase:firebase-core:9.6.1' //TODO: Add Firebase analytics at a later time
+
+    // Single target that includes all FirebaseUI libraries
+    compile 'com.firebaseui:firebase-ui:0.6.1'
+    //Dependencies for FirebaseUI
+    compile 'com.google.firebase:firebase-auth:9.6.1'
+    compile 'com.google.android.gms:play-services-auth:9.6.1'
+    compile 'com.google.firebase:firebase-database:9.6.1'
+    compile 'com.google.firebase:firebase-storage:9.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
