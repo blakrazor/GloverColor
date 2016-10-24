@@ -60,9 +60,9 @@ public class GCBaseActivity extends AppCompatActivity
         mNavigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+                if (!GCAuthUtil.isCurrentUserLoggedIn()) {
                     //Currently not logged in, so log in
-                    GCAuthUtil.INSTANCE.startLoginActivity(GCBaseActivity.this);
+                    GCAuthUtil.startLoginActivity(GCBaseActivity.this);
                 }
             }
         });
@@ -255,9 +255,9 @@ public class GCBaseActivity extends AppCompatActivity
     }
 
     private void loginOrLogout() {
-        if (GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
             //Currently logged in, so log out
-            GCAuthUtil.INSTANCE.logOut(GCBaseActivity.this, new OnCompleteListener<Void>() {
+            GCAuthUtil.logOut(GCBaseActivity.this, new OnCompleteListener<Void>() {
                 public void onComplete(@NonNull Task<Void> task) {
                     // user is now signed out
                     updateLoginView();
@@ -266,7 +266,7 @@ public class GCBaseActivity extends AppCompatActivity
             });
         } else {
             //Currently not logged in, so log in
-            GCAuthUtil.INSTANCE.startLoginActivity(GCBaseActivity.this);
+            GCAuthUtil.startLoginActivity(GCBaseActivity.this);
         }
 
     }
@@ -275,10 +275,10 @@ public class GCBaseActivity extends AppCompatActivity
         Menu navMenu = mNavigationView.getMenu();
         TextView textView = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.current_user_textview);
         ImageView imageView = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.imageView);
-        if (GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
             //User currently logged in
             navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
-            FirebaseUser currentUser = GCAuthUtil.INSTANCE.getCurrentUser();
+            FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
             if (currentUser.getPhotoUrl() != null) {
                 Picasso.with(this).load(currentUser.getPhotoUrl()).into(imageView);
             }

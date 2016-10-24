@@ -11,6 +11,7 @@ import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCRealtimeDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -173,5 +174,16 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         String[] selectionArgs = {String.valueOf(oldSavedSet.getTitle())};
 
         db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
+    }
+
+    public static GCRealtimeDBSavedSet convertSavedSetToRealtimeDBSavedSet(GCSavedSet savedSet) {
+        GCRealtimeDBSavedSet dbSavedSet = new GCRealtimeDBSavedSet();
+        dbSavedSet.setId(savedSet.getId());
+        dbSavedSet.setTitle(savedSet.getTitle());
+        dbSavedSet.setColors(GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
+        dbSavedSet.setMode(savedSet.getMode().getTitle());
+        dbSavedSet.setChip(savedSet.getChipSet().getTitle());
+        dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
+        return dbSavedSet;
     }
 }
