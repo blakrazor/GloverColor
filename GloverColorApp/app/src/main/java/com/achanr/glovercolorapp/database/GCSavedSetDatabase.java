@@ -11,7 +11,7 @@ import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
-import com.achanr.glovercolorapp.models.GCRealtimeDBSavedSet;
+import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -64,6 +64,18 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
+
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
+    }
+
+    public void insertData(GCOnlineDBSavedSet dbSavedSet) {
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(GCSavedSetEntry.SAVED_SET_TITLE, dbSavedSet.getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_COLORS, dbSavedSet.getColors());
+        values.put(GCSavedSetEntry.SAVED_SET_MODE, dbSavedSet.getMode());
+        values.put(GCSavedSetEntry.SAVED_SET_CHIP, dbSavedSet.getChip());
+        values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, dbSavedSet.getCustom_colors());
 
         db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -174,16 +186,5 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         String[] selectionArgs = {String.valueOf(oldSavedSet.getTitle())};
 
         db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
-    }
-
-    public static GCRealtimeDBSavedSet convertSavedSetToRealtimeDBSavedSet(GCSavedSet savedSet) {
-        GCRealtimeDBSavedSet dbSavedSet = new GCRealtimeDBSavedSet();
-        dbSavedSet.setId(savedSet.getId());
-        dbSavedSet.setTitle(savedSet.getTitle());
-        dbSavedSet.setColors(GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
-        dbSavedSet.setMode(savedSet.getMode().getTitle());
-        dbSavedSet.setChip(savedSet.getChipSet().getTitle());
-        dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
-        return dbSavedSet;
     }
 }

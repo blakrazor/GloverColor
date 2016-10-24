@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCAuthUtil;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,7 +61,20 @@ public class GCBaseActivity extends AppCompatActivity
         mNavigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!GCAuthUtil.isCurrentUserLoggedIn()) {
+                if (GCAuthUtil.isCurrentUserLoggedIn()) {
+                    //Logged in
+                    //TODO: test method to sync, remove later
+                    GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.CompletionHandler() {
+                        @Override
+                        public void onComplete() {
+                            if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
+                                ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
+                            } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
+                                ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
+                            }
+                        }
+                    });
+                } else {
                     //Currently not logged in, so log in
                     GCAuthUtil.startLoginActivity(GCBaseActivity.this);
                 }
