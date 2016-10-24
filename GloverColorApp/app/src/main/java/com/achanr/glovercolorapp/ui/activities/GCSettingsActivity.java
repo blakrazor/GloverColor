@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -11,6 +12,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
@@ -82,6 +84,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupResetDialogPreference();
             setupDefaultChipPreference();
             setupFollowFacebookPreference();
+            setupAcknowledgementsPreference();
         }
 
         private void setupThemePreference() {
@@ -268,6 +271,25 @@ public class GCSettingsActivity extends GCBaseActivity {
                     } catch (PackageManager.NameNotFoundException ignored) {
                     }
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    return true;
+                }
+            });
+        }
+
+        private void setupAcknowledgementsPreference() {
+            Preference acknowledgementsPreference = findPreference(getActivity().getString(R.string.acknowledgements_preference));
+            acknowledgementsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Acknowledgements")
+                            .setMessage(getString(R.string.acknowledgements_list))
+                            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
                     return true;
                 }
             });
