@@ -15,18 +15,17 @@ import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
  * @author Andrew Chanrasmi on 10/21/16
  */
 
-public enum GCAuthUtil {
-    INSTANCE;
+public class GCAuthUtil {
 
-    public FirebaseUser getCurrentUser() {
+    public static FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public boolean isCurrentUserLoggedIn() {
+    public static boolean isCurrentUserLoggedIn() {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
-    public void startLoginActivity(Activity activity) {
+    public static void startLoginActivity(Activity activity) {
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -41,7 +40,7 @@ public enum GCAuthUtil {
         );
     }
 
-    public void logOut(final Activity activity, OnCompleteListener<Void> onCompleteListener) {
+    public static void logOut(final Activity activity, OnCompleteListener<Void> onCompleteListener) {
         AuthUI.getInstance()
                 .signOut(activity)
                 .addOnCompleteListener(onCompleteListener);

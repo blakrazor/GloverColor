@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class GCSavedSet implements Serializable {
 
-    private int mId;
+    private int mId = -1;
     private String mTitle;
     private ArrayList<GCPoweredColor> mColors;
     private GCMode mMode;
