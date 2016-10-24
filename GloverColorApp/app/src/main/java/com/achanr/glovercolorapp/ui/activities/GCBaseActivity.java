@@ -18,6 +18,7 @@ import android.transition.Slide;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +57,15 @@ public class GCBaseActivity extends AppCompatActivity
         setContentView(R.layout.navigation_drawer_layout);
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!GCAuthUtil.INSTANCE.isCurrentUserLoggedIn()) {
+                    //Currently not logged in, so log in
+                    GCAuthUtil.INSTANCE.startLoginActivity(GCBaseActivity.this);
+                }
+            }
+        });
         updateLoginView();
     }
 
