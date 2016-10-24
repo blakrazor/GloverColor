@@ -44,6 +44,12 @@
 
         <Preference
             android:clickable="true"
+            android:key="@string/acknowledgements_preference"
+            android:title="Acknowledgements"
+            android:summary="Kudos and thanks to all third parties"/>
+
+        <Preference
+            android:clickable="true"
             android:key="@string/rate_app_preference"
             android:title="Rate App"
             android:summary="Give or update your rating on the Play Store"/>
