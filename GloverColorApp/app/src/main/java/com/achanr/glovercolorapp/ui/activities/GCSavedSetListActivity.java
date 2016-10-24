@@ -36,7 +36,6 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
 import com.achanr.glovercolorapp.common.GCConstants;
-import com.achanr.glovercolorapp.common.GCRealtimeDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
@@ -426,7 +425,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetList.add(mSavedSetList.size(), newSet);
         mSavedSetList = GCUtil.sortList(this, mSavedSetList);
         Toast.makeText(this, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
-        GCRealtimeDatabaseUtil.INSTANCE.syncToOnline(this, newSet);
     }
 
     private void sort() {
@@ -595,5 +593,13 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private void completedAnimationBackPressed() {
         isAnimating = false;
         super.onBackPressed();
+    }
+
+    public void refreshList()
+    {
+        getSavedSetListFromDatabase();
+        mSavedSetListAdapter = new GCSavedSetListAdapter(this, mSavedSetList);
+        mSavedSetListAdapter.sortList();
+        mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
 }
