@@ -538,4 +538,10 @@ public class GCCollectionsActivity extends GCBaseActivity {
         isAnimating = false;
         super.onBackPressed();
     }
+
+    public void refreshList() {
+        getCollectionListFromDatabase();
+        mCollectionsListAdapter = new GCCollectionsListAdapter(this, mCollectionsList);
+        mCollectionsListRecyclerView.setAdapter(mCollectionsListAdapter);
+    }
 }
