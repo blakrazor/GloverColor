@@ -33,6 +33,7 @@ Andrew Chanrasmi - Designer / Creator / Developer
  - [Picasso Image Library](https://github.com/square/picasso) Copyright 2013 Square, Inc.
  - [Firebase for Android](https://firebase.google.com/) Copyright 2016 Google Inc.
  - [FirebaseUI for Android](https://github.com/firebase/FirebaseUI-Android) Copyright 2016 Google Inc.
+ - [RecyclerView MultiSelect](https://github.com/bignerdranch/recyclerview-multiselect) Copyright (c) 2014 Big Nerd Ranch
 
 ## License
 

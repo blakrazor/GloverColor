@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="acknowledgements_list">
-        \n\u2022 Picasso Image Library
-        \n\u2022 Firebase for Android
-        \n\u2022 FirebaseUI for Android
+        \n\u2022 Picasso Image Library &#169; 2013 Square, Inc.
+        \n\u2022 Firebase for Android &#169; 2016 Google Inc.
+        \n\u2022 FirebaseUI for Android &#169; 2016 Google Inc.
+        \n\u2022 RecyclerView MultiSelect &#169; 2014 Big Nerd Ranch
     </string>
     <string name="whats_new_in_version_1.1">
         \n\u2022 Fixed social media sharing
