@@ -90,4 +90,6 @@
     <string name="login_successful">Login Successful</string>
     <string name="login_failed">Login Failed</string>
     <string name="currently_not_logged_in">Currently Not Logged In</string>
+    <string name="title_sync_conflicts">Sync Conflicts</string>
+    <string name="sync_conflict_message">There were conflicts when syncing your sets online. Please select all sets you would like to keep.</string>
 </resources>
