@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
 import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
@@ -409,14 +410,17 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         int position = mSavedSetList.indexOf(oldSet);
         mSavedSetList.set(position, newSet);
         Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.updateToOnlineDB(this, GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
+        int id = GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(savedSet).getId();
         GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.deleteData(savedSet);
         mSavedSetListAdapter.remove(savedSet);
         int position = mSavedSetList.indexOf(savedSet);
         mSavedSetList.remove(position);
         Toast.makeText(this, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.deleteFromOnlineDB(this, id);
     }
 
     private void onSetAdded(GCSavedSet newSet) {
@@ -425,6 +429,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetList.add(mSavedSetList.size(), newSet);
         mSavedSetList = GCUtil.sortList(this, mSavedSetList);
         Toast.makeText(this, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.addToOnlineDB(this,  GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
     }
 
     private void sort() {
@@ -595,8 +600,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         super.onBackPressed();
     }
 
-    public void refreshList()
-    {
+    public void refreshList() {
         getSavedSetListFromDatabase();
         mSavedSetListAdapter = new GCSavedSetListAdapter(this, mSavedSetList);
         mSavedSetListAdapter.sortList();
