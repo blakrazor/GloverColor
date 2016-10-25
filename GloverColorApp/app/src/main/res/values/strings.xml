@@ -92,4 +92,16 @@
     <string name="currently_not_logged_in">Currently Not Logged In</string>
     <string name="title_sync_conflicts">Sync Conflicts</string>
     <string name="sync_conflict_message">There were conflicts when syncing your sets online. Please select all sets you would like to keep.</string>
+    <string name="facebook_share_description">Enter this code on the GloverColor mobile app or click this link from your mobile phone!</string>
+    <string name="confirm_selection">Confirm Selection</string>
+    <string name="confirm_selection_body">You have selected %d sets. Any unselected sets will be deleted forever. Are you sure you would like to continue?</string>
+    <string name="confirm">Confirm</string>
+    <string name="sync_conflicts">Sync Conflicts</string>
+    <string name="resolving_conflicts_message">Resolving conflicts...Please Wait...</string>
+    <string name="please_login_first">Please login first to save data online.</string>
+    <string name="data_already_synced">Data is already synced.</string>
+    <string name="something_went_wrong">Something went wrong Try again later.</string>
+    <string name="data_synced_complete_message">Data has been synced to your account.</string>
+    <string name="online_sync">Online Sync</string>
+    <string name="syncing_wait_message">Syncing...Please Wait...</string>
 </resources>

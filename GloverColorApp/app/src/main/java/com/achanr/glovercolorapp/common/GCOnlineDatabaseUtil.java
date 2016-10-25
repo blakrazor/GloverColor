@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
@@ -54,7 +55,7 @@ public class GCOnlineDatabaseUtil {
             FirebaseUser user = GCAuthUtil.getCurrentUser();
             syncSavedSets(context, user.getUid(), handler);
         } else {
-            Toast.makeText(context, "Please login first to save data online.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.please_login_first, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -75,7 +76,7 @@ public class GCOnlineDatabaseUtil {
                         //Compare the local and only sets
                         Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
                         if (comparison.getA().isEmpty()) {
-                            Toast.makeText(context, "Data is already synced.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.data_already_synced, Toast.LENGTH_SHORT).show();
                             dismissProgressDialog();
                             if (handler != null) handler.onComplete();
                             return;
@@ -105,7 +106,7 @@ public class GCOnlineDatabaseUtil {
                     public void onCancelled(DatabaseError databaseError) {
                         dismissProgressDialog();
                         Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
-                        Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -142,7 +143,7 @@ public class GCOnlineDatabaseUtil {
 
     public static void syncCollections(Context context, String userUID, CompletionHandler handler) {
         //TODO: complete this later
-        Toast.makeText(context, "Data has been synced to your account.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.data_synced_complete_message, Toast.LENGTH_SHORT).show();
         dismissProgressDialog();
         if (handler != null) handler.onComplete();
     }
@@ -183,8 +184,8 @@ public class GCOnlineDatabaseUtil {
 
     private static void showProgressDialog(Context context) {
         if (progressDialog == null || !progressDialog.isShowing()) {
-            progressDialog = ProgressDialog.show(context, "Online Sync",
-                    "Syncing...Please Wait...", true);
+            progressDialog = ProgressDialog.show(context, context.getString(R.string.online_sync),
+                    context.getString(R.string.syncing_wait_message), true);
         }
     }
 
@@ -242,7 +243,7 @@ public class GCOnlineDatabaseUtil {
                         public void onCancelled(DatabaseError databaseError) {
                             dismissProgressDialog();
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "updateSet:onCancelled", databaseError.toException());
-                            Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -279,7 +280,7 @@ public class GCOnlineDatabaseUtil {
                         public void onCancelled(DatabaseError databaseError) {
                             dismissProgressDialog();
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "deleteSet:onCancelled", databaseError.toException());
-                            Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                         }
                     });
         }
