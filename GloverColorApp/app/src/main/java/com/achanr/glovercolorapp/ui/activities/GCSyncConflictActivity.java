@@ -89,12 +89,12 @@ public class GCSyncConflictActivity extends GCBaseActivity {
 
     private void showConfirmationAlert() {
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Selection")
+                .setTitle(R.string.confirm_selection)
                 .setMessage(String.format(
                         Locale.getDefault(),
-                        "You have selected %d sets. Any unselected sets will be deleted forever. Are you sure you would like to continue?",
+                        getString(R.string.confirm_selection_body),
                         mAdapter.getSelectedSets() != null ? mAdapter.getSelectedSets().size() : 0))
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         resolveConflicts();
                     }
@@ -123,8 +123,8 @@ public class GCSyncConflictActivity extends GCBaseActivity {
     }
 
     private void resolveConflicts() {
-        mProgressDialog = ProgressDialog.show(this, "Sync Conflicts",
-                "Resolving conflicts...Please Wait...", true);
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.sync_conflicts),
+                getString(R.string.resolving_conflicts_message), true);
 
         //Get the selected positions
         List<Integer> selectedPositions = mAdapter.getSelectedSets();
