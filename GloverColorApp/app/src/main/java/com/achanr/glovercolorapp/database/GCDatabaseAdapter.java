@@ -57,7 +57,7 @@ class GCDatabaseAdapter {
     }
 
     Cursor getEntryFromDB(String tableName, String[] columns, String selection, String[] selectionArgs,
-                                 String groupBy, String having, String orderBy) {
+                          String groupBy, String having, String orderBy) {
         synchronized (GCDatabaseAdapter.Lock) {
             open();
             Cursor c = mSQLDb.query(tableName, columns, selection, selectionArgs, groupBy, having, orderBy);
@@ -93,6 +93,17 @@ class GCDatabaseAdapter {
             retValue = mSQLDb.update(tableName, updatedValues, selection, whereArgs);
             close();
             return retValue;
+        }
+    }
+
+    Cursor rawQuery(String query, String[] selectionArgs) {
+        synchronized (GCDatabaseAdapter.Lock) {
+            open();
+            Cursor c = mSQLDb.rawQuery(query, selectionArgs);
+            if (c != null) {
+                c.moveToFirst();
+            }
+            return c;
         }
     }
 }

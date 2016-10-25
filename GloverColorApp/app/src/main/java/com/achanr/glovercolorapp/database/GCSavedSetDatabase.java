@@ -162,6 +162,54 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         return savedSetList;
     }
 
+    public GCSavedSet getData(GCSavedSet querySet) {
+        GCSavedSet savedSet = null;
+        Cursor mCursor = null;
+        try {
+            mCursor = db_adapter.rawQuery("SELECT * FROM savedsets WHERE title=?", new String[]{querySet.getTitle()});
+
+            if (mCursor != null) {
+                if (mCursor.moveToFirst()) {
+                    savedSet = new GCSavedSet();
+                    int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
+                    String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
+                    String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
+                    String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
+                    String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
+                    String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
+
+                    savedSet.setId(id);
+                    savedSet.setTitle(title);
+                    savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
+                    savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
+                    if (customColorString != null) {
+                        savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
+                    } else {
+                        ArrayList<int[]> customColors = new ArrayList<>();
+                        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
+                            customColors.add(new int[]{255, 255, 255});
+                        }
+                        savedSet.setCustomColors(customColors);
+                    }
+                    if (chipString != null) {
+                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
+                    } else {
+                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(GCSavedSetDatabase.class.getSimpleName(), e.getMessage());
+        } finally {
+            if (mCursor != null) {
+                mCursor.close();
+            }
+            if (db_adapter.isOpen())
+                db_adapter.close();
+        }
+        return savedSet;
+    }
+
     public void deleteData(GCSavedSet savedSet) {
         // Define 'where' part of query.
         String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
