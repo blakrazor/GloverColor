@@ -61,60 +61,60 @@ public class GCOnlineDatabaseUtil {
     private static void syncSavedSets(final Context context, final String userUID, final CompletionHandler handler) {
 
         final List<GCSavedSet> savedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Get all the online sets
-                List<GCOnlineDBSavedSet> dbSavedSets = new ArrayList<>();
-                for (DataSnapshot userSavedSets : dataSnapshot.getChildren()) {
-                    dbSavedSets.add(userSavedSets.getValue(GCOnlineDBSavedSet.class));
-                }
-                //Compare the local and only sets
-                Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
-                if (comparison.getA().isEmpty()) {
-                    Toast.makeText(context, "Data is already synced.", Toast.LENGTH_SHORT).show();
-                    dismissProgressDialog();
-                    handler.onComplete();
-                    return;
-                }
-                if (comparison.getB() || comparison.getC()) {
-                    //If true, difference in data only exists on one side
-                    if (comparison.getD()) {
-                        //if true, online database had more records, sync online to local
-                        for (GCOnlineDBSavedSet onlineSavedSet : comparison.getA()) {
-                            GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.insertData(onlineSavedSet);
-                        }
-                    }
-                    reSynchronizeWithOnline(context, userUID);
-                    syncCollections(context, userUID, handler);
-                } else {
-                    //else, multiple differences exist
-                    dismissProgressDialog();
-                    Intent intent = new Intent(context, GCSyncConflictActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
-                    intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
-                    ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
-                Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
-            }
-        };
         getCurrentDatabaseReference()
                 .child(USER_SAVED_SET_KEY)
                 .child(userUID)
-                .addListenerForSingleValueEvent(postListener);
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get all the online sets
+                        List<GCOnlineDBSavedSet> dbSavedSets = new ArrayList<>();
+                        for (DataSnapshot userSavedSets : dataSnapshot.getChildren()) {
+                            dbSavedSets.add(userSavedSets.getValue(GCOnlineDBSavedSet.class));
+                        }
+                        //Compare the local and only sets
+                        Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
+                        if (comparison.getA().isEmpty()) {
+                            Toast.makeText(context, "Data is already synced.", Toast.LENGTH_SHORT).show();
+                            dismissProgressDialog();
+                            if (handler != null) handler.onComplete();
+                            return;
+                        }
+                        if (comparison.getB() || comparison.getC()) {
+                            //If true, difference in data only exists on one side
+                            if (comparison.getD()) {
+                                //if true, online database had more records, sync online to local
+                                for (GCOnlineDBSavedSet onlineSavedSet : comparison.getA()) {
+                                    GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.insertData(onlineSavedSet);
+                                }
+                            }
+                            reSynchronizeWithOnline(context, userUID);
+                            syncCollections(context, userUID, handler);
+                        } else {
+                            //else, multiple differences exist
+                            dismissProgressDialog();
+                            Intent intent = new Intent(context, GCSyncConflictActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
+                            intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
+                            ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        dismissProgressDialog();
+                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
+                        Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private static Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> compareSavedSetLists(List<GCOnlineDBSavedSet> dbSavedSets, List<GCSavedSet> savedSetsLocal) {
         List<GCOnlineDBSavedSet> dbSavedSetsLocal = new ArrayList<>();
         List<GCOnlineDBSavedSet> dbSavedSetsOnline = new ArrayList<>(dbSavedSets);
         for (GCSavedSet savedSet : savedSetsLocal) {
-            dbSavedSetsLocal.add(convertSavedSetToOnlineDBSavedSet(savedSet));
+            dbSavedSetsLocal.add(convertToOnlineDBSavedSet(savedSet));
         }
         List<GCOnlineDBSavedSet> intersection = new ArrayList<>();
         dbSavedSetsOnline.removeAll(dbSavedSetsLocal);
@@ -132,7 +132,7 @@ public class GCOnlineDatabaseUtil {
         //then sync local to online
         List<GCOnlineDBSavedSet> localSavedSets = new ArrayList<>();
         for (GCSavedSet savedSet : GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData()) {
-            localSavedSets.add(convertSavedSetToOnlineDBSavedSet(savedSet));
+            localSavedSets.add(convertToOnlineDBSavedSet(savedSet));
         }
         getCurrentDatabaseReference()
                 .child(USER_SAVED_SET_KEY)
@@ -144,10 +144,10 @@ public class GCOnlineDatabaseUtil {
         //TODO: complete this later
         Toast.makeText(context, "Data has been synced to your account.", Toast.LENGTH_SHORT).show();
         dismissProgressDialog();
-        handler.onComplete();
+        if (handler != null) handler.onComplete();
     }
 
-    private static GCOnlineDBSavedSet convertSavedSetToOnlineDBSavedSet(GCSavedSet savedSet) {
+    private static GCOnlineDBSavedSet convertToOnlineDBSavedSet(GCSavedSet savedSet) {
         GCOnlineDBSavedSet dbSavedSet = new GCOnlineDBSavedSet();
         dbSavedSet.setId(savedSet.getId());
         dbSavedSet.setTitle(savedSet.getTitle());
@@ -191,6 +191,97 @@ public class GCOnlineDatabaseUtil {
     private static void dismissProgressDialog() {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
+        }
+    }
+
+    public static void addToOnlineDB(Context context, GCSavedSet savedSet) {
+        if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
+            showProgressDialog(context);
+            String key = getCurrentDatabaseReference()
+                    .child(USER_SAVED_SET_KEY)
+                    .child(GCAuthUtil.getCurrentUser().getUid())
+                    .push()
+                    .getKey();
+            getCurrentDatabaseReference()
+                    .child(USER_SAVED_SET_KEY)
+                    .child(GCAuthUtil.getCurrentUser().getUid())
+                    .child(key)
+                    .setValue(convertToOnlineDBSavedSet(savedSet));
+            dismissProgressDialog();
+        }
+    }
+
+    public static void updateToOnlineDB(final Context context, final GCSavedSet savedSet) {
+        if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
+            showProgressDialog(context);
+            getCurrentDatabaseReference()
+                    .child(USER_SAVED_SET_KEY)
+                    .child(GCAuthUtil.getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String key = null;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                GCOnlineDBSavedSet dbSavedSet = snapshot.getValue(GCOnlineDBSavedSet.class);
+                                if (dbSavedSet.getId() == savedSet.getId()) {
+                                    key = snapshot.getKey();
+                                    break;
+                                }
+                            }
+                            if (key != null) {
+                                getCurrentDatabaseReference()
+                                        .child(USER_SAVED_SET_KEY)
+                                        .child(GCAuthUtil.getCurrentUser().getUid())
+                                        .child(key)
+                                        .setValue(convertToOnlineDBSavedSet(savedSet));
+                            }
+                            dismissProgressDialog();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            dismissProgressDialog();
+                            Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "updateSet:onCancelled", databaseError.toException());
+                            Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    public static void deleteFromOnlineDB(final Context context, final int id) {
+        if (GCAuthUtil.isCurrentUserLoggedIn() && id >= 0) {
+            showProgressDialog(context);
+            getCurrentDatabaseReference()
+                    .child(USER_SAVED_SET_KEY)
+                    .child(GCAuthUtil.getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String key = null;
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                GCOnlineDBSavedSet dbSavedSet = snapshot.getValue(GCOnlineDBSavedSet.class);
+                                if (dbSavedSet.getId() == id) {
+                                    key = snapshot.getKey();
+                                    break;
+                                }
+                            }
+                            if (key != null) {
+                                getCurrentDatabaseReference()
+                                        .child(USER_SAVED_SET_KEY)
+                                        .child(GCAuthUtil.getCurrentUser().getUid())
+                                        .child(key)
+                                        .removeValue();
+                            }
+                            dismissProgressDialog();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            dismissProgressDialog();
+                            Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "deleteSet:onCancelled", databaseError.toException());
+                            Toast.makeText(context, "Something went wrong Try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 }
