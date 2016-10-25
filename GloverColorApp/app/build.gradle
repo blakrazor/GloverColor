@@ -77,9 +77,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:9.6.1'
     compile 'com.google.firebase:firebase-database:9.6.1'
 
+    //URL Image loading
     compile 'com.squareup.picasso:picasso:2.5.2'
+    //Multi select for recyclerview on sync conflict
     compile 'com.bignerdranch.android:recyclerview-multiselect:0.2'
-
     //Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 }
