@@ -47,6 +47,7 @@ public class GCBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FrameLayout mFrameLayout;
+    DrawerLayout mDrawerLayout;
     Toolbar mToolbar;
     private static int mPosition;
     private NavigationView mNavigationView;
@@ -57,6 +58,7 @@ public class GCBaseActivity extends AppCompatActivity
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,11 +69,7 @@ public class GCBaseActivity extends AppCompatActivity
                     GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.CompletionHandler() {
                         @Override
                         public void onComplete() {
-                            if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
-                                ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
-                            } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
-                                ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
-                            }
+                            refreshListViews();
                         }
                     });
                 } else {
@@ -81,6 +79,7 @@ public class GCBaseActivity extends AppCompatActivity
             }
         });
         updateLoginView();
+        checkForDrawerSwipe();
     }
 
     @Override
@@ -102,6 +101,12 @@ public class GCBaseActivity extends AppCompatActivity
                 // "sign in" again, or show a message
                 Toast.makeText(GCBaseActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == GCOnlineDatabaseUtil.SYNC_CONFLICT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                refreshListViews();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(GCBaseActivity.this, "Sync cancelled", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -120,10 +125,9 @@ public class GCBaseActivity extends AppCompatActivity
         getSupportActionBar().setTitle(title);
         setCustomTitle(title);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, drawer, mToolbar,
+        ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(mToggle);
+        mDrawerLayout.setDrawerListener(mToggle);
         mToggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -141,9 +145,8 @@ public class GCBaseActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -195,8 +198,7 @@ public class GCBaseActivity extends AppCompatActivity
             //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -311,6 +313,23 @@ public class GCBaseActivity extends AppCompatActivity
             textView.setText(getString(R.string.currently_not_logged_in));
             imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.glover_color_logo));
             navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
+        }
+    }
+
+    private void refreshListViews() {
+        if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
+            ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
+        } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
+            ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
+        }
+    }
+
+    private void checkForDrawerSwipe() {
+        if (this instanceof GCSettingsActivity
+                || this instanceof GCSyncConflictActivity) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
 }
