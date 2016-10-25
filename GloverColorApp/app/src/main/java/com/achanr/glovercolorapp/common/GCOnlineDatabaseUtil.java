@@ -2,12 +2,16 @@ package com.achanr.glovercolorapp.common;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.activities.GCBaseActivity;
+import com.achanr.glovercolorapp.ui.activities.GCSyncConflictActivity;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +32,8 @@ public class GCOnlineDatabaseUtil {
     public interface CompletionHandler {
         void onComplete();
     }
+
+    public static final int SYNC_CONFLICT_REQUEST_CODE = 7001;
 
     private static DatabaseReference currentReference;
 
@@ -43,12 +50,9 @@ public class GCOnlineDatabaseUtil {
 
     public static void syncToOnline(Context context, CompletionHandler handler) {
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
-            progressDialog = ProgressDialog.show(context, "Online Sync",
-                    "Syncing...Please Wait...", true);
+            showProgressDialog(context);
             FirebaseUser user = GCAuthUtil.getCurrentUser();
             syncSavedSets(context, user.getUid(), handler);
-            //syncCollections(context, user.getUid());
-            //Toast.makeText(context, "Data has been synced to your account.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Please login first to save data online.", Toast.LENGTH_SHORT).show();
         }
@@ -69,7 +73,7 @@ public class GCOnlineDatabaseUtil {
                 Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
                 if (comparison.getA().isEmpty()) {
                     Toast.makeText(context, "Data is already synced.", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+                    dismissProgressDialog();
                     handler.onComplete();
                     return;
                 }
@@ -81,21 +85,16 @@ public class GCOnlineDatabaseUtil {
                             GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.insertData(onlineSavedSet);
                         }
                     }
-                    //then sync local to online
-                    List<GCOnlineDBSavedSet> localSavedSets = new ArrayList<>();
-                    for (GCSavedSet savedSet : GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData()) {
-                        localSavedSets.add(convertSavedSetToOnlineDBSavedSet(savedSet));
-                    }
-                    getCurrentDatabaseReference()
-                            .child(USER_SAVED_SET_KEY)
-                            .child(userUID)
-                            .setValue(localSavedSets);
-
+                    reSynchronizeWithOnline(context, userUID);
                     syncCollections(context, userUID, handler);
                 } else {
                     //else, multiple differences exist
-                    //TODO: need implementation
-                    Toast.makeText(context, "Not implemented yet.", Toast.LENGTH_SHORT).show();
+                    dismissProgressDialog();
+                    Intent intent = new Intent(context, GCSyncConflictActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
+                    intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
+                    ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
                 }
             }
 
@@ -129,10 +128,22 @@ public class GCOnlineDatabaseUtil {
                 dbSavedSetsOnline.size() > dbSavedSetsLocal.size());
     }
 
-    private static void syncCollections(Context context, String userUID, CompletionHandler handler) {
+    public static void reSynchronizeWithOnline(Context context, String userUID) {
+        //then sync local to online
+        List<GCOnlineDBSavedSet> localSavedSets = new ArrayList<>();
+        for (GCSavedSet savedSet : GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData()) {
+            localSavedSets.add(convertSavedSetToOnlineDBSavedSet(savedSet));
+        }
+        getCurrentDatabaseReference()
+                .child(USER_SAVED_SET_KEY)
+                .child(userUID)
+                .setValue(localSavedSets);
+    }
+
+    public static void syncCollections(Context context, String userUID, CompletionHandler handler) {
         //TODO: complete this later
         Toast.makeText(context, "Data has been synced to your account.", Toast.LENGTH_SHORT).show();
-        progressDialog.dismiss();
+        dismissProgressDialog();
         handler.onComplete();
     }
 
@@ -145,5 +156,41 @@ public class GCOnlineDatabaseUtil {
         dbSavedSet.setChip(savedSet.getChipSet().getTitle());
         dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
         return dbSavedSet;
+    }
+
+    public static GCSavedSet convertToSavedSet(Context context, GCOnlineDBSavedSet dbSavedSet) {
+        GCSavedSet savedSet = new GCSavedSet();
+        savedSet.setId(dbSavedSet.getId());
+        savedSet.setTitle(dbSavedSet.getTitle());
+        savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(dbSavedSet.getColors()));
+        savedSet.setMode(GCModeUtil.getModeUsingTitle(context, dbSavedSet.getMode().toUpperCase()));
+        if (dbSavedSet.getCustom_colors() != null) {
+            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(dbSavedSet.getCustom_colors()));
+        } else {
+            ArrayList<int[]> customColors = new ArrayList<>();
+            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
+                customColors.add(new int[]{255, 255, 255});
+            }
+            savedSet.setCustomColors(customColors);
+        }
+        if (dbSavedSet.getChip() != null) {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(dbSavedSet.getChip().toUpperCase()));
+        } else {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+        }
+        return savedSet;
+    }
+
+    private static void showProgressDialog(Context context) {
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            progressDialog = ProgressDialog.show(context, "Online Sync",
+                    "Syncing...Please Wait...", true);
+        }
+    }
+
+    private static void dismissProgressDialog() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }

@@ -89,6 +89,12 @@
             android:label="@string/title_version_info"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".ui.activities.GCSyncConflictActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_sync_conflicts"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"

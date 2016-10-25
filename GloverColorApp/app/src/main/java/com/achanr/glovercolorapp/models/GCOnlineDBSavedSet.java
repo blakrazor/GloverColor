@@ -1,10 +1,12 @@
 package com.achanr.glovercolorapp.models;
 
+import java.io.Serializable;
+
 /**
  * @author Andrew Chanrasmi on 10/24/16
  */
 
-public class GCOnlineDBSavedSet {
+public class GCOnlineDBSavedSet implements Serializable {
 
     private int id;
     private String title;

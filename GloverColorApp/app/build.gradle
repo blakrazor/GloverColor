@@ -78,6 +78,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.6.1'
 
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.bignerdranch.android:recyclerview-multiselect:0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
