@@ -299,6 +299,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         int colorCount = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             String color = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+            color = color.substring(color.indexOf(". ") + 2);
             if (!color.equalsIgnoreCase(GCConstants.COLOR_BLANK)
                     && !color.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                 colorCount++;
@@ -1143,6 +1144,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             String colorEnum = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
+            colorEnum = colorEnum.substring(colorEnum.indexOf(". ") + 2);
             if (mSavedSet.getColors().size() > index) {
                 if (!colorEnum.equalsIgnoreCase(mSavedSet.getColors().get(index).getColor().getTitle())
                         || !colorSpinnerHolder.getPowerLevel().getTitle().equalsIgnoreCase(mSavedSet.getColors().get(index).getPowerLevel().getTitle())) {
@@ -1155,6 +1157,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         String modeEnum = (String) mModeSpinner.getSelectedItem();
+        modeEnum = modeEnum.substring(modeEnum.indexOf(". ") + 2);
         if (!modeEnum.equalsIgnoreCase(mSavedSet.getMode().getTitle())) {
             return true;
         }
