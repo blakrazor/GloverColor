@@ -30,11 +30,18 @@ import java.util.List;
 
 public class GCOnlineDatabaseUtil {
 
-    public interface CompletionHandler {
+    public interface OnCompletionHandler {
         void onComplete();
     }
 
+    public enum SyncStatus {
+        Unavailable,
+        Synced,
+        OutOfSync
+    }
+
     public static final int SYNC_CONFLICT_REQUEST_CODE = 7001;
+    public static SyncStatus CurrentSyncStatus = SyncStatus.Unavailable;
 
     private static DatabaseReference currentReference;
 
@@ -49,9 +56,9 @@ public class GCOnlineDatabaseUtil {
         return currentReference;
     }
 
-    public static void syncToOnline(Context context, CompletionHandler handler) {
+    public static void syncToOnline(Context context, OnCompletionHandler handler) {
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
-            showProgressDialog(context);
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             FirebaseUser user = GCAuthUtil.getCurrentUser();
             syncSavedSets(context, user.getUid(), handler);
         } else {
@@ -59,7 +66,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    private static void syncSavedSets(final Context context, final String userUID, final CompletionHandler handler) {
+    private static void syncSavedSets(final Context context, final String userUID, final OnCompletionHandler handler) {
 
         final List<GCSavedSet> savedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
         getCurrentDatabaseReference()
@@ -76,9 +83,7 @@ public class GCOnlineDatabaseUtil {
                         //Compare the local and only sets
                         Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
                         if (comparison.getA().isEmpty()) {
-                            Toast.makeText(context, R.string.data_already_synced, Toast.LENGTH_SHORT).show();
-                            dismissProgressDialog();
-                            if (handler != null) handler.onComplete();
+                            syncCompleted(context, handler);
                             return;
                         }
                         if (comparison.getB() || comparison.getC()) {
@@ -107,6 +112,8 @@ public class GCOnlineDatabaseUtil {
                         dismissProgressDialog();
                         Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
                         Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                        CurrentSyncStatus = SyncStatus.Unavailable;
+                        if (handler != null) handler.onComplete();
                     }
                 });
     }
@@ -141,8 +148,13 @@ public class GCOnlineDatabaseUtil {
                 .setValue(localSavedSets);
     }
 
-    public static void syncCollections(Context context, String userUID, CompletionHandler handler) {
+    public static void syncCollections(Context context, String userUID, OnCompletionHandler handler) {
         //TODO: complete this later
+        syncCompleted(context, handler);
+    }
+
+    private static void syncCompleted(Context context, OnCompletionHandler handler) {
+        CurrentSyncStatus = SyncStatus.Synced;
         Toast.makeText(context, R.string.data_synced_complete_message, Toast.LENGTH_SHORT).show();
         dismissProgressDialog();
         if (handler != null) handler.onComplete();
@@ -182,10 +194,9 @@ public class GCOnlineDatabaseUtil {
         return savedSet;
     }
 
-    private static void showProgressDialog(Context context) {
+    private static void showProgressDialog(Context context, String title, String message) {
         if (progressDialog == null || !progressDialog.isShowing()) {
-            progressDialog = ProgressDialog.show(context, context.getString(R.string.online_sync),
-                    context.getString(R.string.syncing_wait_message), true);
+            progressDialog = ProgressDialog.show(context, title, message, true);
         }
     }
 
@@ -197,7 +208,7 @@ public class GCOnlineDatabaseUtil {
 
     public static void addToOnlineDB(Context context, GCSavedSet savedSet) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
-            showProgressDialog(context);
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             String key = getCurrentDatabaseReference()
                     .child(USER_SAVED_SET_KEY)
                     .child(GCAuthUtil.getCurrentUser().getUid())
@@ -214,7 +225,7 @@ public class GCOnlineDatabaseUtil {
 
     public static void updateToOnlineDB(final Context context, final GCSavedSet savedSet) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
-            showProgressDialog(context);
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             getCurrentDatabaseReference()
                     .child(USER_SAVED_SET_KEY)
                     .child(GCAuthUtil.getCurrentUser().getUid())
@@ -244,6 +255,7 @@ public class GCOnlineDatabaseUtil {
                             dismissProgressDialog();
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "updateSet:onCancelled", databaseError.toException());
                             Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            CurrentSyncStatus = SyncStatus.Unavailable;
                         }
                     });
         }
@@ -251,7 +263,7 @@ public class GCOnlineDatabaseUtil {
 
     public static void deleteFromOnlineDB(final Context context, final int id) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && id >= 0) {
-            showProgressDialog(context);
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             getCurrentDatabaseReference()
                     .child(USER_SAVED_SET_KEY)
                     .child(GCAuthUtil.getCurrentUser().getUid())
@@ -281,6 +293,51 @@ public class GCOnlineDatabaseUtil {
                             dismissProgressDialog();
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "deleteSet:onCancelled", databaseError.toException());
                             Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            CurrentSyncStatus = SyncStatus.Unavailable;
+                        }
+                    });
+        }
+    }
+
+    public static void checkSyncStatus(final Context context, final OnCompletionHandler handler) {
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
+            if (handler != null) {
+                showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.checking_sync_status_message));
+            }
+            final List<GCSavedSet> savedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
+            getCurrentDatabaseReference()
+                    .child(USER_SAVED_SET_KEY)
+                    .child(GCAuthUtil.getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //Get all the online sets
+                            List<GCOnlineDBSavedSet> dbSavedSets = new ArrayList<>();
+                            for (DataSnapshot userSavedSets : dataSnapshot.getChildren()) {
+                                dbSavedSets.add(userSavedSets.getValue(GCOnlineDBSavedSet.class));
+                            }
+                            //Compare the local and only sets
+                            Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
+                            if (comparison.getA().isEmpty()) {
+                                CurrentSyncStatus = SyncStatus.Synced;
+                            } else {
+                                CurrentSyncStatus = SyncStatus.OutOfSync;
+                            }
+                            if (handler != null) {
+                                dismissProgressDialog();
+                                handler.onComplete();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "checkSyncStatus:onCancelled", databaseError.toException());
+                            Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            CurrentSyncStatus = SyncStatus.Unavailable;
+                            if (handler != null) {
+                                dismissProgressDialog();
+                                handler.onComplete();
+                            }
                         }
                     });
         }
