@@ -98,10 +98,19 @@
     <string name="confirm">Confirm</string>
     <string name="sync_conflicts">Sync Conflicts</string>
     <string name="resolving_conflicts_message">Resolving conflicts...Please Wait...</string>
-    <string name="please_login_first">Please login first to save data online.</string>
-    <string name="data_already_synced">Data is already synced.</string>
-    <string name="something_went_wrong">Something went wrong Try again later.</string>
-    <string name="data_synced_complete_message">Data has been synced to your account.</string>
+    <string name="please_login_first">Please login first to save data online</string>
+    <string name="data_already_synced">Data is already synced</string>
+    <string name="something_went_wrong">Something went wrong Try again later</string>
+    <string name="data_synced_complete_message">Data has been synced to your account</string>
     <string name="online_sync">Online Sync</string>
     <string name="syncing_wait_message">Syncing...Please Wait...</string>
+    <string name="checking_sync_status_message">Checking Sync Status...Please Wait...</string>
+    <string name="title_nav_account">Account</string>
+    <string name="nav_synchronize">Synchronize</string>
+    <string name="logged_in_as">Logged in as:</string>
+    <string name="sync_status">Sync Status:</string>
+    <string name="sync_status_unavailable">Unavailable</string>
+    <string name="sync_status_out_of_sync">Out of Sync</string>
+    <string name="sync_status_synced">Synced</string>
+    <string name="sync_cancelled">Sync cancelled</string>
 </resources>

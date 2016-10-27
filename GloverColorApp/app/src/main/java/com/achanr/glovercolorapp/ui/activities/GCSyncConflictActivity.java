@@ -159,7 +159,7 @@ public class GCSyncConflictActivity extends GCBaseActivity {
         }
 
         GCOnlineDatabaseUtil.reSynchronizeWithOnline(this, GCAuthUtil.getCurrentUser().getUid());
-        GCOnlineDatabaseUtil.syncCollections(this, GCAuthUtil.getCurrentUser().getUid(), new GCOnlineDatabaseUtil.CompletionHandler() {
+        GCOnlineDatabaseUtil.syncCollections(this, GCAuthUtil.getCurrentUser().getUid(), new GCOnlineDatabaseUtil.OnCompletionHandler() {
             @Override
             public void onComplete() {
                 mProgressDialog.dismiss();

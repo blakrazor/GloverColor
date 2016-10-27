@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +33,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-
-import java.util.Locale;
 
 import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
@@ -51,6 +50,13 @@ public class GCBaseActivity extends AppCompatActivity
     Toolbar mToolbar;
     private static int mPosition;
     private NavigationView mNavigationView;
+    private TextView mPleaseLoginTextview;
+    private LinearLayout mSyncStatusLayout;
+    private LinearLayout mTaglineLayout;
+    private LinearLayout mAccountInfoLayout;
+    private TextView mUsernameTextView;
+    private TextView mSyncStatusTextView;
+    private ImageView mProfilePictureImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +66,32 @@ public class GCBaseActivity extends AppCompatActivity
         mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mPleaseLoginTextview = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.please_login_textview);
+        mAccountInfoLayout = (LinearLayout) mNavigationView.getHeaderView(0).findViewById(R.id.account_information_layout);
+        mSyncStatusLayout = (LinearLayout) mNavigationView.getHeaderView(0).findViewById(R.id.navigation_header_sync_status_layout);
+        mTaglineLayout = (LinearLayout) mNavigationView.getHeaderView(0).findViewById(R.id.navigation_header_tag_layout);
+        mUsernameTextView = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.current_user_textview);
+        mSyncStatusTextView = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.sync_status_textview);
+        mProfilePictureImageView = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.imageView);
+
         mNavigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (GCAuthUtil.isCurrentUserLoggedIn()) {
-                    //Logged in
-                    //TODO: test method to sync, remove later
-                    GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.CompletionHandler() {
-                        @Override
-                        public void onComplete() {
-                            refreshListViews();
-                        }
-                    });
-                } else {
+                if (!GCAuthUtil.isCurrentUserLoggedIn()) {
                     //Currently not logged in, so log in
                     GCAuthUtil.startLoginActivity(GCBaseActivity.this);
+                } else {
+                    //User is logged in
+                    if (GCOnlineDatabaseUtil.CurrentSyncStatus == GCOnlineDatabaseUtil.SyncStatus.OutOfSync) {
+                        //Out of sync
+                        GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                            @Override
+                            public void onComplete() {
+                                updateUIAfterSync();
+                                updateSyncStatus();
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -94,8 +111,13 @@ public class GCBaseActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 // user is signed in!
-                updateLoginView();
-                Toast.makeText(GCBaseActivity.this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+                GCOnlineDatabaseUtil.checkSyncStatus(this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                    @Override
+                    public void onComplete() {
+                        updateLoginView();
+                        Toast.makeText(GCBaseActivity.this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 // user is not signed in. Maybe just wait for the user to press
                 // "sign in" again, or show a message
@@ -103,9 +125,9 @@ public class GCBaseActivity extends AppCompatActivity
             }
         } else if (requestCode == GCOnlineDatabaseUtil.SYNC_CONFLICT_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                refreshListViews();
+                updateUIAfterSync();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(GCBaseActivity.this, "Sync cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GCBaseActivity.this, R.string.sync_cancelled, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -126,8 +148,14 @@ public class GCBaseActivity extends AppCompatActivity
         setCustomTitle(title);
 
         ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(mToggle);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                super.onDrawerStateChanged(newState);
+                updateSyncStatus();
+            }
+        };
+        mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -167,6 +195,16 @@ public class GCBaseActivity extends AppCompatActivity
 
         if (id == R.id.nav_login_logout) {
             loginOrLogout();
+            return true;
+        }
+        if (id == R.id.nav_sync) {
+            GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                @Override
+                public void onComplete() {
+                    updateUIAfterSync();
+                    updateSyncStatus();
+                }
+            });
             return true;
         }
 
@@ -289,14 +327,18 @@ public class GCBaseActivity extends AppCompatActivity
 
     private void updateLoginView() {
         Menu navMenu = mNavigationView.getMenu();
-        TextView textView = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.current_user_textview);
-        ImageView imageView = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.imageView);
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
             //User currently logged in
+            mPleaseLoginTextview.setVisibility(View.GONE);
+            mTaglineLayout.setVisibility(View.GONE);
+            mSyncStatusLayout.setVisibility(View.VISIBLE);
+            mAccountInfoLayout.setVisibility(View.VISIBLE);
             navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
+            navMenu.findItem(R.id.nav_sync).setVisible(true);
+
             FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
             if (currentUser.getPhotoUrl() != null) {
-                Picasso.with(this).load(currentUser.getPhotoUrl()).into(imageView);
+                Picasso.with(this).load(currentUser.getPhotoUrl()).into(mProfilePictureImageView);
             }
             String username = "N/A";
             if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
@@ -304,32 +346,56 @@ public class GCBaseActivity extends AppCompatActivity
             } else if (currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
                 username = currentUser.getEmail();
             }
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "Logged in as:\n%s",
-                    username));
+            mUsernameTextView.setText(username);
+            updateSyncStatus();
         } else {
             //User is not logged in
-            textView.setText(getString(R.string.currently_not_logged_in));
-            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.glover_color_logo));
+            mPleaseLoginTextview.setVisibility(View.VISIBLE);
+            mTaglineLayout.setVisibility(View.VISIBLE);
+            mSyncStatusLayout.setVisibility(View.GONE);
+            mAccountInfoLayout.setVisibility(View.GONE);
+            mProfilePictureImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.glover_color_logo));
             navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
+            navMenu.findItem(R.id.nav_sync).setVisible(false);
         }
     }
 
-    private void refreshListViews() {
-        if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
-            ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
-        } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
-            ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
+    private void updateSyncStatus() {
+        switch (GCOnlineDatabaseUtil.CurrentSyncStatus) {
+            case Unavailable:
+                mSyncStatusTextView.setText(R.string.sync_status_unavailable);
+                break;
+            case OutOfSync:
+                mSyncStatusTextView.setText(R.string.sync_status_out_of_sync);
+                break;
+            case Synced:
+                mSyncStatusTextView.setText(R.string.sync_status_synced);
+                break;
         }
+    }
+
+    private void updateUIAfterSync() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateSyncStatus();
+                if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
+                    ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
+                } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
+                    ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
+                }
+            }
+        });
     }
 
     private void checkForDrawerSwipe() {
-        if (this instanceof GCSettingsActivity
-                || this instanceof GCSyncConflictActivity) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        } else {
+        if (this instanceof GCHomeActivity
+                || this instanceof GCSavedSetListActivity
+                || this instanceof GCCollectionsActivity
+                || this instanceof GCEnterCodeActivity) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 }
