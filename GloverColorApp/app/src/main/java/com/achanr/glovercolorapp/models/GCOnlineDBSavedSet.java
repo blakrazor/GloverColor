@@ -10,6 +10,7 @@ public class GCOnlineDBSavedSet implements Serializable {
 
     private int id;
     private String title;
+    private String description;
     private String colors;
     private String mode;
     private String chip;
@@ -32,6 +33,14 @@ public class GCOnlineDBSavedSet implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getColors() {
