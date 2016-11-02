@@ -129,12 +129,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        getSavedSetListFromDatabase();
-
-        /*if (mSavedSetList != null && mSavedSetList.size() > 0) {
-            findViewById(R.id.icon_background).setVisibility(View.GONE);
-        }*/
-
         mSavedSetListRecyclerView = (GridRecyclerView) findViewById(R.id.saved_set_list_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -159,14 +153,21 @@ public class GCSavedSetListActivity extends GCBaseActivity {
             }
         });
 
-        setupSavedSetList();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
             mFab.setBackground(getDrawable(R.drawable.fab_ripple));
         } else {
             mFab.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setPosition(R.id.nav_saved_color_sets);
+
+        getSavedSetListFromDatabase();
+        setupSavedSetList();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -197,12 +198,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 mFab.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setPosition(R.id.nav_saved_color_sets);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false)) {
@@ -410,7 +405,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         int position = mSavedSetList.indexOf(oldSet);
         mSavedSetList.set(position, newSet);
         Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
-        GCOnlineDatabaseUtil.updateToOnlineDB(this, GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
+        GCOnlineDatabaseUtil.updateToOnlineDB(this, newSet);
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
