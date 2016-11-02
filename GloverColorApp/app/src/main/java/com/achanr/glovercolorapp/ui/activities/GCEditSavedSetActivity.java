@@ -77,7 +77,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private Context mContext;
     private GCSavedSet mSavedSet;
     private EditText mTitleEditText;
-    //private TextView mTitleTextView;
+    private EditText mDescriptionEditText;
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
     private Spinner mChipSetSpinner;
@@ -96,6 +96,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     public static final String FROM_NAVIGATION = "from_navigation";
 
     private static final int MAX_TITLE_LENGTH = 100;
+    private static final int MAX_DESC_LENGTH = 500;
 
     private interface CustomColorCallback {
         void valueChanged();
@@ -113,35 +114,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return null;
         }
     };
-
-
-
-    /*new InputFilter() {
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-
-            if (source instanceof SpannableStringBuilder) {
-                SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder) source;
-                for (int i = end - 1; i >= start; i--) {
-                    char currentChar = source.charAt(i);
-                    if (!Character.isLetterOrDigit(currentChar) && !Character.isSpaceChar(currentChar)) {
-                        sourceAsSpannableBuilder.delete(i, i + 1);
-                    }
-                }
-                return source;
-            } else {
-                StringBuilder filteredStringBuilder = new StringBuilder();
-                for (int i = start; i < end; i++) {
-                    char currentChar = source.charAt(i);
-                    if (Character.isLetterOrDigit(currentChar) || Character.isSpaceChar(currentChar)) {
-                        filteredStringBuilder.append(currentChar);
-                    }
-                }
-                return filteredStringBuilder.toString();
-            }
-        }
-    };*/
 
     private class ColorSpinnerHolder {
         private final LinearLayout mColorLayout;
@@ -219,6 +191,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         //mTitleTextView = (TextView) findViewById(R.id.text_view_title);
         mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
+        mDescriptionEditText = (EditText) findViewById(R.id.edit_text_description);
         mModeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         mChipSetSpinner = (Spinner) findViewById(R.id.chip_preset_spinner);
         //mMoreColorsButton = (Button) findViewById(R.id.more_colors_button);
@@ -293,6 +266,12 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return false;
         } else if (newTitle.length() > MAX_TITLE_LENGTH) {
             showErrorDialog(String.format(mContext.getString(R.string.error_title_length), MAX_TITLE_LENGTH));
+            return false;
+        }
+
+        String newDesc = mDescriptionEditText.getText().toString().trim();
+        if (newDesc.length() > MAX_DESC_LENGTH) {
+            showErrorDialog(String.format(getString(R.string.error_desc_length), MAX_DESC_LENGTH));
             return false;
         }
 
@@ -525,13 +504,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         if (colorList.size() > GCConstants.HALF_COLORS) {
             findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
         }
-        /*if (colorList.size() > GCConstants.HALF_COLORS) {
-            isMoreColorsVisible = true;
-            showMoreColors(true);
-        } else {
-            isMoreColorsVisible = false;
-            showMoreColors(false);
-        }*/
         GCMode mode = mSavedSet.getMode();
         ArrayList<int[]> customColorArray = mSavedSet.getCustomColors();
         mCustomColorArrayList = new ArrayList<>();
@@ -540,8 +512,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         mTitleEditText.setText(title);
-        //mTitleTextView.setText(title);
-        //showTitleEditText(false);
+        mDescriptionEditText.setText(mSavedSet.getDescription());
 
         int spinnerIndex = 0;
         ArrayList<String> colors = mChipSet.getColors();
@@ -600,7 +571,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void fillDefaultData() {
         mTitleEditText.setText("");
-        //showTitleEditText(true);
+        mDescriptionEditText.setText("");
 
         ArrayList<String> colors = mChipSet.getColors();
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
@@ -619,8 +590,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         }
 
         mModeSpinner.setSelection(0);
-        /*isMoreColorsVisible = false;
-        showMoreColors(false);*/
     }
 
 
@@ -635,7 +604,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             colorSpinnerHolder.getColorSwatchTextView().setOnClickListener(mColorSwatchClickListener);
         }
 
-        mTitleEditText.addTextChangedListener(new TextWatcher() {
+        TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -650,36 +619,31 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             public void afterTextChanged(Editable s) {
                 checkForChanges();
             }
-        });
-        mTitleEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        };
+        TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //mTitleTextView.setText(mTitleEditText.getText().toString().trim());
-                    //showTitleEditText(false);
                     GCUtil.hideKeyboard(GCEditSavedSetActivity.this, v);
                     return true;
                 }
                 return false;
             }
-        });
-
-        mTitleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        };
+        View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     GCUtil.hideKeyboard(GCEditSavedSetActivity.this, v);
                 }
             }
-        });
-
-        /*mTitleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTitleEditText(true);
-                mTitleEditText.requestFocus();
-            }
-        });*/
+        };
+        mTitleEditText.addTextChangedListener(textWatcher);
+        mTitleEditText.setOnEditorActionListener(onEditorActionListener);
+        mTitleEditText.setOnFocusChangeListener(onFocusChangeListener);
+        mDescriptionEditText.addTextChangedListener(textWatcher);
+        mDescriptionEditText.setOnEditorActionListener(onEditorActionListener);
+        mDescriptionEditText.setOnFocusChangeListener(onFocusChangeListener);
 
         mModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -692,41 +656,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
             }
         });
-
-        /*mMoreColorsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isMoreColorsVisible) {
-                    showMoreColors(false);
-                    isMoreColorsVisible = false;
-                } else {
-                    showMoreColors(true);
-                    isMoreColorsVisible = true;
-                }
-            }
-        });*/
     }
-    /*private void showMoreColors(boolean shouldShow) {
-        if (shouldShow) {
-            findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
-            findViewById(R.id.more_colors_spinners).setVisibility(View.VISIBLE);
-            mMoreColorsButton.setText(R.string.show_less_colors);
-        } else {
-            ArrayList<String> colors = mChipSet.getColors();
-            int colorIndex = 0;
-            for (String colorItem : colors) {
-                if (colorItem.equalsIgnoreCase(GCConstants.COLOR_NONE)) {
-                    mColorSpinnerHolders.get(GCConstants.HALF_COLORS).getColorSpinner().setSelection(colorIndex);
-                    break;
-                } else {
-                    colorIndex++;
-                }
-            }
-            findViewById(R.id.more_color_swatch_layout).setVisibility(View.GONE);
-            findViewById(R.id.more_colors_spinners).setVisibility(View.GONE);
-            mMoreColorsButton.setText(R.string.show_more_colors);
-        }
-    }*/
 
 
     private final AdapterView.OnItemSelectedListener mColorSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -884,6 +814,8 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return;
         }
 
+        String newDescription = mDescriptionEditText.getText().toString().trim();
+
         ArrayList<GCPoweredColor> newColorList = getNewColorList();
 
         ArrayList<String> modes = mChipSet.getModes();
@@ -903,6 +835,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
         GCSavedSet mNewSet = new GCSavedSet();
         mNewSet.setTitle(newTitle);
+        mNewSet.setDescription(newDescription);
         mNewSet.setColors(newColorList);
         mNewSet.setMode(newMode);
         mNewSet.setChipSet(mChipSet);
@@ -1142,6 +1075,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             return true;
         }
 
+        if (!mDescriptionEditText.getText().toString().trim().equals(mSavedSet.getDescription())) {
+            return true;
+        }
+
         int index = 0;
         for (ColorSpinnerHolder colorSpinnerHolder : mColorSpinnerHolders) {
             String colorEnum = (String) colorSpinnerHolder.getColorSpinner().getSelectedItem();
@@ -1365,16 +1302,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             finishActivityTransition(RESULT_CANCELED, null);
         }
     }
-
-    /*private void showTitleEditText(boolean willShow) {
-        if (willShow) {
-            mTitleEditText.setVisibility(View.VISIBLE);
-            mTitleTextView.setVisibility(View.GONE);
-        } else {
-            mTitleTextView.setVisibility(View.VISIBLE);
-            mTitleEditText.setVisibility(View.GONE);
-        }
-    }*/
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void fadeBackgroundColor(boolean isReverse) {

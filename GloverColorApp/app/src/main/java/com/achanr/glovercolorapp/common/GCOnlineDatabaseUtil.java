@@ -164,6 +164,7 @@ public class GCOnlineDatabaseUtil {
         GCOnlineDBSavedSet dbSavedSet = new GCOnlineDBSavedSet();
         dbSavedSet.setId(savedSet.getId());
         dbSavedSet.setTitle(savedSet.getTitle());
+        dbSavedSet.setDescription(savedSet.getDescription());
         dbSavedSet.setColors(GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
         dbSavedSet.setMode(savedSet.getMode().getTitle());
         dbSavedSet.setChip(savedSet.getChipSet().getTitle());
@@ -175,6 +176,7 @@ public class GCOnlineDatabaseUtil {
         GCSavedSet savedSet = new GCSavedSet();
         savedSet.setId(dbSavedSet.getId());
         savedSet.setTitle(dbSavedSet.getTitle());
+        savedSet.setDescription(dbSavedSet.getDescription());
         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(dbSavedSet.getColors()));
         savedSet.setMode(GCModeUtil.getModeUsingTitle(context, dbSavedSet.getMode().toUpperCase()));
         if (dbSavedSet.getCustom_colors() != null) {
