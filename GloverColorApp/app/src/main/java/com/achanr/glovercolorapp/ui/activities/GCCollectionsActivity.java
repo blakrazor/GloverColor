@@ -125,8 +125,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
         getLayoutInflater().inflate(R.layout.activity_collections, mFrameLayout);
         setupToolbar(getString(R.string.title_collections));
 
-        getCollectionListFromDatabase();
-
         mCollectionsListRecyclerView = (GridRecyclerView) findViewById(R.id.collections_recyclerview);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -151,8 +149,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
             }
         });
 
-        setupSavedSetList();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCollectionsListRecyclerView.setVisibility(View.INVISIBLE);
             mFab.setBackground(getDrawable(R.drawable.fab_ripple));
@@ -165,6 +161,9 @@ public class GCCollectionsActivity extends GCBaseActivity {
     protected void onResume() {
         super.onResume();
         setPosition(R.id.nav_collections);
+
+        getCollectionListFromDatabase();
+        setupSavedSetList();
 
         if (!fromActivityResult) {
             getCollectionListFromDatabase();
