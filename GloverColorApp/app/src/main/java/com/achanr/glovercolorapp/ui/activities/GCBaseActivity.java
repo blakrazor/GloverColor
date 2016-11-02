@@ -150,8 +150,9 @@ public class GCBaseActivity extends AppCompatActivity
         ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
-            public void onDrawerStateChanged(int newState) {
-                super.onDrawerStateChanged(newState);
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                GCOnlineDatabaseUtil.checkSyncStatus(GCBaseActivity.this, null);
                 updateSyncStatus();
             }
         };

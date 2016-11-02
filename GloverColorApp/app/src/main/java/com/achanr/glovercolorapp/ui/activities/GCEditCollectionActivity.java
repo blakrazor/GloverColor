@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCCollection;
@@ -244,6 +245,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         mSetsListRecyclerView.setLayoutManager(mSetsListLayoutManager);
         mSetsListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mSetsListListAdapter = new GCSavedSetListAdapter(this, mSetsList);
+        mSetsListListAdapter.sortList();
         mSetsListRecyclerView.setAdapter(mSetsListListAdapter);
     }
 
@@ -690,9 +692,15 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSetsListListAdapter.update(oldSet, newSet);
-        int position = mSetsList.indexOf(oldSet);
-        mSetsList.set(position, newSet);
+        int counter = 0;
+        for (GCSavedSet savedSet : mSetsList) {
+            if (savedSet.getId() == oldSet.getId()) {
+                mSetsList.set(counter, newSet);
+            }
+            counter++;
+        }
         Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.updateToOnlineDB(this, newSet);
     }
 
     public void onSetRemoved(GCSavedSet savedSet) {

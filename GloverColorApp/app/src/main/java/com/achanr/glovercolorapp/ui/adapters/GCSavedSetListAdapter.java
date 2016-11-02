@@ -43,9 +43,20 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     }
 
     public void update(GCSavedSet oldSet, GCSavedSet newSet) {
-        int position = mSavedSetList.indexOf(oldSet);
-        mSavedSetList.set(position, newSet);
-        notifyItemChanged(position);
+        if (mContext instanceof GCEditCollectionActivity) {
+            int counter = 0;
+            for (GCSavedSet savedSet : mSavedSetList) {
+                if (savedSet.getId() == oldSet.getId()) {
+                    mSavedSetList.set(counter, newSet);
+                    notifyItemChanged(counter);
+                }
+                counter++;
+            }
+        } else {
+            int position = mSavedSetList.indexOf(oldSet);
+            mSavedSetList.set(position, newSet);
+            notifyItemChanged(position);
+        }
     }
 
     public void remove(GCSavedSet savedSet) {
@@ -138,8 +149,6 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
     }
 
     public void sortList() {
-        if (!(mContext instanceof GCEditCollectionActivity)) {
-            mSavedSetList = GCUtil.sortList(mContext, mSavedSetList);
-        }
+        mSavedSetList = GCUtil.sortList(mContext, mSavedSetList);
     }
 }

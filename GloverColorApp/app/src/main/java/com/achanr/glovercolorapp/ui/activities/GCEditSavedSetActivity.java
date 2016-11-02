@@ -913,6 +913,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
             finishActivityTransition(RESULT_OK, resultIntent);
         } else {
+            mNewSet.setId(mSavedSet.getId());
             Intent resultIntent = new Intent();
             resultIntent.putExtra(GCSavedSetListActivity.OLD_SET_KEY, mSavedSet);
             resultIntent.putExtra(GCSavedSetListActivity.NEW_SET_KEY, mNewSet);
