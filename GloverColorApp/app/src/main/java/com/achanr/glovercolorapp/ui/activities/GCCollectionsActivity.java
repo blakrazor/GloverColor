@@ -250,7 +250,9 @@ public class GCCollectionsActivity extends GCBaseActivity {
         final List<GCCollection> filteredModelList = new ArrayList<>();
         for (GCCollection model : models) {
             final String text = model.getTitle().toLowerCase();
-            if (text.contains(query)) {
+            final String description = model.getDescription().toLowerCase();
+            if (text.contains(query)
+                    || description.contains(query)) {
                 filteredModelList.add(model);
             }
         }
