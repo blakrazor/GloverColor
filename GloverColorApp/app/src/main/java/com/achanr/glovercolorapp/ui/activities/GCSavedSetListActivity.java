@@ -276,7 +276,13 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         final List<GCSavedSet> filteredModelList = new ArrayList<>();
         for (GCSavedSet model : models) {
             final String text = model.getTitle().toLowerCase();
-            if (text.contains(query)) {
+            final String mode = model.getMode().getTitle().toLowerCase();
+            final String chip = model.getChipSet().getTitle().toLowerCase();
+            final String description = model.getDescription().toLowerCase();
+            if (text.contains(query)
+                    || mode.contains(query)
+                    || chip.contains(query)
+                    || description.contains(query)) {
                 filteredModelList.add(model);
             }
         }
@@ -424,7 +430,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetList.add(mSavedSetList.size(), newSet);
         mSavedSetList = GCUtil.sortList(this, mSavedSetList);
         Toast.makeText(this, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
-        GCOnlineDatabaseUtil.addToOnlineDB(this,  GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
+        GCOnlineDatabaseUtil.addToOnlineDB(this, GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
     }
 
     private void sort() {
