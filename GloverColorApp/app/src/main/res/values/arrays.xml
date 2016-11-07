@@ -4,12 +4,14 @@
         <item>1.1</item>
         <item>1.2</item>
         <item>1.3</item>
+        <item>2.0</item>
     </string-array>
 
     <string-array name="version_info_array">
         <item>@string/whats_new_in_version_1.1</item>
         <item>@string/whats_new_in_version_1.2</item>
         <item>@string/whats_new_in_version_1.3</item>
+        <item>@string/whats_new_in_version_2.0</item>
     </string-array>
 
     <string-array name="themes">

@@ -27,4 +27,11 @@
         \n\u2022 Added numbers to colors and patterns
         \n\u2022 Added Flow V2 chip
     </string>
+    <string name="whats_new_in_version_2.0">
+        \n\u2022 Performance Optimizations
+        \n\u2022 Login using Facebook/Google/Email
+        \n\u2022 Save/Synchronize sets with online database
+        \n\u2022 Improved Facebook sharing
+        \n\u2022 Added description field to sets
+    </string>
 </resources>
