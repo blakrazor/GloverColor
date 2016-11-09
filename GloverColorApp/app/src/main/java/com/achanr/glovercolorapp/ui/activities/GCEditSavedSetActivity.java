@@ -788,7 +788,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void saveSet() {
         String newTitle = mTitleEditText.getText().toString().trim();
-        if (validateTitleAgainstDatabase(newTitle) && isNewSet) {
+        if (isNewSet ? validateTitleAgainstDatabase(newTitle) : validateTitleAgainstDatabase(newTitle) && !newTitle.equals(mSavedSet.getTitle())) {
             showErrorDialog(mContext.getString(R.string.error_title_exists));
             return;
         }
@@ -862,13 +862,15 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     }
 
     private boolean validateTitleAgainstDatabase(String title) {
+        boolean doesExist = false;
         ArrayList<GCSavedSet> savedSetList = GCDatabaseHelper.getInstance(mContext).SAVED_SET_DATABASE.getAllData();
         for (GCSavedSet savedSet : savedSetList) {
             if (savedSet.getTitle().equals(title)) {
-                return true;
+                doesExist = true;
+                break;
             }
         }
-        return false;
+        return doesExist;
     }
 
     private void showSaveDialog(String title, String body) {
