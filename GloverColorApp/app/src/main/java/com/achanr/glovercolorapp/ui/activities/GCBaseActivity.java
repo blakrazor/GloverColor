@@ -67,7 +67,6 @@ public abstract class GCBaseActivity extends AppCompatActivity
         setContentView(R.layout.navigation_drawer_layout);
         ButterKnife.bind(this);
         setupNavDrawerHeader();
-        updateLoginView();
         checkForDrawerSwipe();
         setupContentLayout();
     }
@@ -75,6 +74,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        updateLoginView();
         checkIfThemeCorrect();
     }
 
