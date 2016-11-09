@@ -42,6 +42,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -61,6 +62,9 @@ import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPowerLevel;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.viewHolders.GCColorSpinnerViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCColorSwatchViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCEditSavedSetViewHolder;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -81,6 +85,10 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     private ArrayList<ColorSpinnerHolder> mColorSpinnerHolders;
     private Spinner mModeSpinner;
     private Spinner mChipSetSpinner;
+    private ScrollView mEditSetLayout;
+    private LinearLayout mMoreColorSwatchLayout;
+    private LinearLayout mColorSwatchLayout;
+    private LinearLayout mColorLayout;
     private boolean madeChanges = false;
     private GCChip mChipSet;
     private ArrayList<int[]> mCustomColorArrayList;
@@ -122,7 +130,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         private final TextView mColorSwatchTextView;
         private String mPowerLevel;
 
-        public ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
+        ColorSpinnerHolder(LinearLayout colorLayout, Spinner colorSpinner, RelativeLayout colorSwatch, TextView colorSwatchTextView) {
             mColorLayout = colorLayout;
             mColorSpinner = colorSpinner;
             mColorSwatch = colorSwatch;
@@ -130,29 +138,43 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             mPowerLevel = GCConstants.POWER_LEVEL_HIGH_TITLE;
         }
 
-        public LinearLayout getColorLayout() {
+        LinearLayout getColorLayout() {
             return mColorLayout;
         }
 
-        public Spinner getColorSpinner() {
+        Spinner getColorSpinner() {
             return mColorSpinner;
         }
 
-        public RelativeLayout getColorSwatch() {
+        RelativeLayout getColorSwatch() {
             return mColorSwatch;
         }
 
-        public TextView getColorSwatchTextView() {
+        TextView getColorSwatchTextView() {
             return mColorSwatchTextView;
         }
 
-        public GCPowerLevel getPowerLevel() {
+        GCPowerLevel getPowerLevel() {
             return GCPowerLevelUtil.getPowerLevelUsingTitle(mPowerLevel);
         }
 
-        public void setPowerLevel(String powerLevel) {
+        void setPowerLevel(String powerLevel) {
             mPowerLevel = powerLevel;
         }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_edit_saved_set, mFrameLayout);
+        GCEditSavedSetViewHolder viewHolder = new GCEditSavedSetViewHolder(view);
+        mTitleEditText = viewHolder.getTitleEditText();
+        mDescriptionEditText = viewHolder.getDescriptionEditText();
+        mModeSpinner = viewHolder.getModeSpinner();
+        mChipSetSpinner = viewHolder.getChipSetSpinner();
+        mEditSetLayout = viewHolder.getEditSetLayout();
+        mMoreColorSwatchLayout = viewHolder.getMoreColorSwatchLayout();
+        mColorLayout = viewHolder.getColorLayout();
+        mColorSwatchLayout = viewHolder.getColorSwatchLayout();
     }
 
     @Override
@@ -167,7 +189,6 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_edit_saved_set, mFrameLayout);
         mContext = this;
         setupToolbar(getString(R.string.title_edit_set));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -188,13 +209,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             }
         }
 
-        //mTitleTextView = (TextView) findViewById(R.id.text_view_title);
-        mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
-        mDescriptionEditText = (EditText) findViewById(R.id.edit_text_description);
-        mModeSpinner = (Spinner) findViewById(R.id.mode_spinner);
-        mChipSetSpinner = (Spinner) findViewById(R.id.chip_preset_spinner);
-        //mMoreColorsButton = (Button) findViewById(R.id.more_colors_button);
         mCustomColorArrayList = new ArrayList<>();
         for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
             mCustomColorArrayList.add(new int[]{255, 255, 255});
@@ -294,70 +309,34 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     private void setupColorSpinnerHolders() {
         mColorSpinnerHolders = new ArrayList<>();
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_1_layout),
-                (Spinner) findViewById(R.id.spinner_color_1),
-                (RelativeLayout) findViewById(R.id.color_swatch_1),
-                (TextView) findViewById(R.id.color_swatch_1_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_2_layout),
-                (Spinner) findViewById(R.id.spinner_color_2),
-                (RelativeLayout) findViewById(R.id.color_swatch_2),
-                (TextView) findViewById(R.id.color_swatch_2_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_3_layout),
-                (Spinner) findViewById(R.id.spinner_color_3),
-                (RelativeLayout) findViewById(R.id.color_swatch_3),
-                (TextView) findViewById(R.id.color_swatch_3_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_4_layout),
-                (Spinner) findViewById(R.id.spinner_color_4),
-                (RelativeLayout) findViewById(R.id.color_swatch_4),
-                (TextView) findViewById(R.id.color_swatch_4_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_5_layout),
-                (Spinner) findViewById(R.id.spinner_color_5),
-                (RelativeLayout) findViewById(R.id.color_swatch_5),
-                (TextView) findViewById(R.id.color_swatch_5_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_6_layout),
-                (Spinner) findViewById(R.id.spinner_color_6),
-                (RelativeLayout) findViewById(R.id.color_swatch_6),
-                (TextView) findViewById(R.id.color_swatch_6_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_7_layout),
-                (Spinner) findViewById(R.id.spinner_color_7),
-                (RelativeLayout) findViewById(R.id.color_swatch_7),
-                (TextView) findViewById(R.id.color_swatch_7_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_8_layout),
-                (Spinner) findViewById(R.id.spinner_color_8),
-                (RelativeLayout) findViewById(R.id.color_swatch_8),
-                (TextView) findViewById(R.id.color_swatch_8_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_9_layout),
-                (Spinner) findViewById(R.id.spinner_color_9),
-                (RelativeLayout) findViewById(R.id.color_swatch_9),
-                (TextView) findViewById(R.id.color_swatch_9_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_10_layout),
-                (Spinner) findViewById(R.id.spinner_color_10),
-                (RelativeLayout) findViewById(R.id.color_swatch_10),
-                (TextView) findViewById(R.id.color_swatch_10_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_11_layout),
-                (Spinner) findViewById(R.id.spinner_color_11),
-                (RelativeLayout) findViewById(R.id.color_swatch_11),
-                (TextView) findViewById(R.id.color_swatch_11_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_12_layout),
-                (Spinner) findViewById(R.id.spinner_color_12),
-                (RelativeLayout) findViewById(R.id.color_swatch_12),
-                (TextView) findViewById(R.id.color_swatch_12_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_13_layout),
-                (Spinner) findViewById(R.id.spinner_color_13),
-                (RelativeLayout) findViewById(R.id.color_swatch_13),
-                (TextView) findViewById(R.id.color_swatch_13_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_14_layout),
-                (Spinner) findViewById(R.id.spinner_color_14),
-                (RelativeLayout) findViewById(R.id.color_swatch_14),
-                (TextView) findViewById(R.id.color_swatch_14_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_15_layout),
-                (Spinner) findViewById(R.id.spinner_color_15),
-                (RelativeLayout) findViewById(R.id.color_swatch_15),
-                (TextView) findViewById(R.id.color_swatch_15_textview)));
-        mColorSpinnerHolders.add(new ColorSpinnerHolder((LinearLayout) findViewById(R.id.color_16_layout),
-                (Spinner) findViewById(R.id.spinner_color_16),
-                (RelativeLayout) findViewById(R.id.color_swatch_16),
-                (TextView) findViewById(R.id.color_swatch_16_textview)));
+        String[] colorSubtitleArray = getResources().getStringArray(R.array.color_subtitles);
+        for (int i = 0; i < 8; i++) {
+            View spinnerView = getLayoutInflater().inflate(R.layout.row_item_color_spinner, mColorLayout, false);
+            View colorSwatchViewOne = getLayoutInflater().inflate(R.layout.row_item_color_swatch, i < 4 ? mColorSwatchLayout : mMoreColorSwatchLayout, false);
+            View colorSwatchViewTwo = getLayoutInflater().inflate(R.layout.row_item_color_swatch, i < 4 ? mColorSwatchLayout : mMoreColorSwatchLayout, false);
+
+            GCColorSpinnerViewHolder spinnerViewHolder = new GCColorSpinnerViewHolder(spinnerView, colorSubtitleArray[i * 2], colorSubtitleArray[i * 2 + 1]);
+            GCColorSwatchViewHolder swatchViewHolderOne = new GCColorSwatchViewHolder(colorSwatchViewOne);
+            GCColorSwatchViewHolder swatchViewHolderTwo = new GCColorSwatchViewHolder(colorSwatchViewTwo);
+
+            mColorLayout.addView(spinnerView);
+            if (i < 4) {
+                mColorSwatchLayout.addView(colorSwatchViewOne);
+                mColorSwatchLayout.addView(colorSwatchViewTwo);
+            } else {
+                mMoreColorSwatchLayout.addView(colorSwatchViewOne);
+                mMoreColorSwatchLayout.addView(colorSwatchViewTwo);
+            }
+
+            mColorSpinnerHolders.add(new ColorSpinnerHolder(spinnerViewHolder.getFirstColorLayout(),
+                    spinnerViewHolder.getFirstColorSpinner(),
+                    swatchViewHolderOne.getColorSwatch(),
+                    swatchViewHolderOne.getColorSwatchTextView()));
+            mColorSpinnerHolders.add(new ColorSpinnerHolder(spinnerViewHolder.getSecondColorLayout(),
+                    spinnerViewHolder.getSecondColorSpinner(),
+                    swatchViewHolderTwo.getColorSwatch(),
+                    swatchViewHolderTwo.getColorSwatchTextView()));
+        }
     }
 
     private void setupChipSetSpinner() {
@@ -502,7 +481,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
         String title = mSavedSet.getTitle();
         ArrayList<GCPoweredColor> colorList = mSavedSet.getColors();
         if (colorList.size() > GCConstants.HALF_COLORS) {
-            findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+            mMoreColorSwatchLayout.setVisibility(View.VISIBLE);
         }
         GCMode mode = mSavedSet.getMode();
         ArrayList<int[]> customColorArray = mSavedSet.getCustomColors();
@@ -688,7 +667,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
             if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_NONE)) {
                 hideColorSpinnersAfterPosition(mColorSpinnerHolders.indexOf(colorSpinnerHolder));
                 if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
-                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.GONE);
+                    mMoreColorSwatchLayout.setVisibility(View.GONE);
                 }
             } else if (colorEnum.getTitle().equalsIgnoreCase(GCConstants.COLOR_CUSTOM)) {
                 if (isFirstTime) {
@@ -701,7 +680,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 }
 
                 if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
-                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+                    mMoreColorSwatchLayout.setVisibility(View.VISIBLE);
                 }
             } else {
                 int[] rgbValues = colorEnum.getRGBValues();
@@ -710,7 +689,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                 matchColorSpinnerToSwatch();
 
                 if (mColorSpinnerHolders.indexOf(colorSpinnerHolder) == GCConstants.HALF_COLORS) {
-                    findViewById(R.id.more_color_swatch_layout).setVisibility(View.VISIBLE);
+                    mMoreColorSwatchLayout.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -1305,7 +1284,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void fadeBackgroundColor(boolean isReverse) {
-        final View parentView = findViewById(R.id.edit_set_layout);
+        final View parentView = mEditSetLayout;
         TypedValue darkColor = new TypedValue();
         TypedValue lightColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
@@ -1334,7 +1313,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addSetAnimation(final boolean isReverse) {
         // previously invisible view
-        final View myView = findViewById(R.id.edit_set_layout);
+        final View myView = mEditSetLayout;
 
         // get the center for the clipping circle
         int cx = myView.getMeasuredWidth();
@@ -1395,7 +1374,7 @@ public class GCEditSavedSetActivity extends GCBaseActivity {
                     enterFinished = false;
                 } else {
                     if (isNewSet) {
-                        findViewById(R.id.edit_set_layout).setVisibility(View.INVISIBLE);
+                        mEditSetLayout.setVisibility(View.INVISIBLE);
                         addSetAnimation(false);
                     } else {
                         fadeBackgroundColor(false);

@@ -18,7 +18,7 @@ import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.adapters.GCSyncConflictsAdapter;
-import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
+import com.achanr.glovercolorapp.ui.viewHolders.GCSyncConflictViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +35,12 @@ public class GCSyncConflictActivity extends GCBaseActivity {
     public static final String CONFLICT_SETS_KEY = "conflict_sets_key";
 
     private GCSyncConflictsAdapter mAdapter;
-
+    private GCSyncConflictViewHolder mViewHolder;
     private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_sync_conflicts, mFrameLayout);
         setupToolbar(getString(R.string.title_sync_conflicts));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -61,6 +60,12 @@ public class GCSyncConflictActivity extends GCBaseActivity {
         } else {
             onBackPressed();
         }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_sync_conflicts, mFrameLayout);
+        mViewHolder = new GCSyncConflictViewHolder(view);
     }
 
     @Override
@@ -109,17 +114,16 @@ public class GCSyncConflictActivity extends GCBaseActivity {
     }
 
     private void setupSavedSetList() {
-        GridRecyclerView mRecyclerView = (GridRecyclerView) findViewById(R.id.sync_conflicts_recyclerview);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        mViewHolder.getGridRecyclerView().setHasFixedSize(true);
 
         // use a linear layout manager
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new CustomItemAnimator());
+        mViewHolder.getGridRecyclerView().setLayoutManager(mLayoutManager);
+        mViewHolder.getGridRecyclerView().setItemAnimator(new CustomItemAnimator());
         mAdapter = new GCSyncConflictsAdapter(this, mOnlineDBSavedSets);
-        mRecyclerView.setAdapter(mAdapter);
+        mViewHolder.getGridRecyclerView().setAdapter(mAdapter);
     }
 
     private void resolveConflicts() {

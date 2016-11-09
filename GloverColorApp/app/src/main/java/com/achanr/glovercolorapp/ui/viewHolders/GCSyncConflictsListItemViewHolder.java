@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.ui.views;
+package com.achanr.glovercolorapp.ui.viewHolders;
 
 import android.content.Context;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCUtil;
-import com.achanr.glovercolorapp.ui.activities.GCSyncConflictActivity;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 

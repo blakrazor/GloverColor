@@ -9,19 +9,26 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.Button;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.ui.viewHolders.GCHomeViewHolder;
 
 public class GCHomeActivity extends GCBaseActivity {
+
+    private GCHomeViewHolder mHomeViewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_home, mFrameLayout);
         setupToolbar(getString(R.string.title_activity_gcwelcome_screen));
         setupClickListeners();
         checkIfNewVersion();
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_home, mFrameLayout);
+        mHomeViewHolder = new GCHomeViewHolder(view);
     }
 
     @Override
@@ -31,11 +38,8 @@ public class GCHomeActivity extends GCBaseActivity {
     }
 
     private void setupClickListeners() {
-        Button createNewSetButton = (Button) findViewById(R.id.create_new_set_button);
-        Button checkoutSavedSetButton = (Button) findViewById(R.id.checkout_saved_set_button);
-        Button checkoutCollectionButton = (Button) findViewById(R.id.checkout_collection_button);
 
-        createNewSetButton.setOnClickListener(new View.OnClickListener() {
+        mHomeViewHolder.getCreateNewSetButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GCHomeActivity.this, GCSavedSetListActivity.class);
@@ -45,14 +49,14 @@ public class GCHomeActivity extends GCBaseActivity {
             }
         });
 
-        checkoutSavedSetButton.setOnClickListener(new View.OnClickListener() {
+        mHomeViewHolder.getCheckoutSavedSetButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToSavedSetListActivity();
             }
         });
 
-        checkoutCollectionButton.setOnClickListener(new View.OnClickListener() {
+        mHomeViewHolder.getCheckoutCollectionButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToCollectionListActivity();
