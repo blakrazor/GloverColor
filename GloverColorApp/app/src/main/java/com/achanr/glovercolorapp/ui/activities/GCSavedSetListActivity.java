@@ -581,6 +581,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         isAnimating = true;
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+            isAnimating = false;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 animateFab(false, new AnimationCompleteListener() {
