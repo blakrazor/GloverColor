@@ -387,7 +387,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
     private void saveCollection() {
         String newTitle = mTitleEditText.getText().toString().trim();
-        if (validateTitleAgainstDatabase(newTitle) && isNewSet) {
+        if (isNewSet ? validateTitleAgainstDatabase(newTitle) : validateTitleAgainstDatabase(newTitle) && !newTitle.equals(mCollection.getTitle())) {
             showErrorDialog(getString(R.string.error_title_exists));
             return;
         }
