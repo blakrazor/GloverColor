@@ -221,9 +221,9 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
 
     public void deleteData(GCSavedSet savedSet) {
         // Define 'where' part of query.
-        String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
+        String selection = GCSavedSetEntry._ID + "=?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = {String.valueOf(savedSet.getTitle())};
+        String[] selectionArgs = {String.valueOf(savedSet.getId())};
         // Issue SQL statement.
         db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs);
     }
@@ -240,8 +240,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(newSavedSet.getCustomColors()));
 
         // Which row to update, based on the ID
-        String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
-        String[] selectionArgs = {String.valueOf(oldSavedSet.getTitle())};
+        String selection = GCSavedSetEntry._ID + "=?";
+        String[] selectionArgs = {String.valueOf(oldSavedSet.getId())};
 
         db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }
