@@ -15,7 +15,7 @@ import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.ui.views.GCSyncConflictsListItemViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCSyncConflictsListItemViewHolder;
 import com.bignerdranch.android.multiselector.MultiSelector;
 
 import java.util.ArrayList;

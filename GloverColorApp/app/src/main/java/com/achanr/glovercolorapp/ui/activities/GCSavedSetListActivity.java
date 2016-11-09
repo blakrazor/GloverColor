@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -41,6 +40,7 @@ import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
+import com.achanr.glovercolorapp.ui.viewHolders.GCSavedSetListViewHolder;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
@@ -126,11 +126,23 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        mSavedSetListRecyclerView = (GridRecyclerView) findViewById(R.id.saved_set_list_recyclerview);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
+            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
+        } else {
+            mFab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
+        GCSavedSetListViewHolder viewHolder = new GCSavedSetListViewHolder(view);
+        mSavedSetListRecyclerView = viewHolder.getSavedSetListRecyclerView();
+        mFab = viewHolder.getFab();
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,13 +164,6 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 }
             }
         });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
-            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
-        } else {
-            mFab.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -192,6 +197,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     });
                     mFab.setVisibility(View.GONE);
                 }
+                intent.removeExtra(FROM_NAVIGATION);
             }
 
             if (intent.getBooleanExtra(GCUtil.WAS_REFRESHED, false)) {
@@ -454,7 +460,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
 
         // previously visible view
-        final View myView = findViewById(R.id.fab);
+        final View myView = mFab;
 
         // get the center for the clipping circle
         final int cx = myView.getMeasuredWidth() / 2;
@@ -573,9 +579,8 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
 
         isAnimating = true;
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 animateFab(false, new AnimationCompleteListener() {
