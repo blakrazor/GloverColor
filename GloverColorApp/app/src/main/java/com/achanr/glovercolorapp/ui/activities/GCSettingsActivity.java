@@ -37,7 +37,6 @@ public class GCSettingsActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_settings, mFrameLayout);
         setupToolbar(getString(R.string.title_settings));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -51,6 +50,11 @@ public class GCSettingsActivity extends GCBaseActivity {
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, prefsFragment).commit();
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        getLayoutInflater().inflate(R.layout.activity_settings, mFrameLayout);
     }
 
     @Override

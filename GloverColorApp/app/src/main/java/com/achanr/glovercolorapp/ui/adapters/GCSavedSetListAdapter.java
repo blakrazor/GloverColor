@@ -14,7 +14,7 @@ import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.activities.GCEditCollectionActivity;
-import com.achanr.glovercolorapp.ui.views.GCSavedSetListItemViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCSavedSetListItemViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -35,6 +35,7 @@ Andrew Chanrasmi - Designer / Creator / Developer
  - [FirebaseUI for Android](https://github.com/firebase/FirebaseUI-Android) Copyright 2016 Google Inc.
  - [RecyclerView MultiSelect](https://github.com/bignerdranch/recyclerview-multiselect) Copyright 2014 Big Nerd Ranch
  - [Facebook](https://developers.facebook.com/) Copyright 2016 Facebook Inc.
+ - [Butter Knife](http://jakewharton.github.io/butterknife/) Copyright 2013 Jake Wharton
 
 ## License
 

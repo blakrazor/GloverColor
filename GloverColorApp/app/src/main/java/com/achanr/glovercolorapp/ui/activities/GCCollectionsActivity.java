@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -40,6 +39,7 @@ import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.ui.adapters.GCCollectionsListAdapter;
+import com.achanr.glovercolorapp.ui.viewHolders.GCCollectionsViewHolder;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
@@ -70,11 +70,11 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
     }
 
-    private ArrayList<GCCollection> mCollectionsList;
     private GridRecyclerView mCollectionsListRecyclerView;
+    private FloatingActionButton mFab;
+    private ArrayList<GCCollection> mCollectionsList;
     private GCCollectionsListAdapter mCollectionsListAdapter;
     private GridLayoutManager mCollectionsListLayoutManager;
-    private FloatingActionButton mFab;
     private boolean isFromEditing = false;
     private boolean isLeaving = false;
     private boolean isFromEnterCode = false;
@@ -91,6 +91,47 @@ public class GCCollectionsActivity extends GCBaseActivity {
         void onComplete();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupToolbar(getString(R.string.title_collections));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mCollectionsListRecyclerView.setVisibility(View.INVISIBLE);
+            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
+        } else {
+            mFab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_collections, mFrameLayout);
+        GCCollectionsViewHolder collectionsViewHolder = new GCCollectionsViewHolder(view);
+        mCollectionsListRecyclerView = collectionsViewHolder.getCollectionsListRecyclerView();
+        mFab = collectionsViewHolder.getFab();
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFromEditing = false;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    animateFab(false, new AnimationCompleteListener() {
+                        @Override
+                        public void onComplete() {
+                            animateListView(false, new AnimationCompleteListener() {
+                                @Override
+                                public void onComplete() {
+                                    onAddCollectionClicked();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    onAddCollectionClicked();
+                }
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,44 +157,6 @@ public class GCCollectionsActivity extends GCBaseActivity {
                     onCollectionUpdated(oldCollection, newCollection);
                 }
             }
-        }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_collections, mFrameLayout);
-        setupToolbar(getString(R.string.title_collections));
-
-        mCollectionsListRecyclerView = (GridRecyclerView) findViewById(R.id.collections_recyclerview);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isFromEditing = false;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    animateFab(false, new AnimationCompleteListener() {
-                        @Override
-                        public void onComplete() {
-                            animateListView(false, new AnimationCompleteListener() {
-                                @Override
-                                public void onComplete() {
-                                    onAddCollectionClicked();
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    onAddCollectionClicked();
-                }
-            }
-        });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mCollectionsListRecyclerView.setVisibility(View.INVISIBLE);
-            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
-        } else {
-            mFab.setVisibility(View.VISIBLE);
         }
     }
 
@@ -392,12 +395,9 @@ public class GCCollectionsActivity extends GCBaseActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void animateFab(boolean isAppearing, final AnimationCompleteListener animationCompleteListener) {
-        // previously visible view
-        final View myView = findViewById(R.id.fab);
-
         // get the center for the clipping circle
-        final int cx = myView.getMeasuredWidth() / 2;
-        final int cy = myView.getMeasuredHeight() / 2;
+        final int cx = mFab.getMeasuredWidth() / 2;
+        final int cy = mFab.getMeasuredHeight() / 2;
 
 
         // create the animation (the final radius is zero)
@@ -405,19 +405,19 @@ public class GCCollectionsActivity extends GCBaseActivity {
         ObjectAnimator animator;
         AnimatorSet animatorSet = new AnimatorSet();
         if (isAppearing) {
-            int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
-            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-            animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
-            myView.setVisibility(View.VISIBLE);
+            int finalRadius = Math.max(mFab.getWidth(), mFab.getHeight()) / 2;
+            anim = ViewAnimationUtils.createCircularReveal(mFab, cx, cy, 0, finalRadius);
+            animator = ObjectAnimator.ofFloat(mFab, "rotation", 45f, 0f);
+            mFab.setVisibility(View.VISIBLE);
         } else {
-            int initialRadius = myView.getWidth() / 2;
-            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
-            animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+            int initialRadius = mFab.getWidth() / 2;
+            anim = ViewAnimationUtils.createCircularReveal(mFab, cx, cy, initialRadius, 0);
+            animator = ObjectAnimator.ofFloat(mFab, "rotation", 0f, 45f);
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    myView.setVisibility(View.INVISIBLE);
+                    mFab.setVisibility(View.INVISIBLE);
                     if (animationCompleteListener != null) {
                         animationCompleteListener.onComplete();
                     }
@@ -512,9 +512,8 @@ public class GCCollectionsActivity extends GCBaseActivity {
         }
 
         isAnimating = true;
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 animateFab(false, new AnimationCompleteListener() {
