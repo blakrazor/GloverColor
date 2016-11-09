@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class GCCollection implements Serializable {
 
+    private int mId = -1;
     private String mTitle;
     private String mDescription;
     private ArrayList<GCSavedSet> mSavedSetList;
@@ -23,6 +24,14 @@ public class GCCollection implements Serializable {
         mTitle = title;
         mDescription = description;
         mSavedSetList = savedSetList;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
     }
 
     public String getTitle() {
