@@ -22,7 +22,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Andrew Chanrasmi on 10/24/16
@@ -129,6 +132,7 @@ public class GCOnlineDatabaseUtil {
         dbSavedSetsLocal.removeAll(dbSavedSets);
         intersection.addAll(dbSavedSetsLocal);
         intersection.addAll(dbSavedSetsOnline);
+        checkForTitleDuplicates(intersection);
         return new Quadruple<>(
                 intersection,
                 dbSavedSetsOnline.isEmpty(),
@@ -342,6 +346,22 @@ public class GCOnlineDatabaseUtil {
                             }
                         }
                     });
+        }
+    }
+
+    private static void checkForTitleDuplicates(List<GCOnlineDBSavedSet> mOnlineDBSavedSets) {
+        Comparator<GCOnlineDBSavedSet> comparator = new Comparator<GCOnlineDBSavedSet>() {
+            @Override
+            public int compare(GCOnlineDBSavedSet o1, GCOnlineDBSavedSet o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        };
+
+        Set<GCOnlineDBSavedSet> hashSet = new TreeSet<>(comparator);
+        for (GCOnlineDBSavedSet onlineDBSavedSet : mOnlineDBSavedSets) {
+            if (!hashSet.add(onlineDBSavedSet)) {
+                onlineDBSavedSet.setTitle(onlineDBSavedSet.getTitle() + " copy");
+            }
         }
     }
 }
