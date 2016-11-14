@@ -33,13 +33,17 @@ public class GCSyncConflictsListItemViewHolder extends SwappingHolder {
         itemView.findViewById(R.id.linear_layout_background).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isChecked = !isChecked;
+                setChecked(!isChecked);
                 multiSelector.setSelected(GCSyncConflictsListItemViewHolder.this, isChecked);
-                int color = isChecked ?
-                        GCUtil.fetchAttributeColor(mContext, R.attr.colorPrimaryDark)
-                        : GCUtil.fetchAttributeColor(mContext, R.attr.colorAccentLight);
-                v.findViewById(R.id.linear_layout_background).setBackgroundColor(color); //ignore this error, it doesn't know what it's talking about
             }
         });
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+        int color = checked ?
+                GCUtil.fetchAttributeColor(mContext, R.attr.colorPrimaryDark)
+                : GCUtil.fetchAttributeColor(mContext, R.attr.colorAccentLight);
+        itemView.findViewById(R.id.linear_layout_background).setBackgroundColor(color); //ignore this error, it doesn't know what it's talking about
     }
 }
