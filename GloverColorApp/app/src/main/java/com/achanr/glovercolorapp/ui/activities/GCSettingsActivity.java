@@ -89,6 +89,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupDefaultChipPreference();
             setupFollowFacebookPreference();
             setupAcknowledgementsPreference();
+            setupOptinBetaPreference();
         }
 
         private void setupThemePreference() {
@@ -294,6 +295,18 @@ public class GCSettingsActivity extends GCBaseActivity {
                                 }
                             })
                             .show();
+                    return true;
+                }
+            });
+        }
+
+        private void setupOptinBetaPreference() {
+            Preference optinBetaPreference = findPreference(getActivity().getString(R.string.opt_in_beta_preference));
+            optinBetaPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.beta_opt_in_link)));
+                    startActivity(browserIntent);
                     return true;
                 }
             });
