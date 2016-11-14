@@ -52,6 +52,13 @@ public class GCOnlineDatabaseUtil {
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
 
+    public static void initialize() {
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        if (currentReference == null) {
+            currentReference = FirebaseDatabase.getInstance().getReference();
+        }
+    }
+
     private static DatabaseReference getCurrentDatabaseReference() {
         if (currentReference == null) {
             currentReference = FirebaseDatabase.getInstance().getReference();
@@ -72,53 +79,54 @@ public class GCOnlineDatabaseUtil {
     private static void syncSavedSets(final Context context, final String userUID, final OnCompletionHandler handler) {
 
         final List<GCSavedSet> savedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
-        getCurrentDatabaseReference()
+        DatabaseReference connection = getCurrentDatabaseReference()
                 .child(USER_SAVED_SET_KEY)
-                .child(userUID)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get all the online sets
-                        List<GCOnlineDBSavedSet> dbSavedSets = new ArrayList<>();
-                        for (DataSnapshot userSavedSets : dataSnapshot.getChildren()) {
-                            dbSavedSets.add(userSavedSets.getValue(GCOnlineDBSavedSet.class));
-                        }
-                        //Compare the local and only sets
-                        Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
-                        if (comparison.getA().isEmpty()) {
-                            syncCompleted(context, handler);
-                            return;
-                        }
-                        if (comparison.getB() || comparison.getC()) {
-                            //If true, difference in data only exists on one side
-                            if (comparison.getD()) {
-                                //if true, online database had more records, sync online to local
-                                for (GCOnlineDBSavedSet onlineSavedSet : comparison.getA()) {
-                                    GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.insertData(onlineSavedSet);
-                                }
-                            }
-                            reSynchronizeWithOnline(context, userUID);
-                            syncCollections(context, userUID, handler);
-                        } else {
-                            //else, multiple differences exist
-                            dismissProgressDialog();
-                            Intent intent = new Intent(context, GCSyncConflictActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
-                            intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
-                            ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
+                .child(userUID);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Get all the online sets
+                List<GCOnlineDBSavedSet> dbSavedSets = new ArrayList<>();
+                for (DataSnapshot userSavedSets : dataSnapshot.getChildren()) {
+                    dbSavedSets.add(userSavedSets.getValue(GCOnlineDBSavedSet.class));
+                }
+                //Compare the local and only sets
+                Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> comparison = compareSavedSetLists(dbSavedSets, savedSets);
+                if (comparison.getA().isEmpty()) {
+                    syncCompleted(context, handler);
+                    return;
+                }
+                if (comparison.getB() || comparison.getC()) {
+                    //If true, difference in data only exists on one side
+                    if (comparison.getD()) {
+                        //if true, online database had more records, sync online to local
+                        for (GCOnlineDBSavedSet onlineSavedSet : comparison.getA()) {
+                            GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.insertData(onlineSavedSet);
                         }
                     }
+                    reSynchronizeWithOnline(context, userUID);
+                    syncCollections(context, userUID, handler);
+                } else {
+                    //else, multiple differences exist
+                    dismissProgressDialog();
+                    Intent intent = new Intent(context, GCSyncConflictActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
+                    intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
+                    ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        dismissProgressDialog();
-                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
-                        Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
-                        CurrentSyncStatus = SyncStatus.Unavailable;
-                        if (handler != null) handler.onComplete();
-                    }
-                });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                dismissProgressDialog();
+                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
+                Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                CurrentSyncStatus = SyncStatus.Unavailable;
+                if (handler != null) handler.onComplete();
+            }
+        });
     }
 
     private static Quadruple<List<GCOnlineDBSavedSet>, Boolean, Boolean, Boolean> compareSavedSetLists(List<GCOnlineDBSavedSet> dbSavedSets, List<GCSavedSet> savedSetsLocal) {
