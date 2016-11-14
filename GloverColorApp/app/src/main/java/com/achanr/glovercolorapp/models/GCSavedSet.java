@@ -6,6 +6,8 @@ import com.achanr.glovercolorapp.common.GCUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import static android.R.attr.description;
+
 /**
  * Glover Color App Project
  *
@@ -13,8 +15,9 @@ import java.util.ArrayList;
  */
 public class GCSavedSet implements Serializable {
 
-    private int mId;
+    private int mId = -1;
     private String mTitle;
+    private String mDescription;
     private ArrayList<GCPoweredColor> mColors;
     private GCMode mMode;
     private GCChip mChipSet;
@@ -45,6 +48,14 @@ public class GCSavedSet implements Serializable {
 
     public void setTitle(String title) {
         mTitle = title.replace(" ", "_");
+    }
+
+    public String getDescription() {
+        return mDescription != null ? mDescription : "";
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
     }
 
     public ArrayList<GCPoweredColor> getColors() {

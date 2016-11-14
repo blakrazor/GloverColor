@@ -9,4 +9,6 @@
     <string name="reset_dialog_preference">RESET_DIALOG_PREFERENCE</string>
     <string name="default_chip_preference">DEFAULT_CHIP_PREFERENCE</string>
     <string name="follow_facebook_preference">FOLLOW_FACEBOOK_PREFERENCE</string>
+    <string name="acknowledgements_preference">ACKNOWLEDGEMENTS_PREFERENCE</string>
+    <string name="opt_in_beta_preference">OPT_IN_BETA_PREFERENCE</string>
 </resources>

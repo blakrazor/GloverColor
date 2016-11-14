@@ -18,9 +18,9 @@ import java.util.ArrayList;
  */
 public class GCCollectionDatabase extends GCAbstractDatabase {
 
-    private static final String TABLE_NAME = "COLLECTION_TBL";
+    static final String TABLE_NAME = "COLLECTION_TBL";
 
-    private static class GCCollectionEntry implements BaseColumns {
+    static class GCCollectionEntry implements BaseColumns {
         static final String COLLECTION_TITLE_KEY = "COLLECTION_TITLE";
         static final String COLLECTION_DESC_KEY = "COLLECTION_DESC";
         static final String COLLECTION_SETS_KEY = "COLLECTION_SETS";
@@ -38,7 +38,7 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
         synchronized (GCDatabaseAdapter.Lock) {
             db.execSQL("CREATE TABLE IF NOT EXISTS " +
                     TABLE_NAME +
-                    " (" + GCCollectionEntry._ID + " INTEGER PRIMARY KEY," +
+                    " (" + GCCollectionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     GCCollectionEntry.COLLECTION_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCCollectionEntry.COLLECTION_DESC_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCCollectionEntry.COLLECTION_SETS_KEY + GCDatabaseHelper.TEXT_TYPE +
@@ -93,10 +93,12 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
                     do {
                         GCCollection collection = new GCCollection();
 
+                        int id = mCursor.getInt(mCursor.getColumnIndex(GCCollectionEntry._ID));
                         String title = mCursor.getString(mCursor.getColumnIndex(GCCollectionEntry.COLLECTION_TITLE_KEY));
                         String desc = mCursor.getString(mCursor.getColumnIndex(GCCollectionEntry.COLLECTION_DESC_KEY));
                         String setListString = mCursor.getString(mCursor.getColumnIndex(GCCollectionEntry.COLLECTION_SETS_KEY));
 
+                        collection.setId(id);
                         collection.setTitle(title);
                         collection.setDescription(desc);
                         collection.setSavedSetList(GCUtil.convertStringToSetList(mContext, setListString));
@@ -124,9 +126,9 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
 
     public void deleteData(GCCollection collection) {
         // Define 'where' part of query.
-        String selection = GCCollectionEntry.COLLECTION_TITLE_KEY + "=?";
+        String selection = GCCollectionEntry._ID + "=?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = {String.valueOf(collection.getTitle())};
+        String[] selectionArgs = {String.valueOf(collection.getId())};
         // Issue SQL statement.
         db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs);
     }
@@ -140,8 +142,8 @@ public class GCCollectionDatabase extends GCAbstractDatabase {
         values.put(GCCollectionEntry.COLLECTION_SETS_KEY, GCUtil.convertSetListToString(newCollection.getSavedSetList()));
 
         // Which row to update, based on the ID
-        String selection = GCCollectionEntry.COLLECTION_TITLE_KEY + "=?";
-        String[] selectionArgs = {String.valueOf(oldCollection.getTitle())};
+        String selection = GCCollectionEntry._ID + "=?";
+        String[] selectionArgs = {String.valueOf(oldCollection.getId())};
 
         db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }

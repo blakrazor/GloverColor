@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCCollection;
-import com.achanr.glovercolorapp.ui.views.GCCollectionsListItemViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCCollectionsListItemViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
