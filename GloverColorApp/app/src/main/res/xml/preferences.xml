@@ -62,6 +62,12 @@
 
         <Preference
             android:clickable="true"
+            android:key="@string/opt_in_beta_preference"
+            android:title="Beta Opt-in"
+            android:summary="Join the open beta and be the first to test new features"/>
+
+        <Preference
+            android:clickable="true"
             android:key="@string/report_bugs_preference"
             android:title="Report Bugs or Send Feedback"
             android:summary="Help make the app better by reporting bugs and giving feedback"/>
