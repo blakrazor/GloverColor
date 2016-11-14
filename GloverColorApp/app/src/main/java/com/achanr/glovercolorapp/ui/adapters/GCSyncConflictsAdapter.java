@@ -64,6 +64,7 @@ public class GCSyncConflictsAdapter extends RecyclerView.Adapter<GCSyncConflicts
         } else {
             holder.txtChipset.setText(GCUtil.convertToCamelcase(mContext, chipSet.getTitle()));
         }
+        holder.setChecked(getSelectedSets().contains(position));
     }
 
     @Override
