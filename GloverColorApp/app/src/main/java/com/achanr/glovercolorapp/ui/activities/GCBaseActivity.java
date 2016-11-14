@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,11 +17,24 @@ import android.transition.Slide;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.common.GCAuthUtil;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.ui.viewHolders.GCNavHeaderViewHolder;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 /**
  * Glover Color App Project
@@ -28,26 +42,67 @@ import com.achanr.glovercolorapp.common.GCUtil;
  * @author Andrew Chanrasmi
  */
 
-public class GCBaseActivity extends AppCompatActivity
+public abstract class GCBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    protected abstract void setupContentLayout();
+
+    @BindView(R.id.content_frame)
     FrameLayout mFrameLayout;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+
     Toolbar mToolbar;
+    private GCNavHeaderViewHolder mNavHeaderViewHolder;
     private static int mPosition;
-    private NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
-        mFrameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        ButterKnife.bind(this);
+        setupNavDrawerHeader();
+        checkForDrawerSwipe();
+        setupContentLayout();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        updateLoginView();
         checkIfThemeCorrect();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                // user is signed in!
+                GCOnlineDatabaseUtil.checkSyncStatus(this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                    @Override
+                    public void onComplete() {
+                        updateLoginView();
+                        Toast.makeText(GCBaseActivity.this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                // user is not signed in. Maybe just wait for the user to press
+                // "sign in" again, or show a message
+                Toast.makeText(GCBaseActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == GCOnlineDatabaseUtil.SYNC_CONFLICT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                updateUIAfterSync();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(GCBaseActivity.this, R.string.sync_cancelled, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void checkIfThemeCorrect() {
@@ -65,13 +120,18 @@ public class GCBaseActivity extends AppCompatActivity
         getSupportActionBar().setTitle(title);
         setCustomTitle(title);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, drawer, mToolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(mToggle);
+        ActionBarDrawerToggle mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                GCOnlineDatabaseUtil.checkSyncStatus(GCBaseActivity.this, null);
+                updateSyncStatus();
+            }
+        };
+        mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.setCheckedItem(mPosition);
     }
@@ -87,9 +147,8 @@ public class GCBaseActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -107,6 +166,21 @@ public class GCBaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        if (id == R.id.nav_login_logout) {
+            loginOrLogout();
+            return true;
+        }
+        if (id == R.id.nav_sync) {
+            GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                @Override
+                public void onComplete() {
+                    updateUIAfterSync();
+                    updateSyncStatus();
+                }
+            });
+            return true;
+        }
 
         Intent intent;
         if (id == R.id.nav_home && mPosition != R.id.nav_home) {
@@ -136,8 +210,7 @@ public class GCBaseActivity extends AppCompatActivity
             //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -207,5 +280,115 @@ public class GCBaseActivity extends AppCompatActivity
         }
         @SuppressWarnings("unchecked") ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
         startActivity(intent, options.toBundle());
+    }
+
+    private void loginOrLogout() {
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
+            //Currently logged in, so log out
+            GCAuthUtil.logOut(GCBaseActivity.this, new OnCompleteListener<Void>() {
+                public void onComplete(@NonNull Task<Void> task) {
+                    // user is now signed out
+                    updateLoginView();
+                    Toast.makeText(GCBaseActivity.this, R.string.logout_successful, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            //Currently not logged in, so log in
+            GCAuthUtil.startLoginActivity(GCBaseActivity.this);
+        }
+
+    }
+
+    private void updateLoginView() {
+        Menu navMenu = mNavigationView.getMenu();
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
+            //User currently logged in
+            mNavHeaderViewHolder.setUserLoginVisibility(true);
+            navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
+            navMenu.findItem(R.id.nav_sync).setVisible(true);
+
+            FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
+            if (currentUser.getPhotoUrl() != null) {
+                mNavHeaderViewHolder.setProfilePictureImage(currentUser.getPhotoUrl());
+            }
+            String username = "N/A";
+            if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
+                username = currentUser.getDisplayName();
+            } else if (currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
+                username = currentUser.getEmail();
+            }
+            mNavHeaderViewHolder.setUsernameText(username);
+            updateSyncStatus();
+        } else {
+            //User is not logged in
+            mNavHeaderViewHolder.setUserLoginVisibility(false);
+            navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
+            navMenu.findItem(R.id.nav_sync).setVisible(false);
+        }
+    }
+
+    private void updateSyncStatus() {
+        switch (GCOnlineDatabaseUtil.CurrentSyncStatus) {
+            case Unavailable:
+                mNavHeaderViewHolder.setSyncStatusText(getString(R.string.sync_status_unavailable));
+                break;
+            case OutOfSync:
+                mNavHeaderViewHolder.setSyncStatusText(getString(R.string.sync_status_out_of_sync));
+                break;
+            case Synced:
+                mNavHeaderViewHolder.setSyncStatusText(getString(R.string.sync_status_synced));
+                break;
+        }
+    }
+
+    private void updateUIAfterSync() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateSyncStatus();
+                if (GCBaseActivity.this instanceof GCSavedSetListActivity) {
+                    ((GCSavedSetListActivity) GCBaseActivity.this).refreshList();
+                } else if (GCBaseActivity.this instanceof GCCollectionsActivity) {
+                    ((GCCollectionsActivity) GCBaseActivity.this).refreshList();
+                }
+            }
+        });
+    }
+
+    private void checkForDrawerSwipe() {
+        if (this instanceof GCHomeActivity
+                || this instanceof GCSavedSetListActivity
+                || this instanceof GCCollectionsActivity
+                || this instanceof GCEnterCodeActivity) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
+
+    private void setupNavDrawerHeader() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!GCAuthUtil.isCurrentUserLoggedIn()) {
+                    //Currently not logged in, so log in
+                    GCAuthUtil.startLoginActivity(GCBaseActivity.this);
+                } else {
+                    //User is logged in
+                    if (GCOnlineDatabaseUtil.CurrentSyncStatus == GCOnlineDatabaseUtil.SyncStatus.OutOfSync) {
+                        //Out of sync
+                        GCOnlineDatabaseUtil.syncToOnline(GCBaseActivity.this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
+                            @Override
+                            public void onComplete() {
+                                updateUIAfterSync();
+                                updateSyncStatus();
+                            }
+                        });
+                    }
+                }
+            }
+        };
+
+        mNavHeaderViewHolder = new GCNavHeaderViewHolder(this, mNavigationView.getHeaderView(0), onClickListener);
     }
 }

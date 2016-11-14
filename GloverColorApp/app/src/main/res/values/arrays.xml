@@ -4,12 +4,33 @@
         <item>1.1</item>
         <item>1.2</item>
         <item>1.3</item>
+        <item>2.0.0</item>
     </string-array>
 
     <string-array name="version_info_array">
         <item>@string/whats_new_in_version_1.1</item>
         <item>@string/whats_new_in_version_1.2</item>
         <item>@string/whats_new_in_version_1.3</item>
+        <item>@string/whats_new_in_version_2.0.0</item>
+    </string-array>
+
+    <string-array name="color_subtitles">
+        <item>@string/color_1_subtitle</item>
+        <item>@string/color_2_subtitle</item>
+        <item>@string/color_3_subtitle</item>
+        <item>@string/color_4_subtitle</item>
+        <item>@string/color_5_subtitle</item>
+        <item>@string/color_6_subtitle</item>
+        <item>@string/color_7_subtitle</item>
+        <item>@string/color_8_subtitle</item>
+        <item>@string/color_9_subtitle</item>
+        <item>@string/color_10_subtitle</item>
+        <item>@string/color_11_subtitle</item>
+        <item>@string/color_12_subtitle</item>
+        <item>@string/color_13_subtitle</item>
+        <item>@string/color_14_subtitle</item>
+        <item>@string/color_15_subtitle</item>
+        <item>@string/color_16_subtitle</item>
     </string-array>
 
     <string-array name="themes">

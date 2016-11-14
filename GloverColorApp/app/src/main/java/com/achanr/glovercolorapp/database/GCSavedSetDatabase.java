@@ -11,6 +11,7 @@ import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         static final String SAVED_SET_MODE = "mode";
         static final String SAVED_SET_CHIP = "chip";
         static final String SAVED_SET_CUSTOM_COLORS = "custom_colors";
+        static final String SAVED_SET_DESCRIPTION = "description";
     }
 
     private final Context mContext;
@@ -50,7 +52,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                     GCSavedSetEntry.SAVED_SET_COLORS + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_MODE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_CHIP + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + GCDatabaseHelper.TEXT_TYPE +
+                    GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                    GCSavedSetEntry.SAVED_SET_DESCRIPTION + GCDatabaseHelper.TEXT_TYPE +
                     " );");
         }
     }
@@ -59,10 +62,24 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.SAVED_SET_TITLE, savedSet.getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_DESCRIPTION, savedSet.getDescription());
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
         values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
+
+        db_adapter.insertEntryInDB(TABLE_NAME, values);
+    }
+
+    public void insertData(GCOnlineDBSavedSet dbSavedSet) {
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(GCSavedSetEntry.SAVED_SET_TITLE, dbSavedSet.getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_DESCRIPTION, dbSavedSet.getDescription());
+        values.put(GCSavedSetEntry.SAVED_SET_COLORS, dbSavedSet.getColors());
+        values.put(GCSavedSetEntry.SAVED_SET_MODE, dbSavedSet.getMode());
+        values.put(GCSavedSetEntry.SAVED_SET_CHIP, dbSavedSet.getChip());
+        values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, dbSavedSet.getCustom_colors());
 
         db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -79,6 +96,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         String[] projection = {
                 GCSavedSetEntry._ID,
                 GCSavedSetEntry.SAVED_SET_TITLE,
+                GCSavedSetEntry.SAVED_SET_DESCRIPTION,
                 GCSavedSetEntry.SAVED_SET_COLORS,
                 GCSavedSetEntry.SAVED_SET_MODE,
                 GCSavedSetEntry.SAVED_SET_CHIP,
@@ -108,6 +126,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
 
                         int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
                         String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
+                        String description = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_DESCRIPTION));
                         String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
                         String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
                         String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
@@ -115,6 +134,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
 
                         savedSet.setId(id);
                         savedSet.setTitle(title);
+                        savedSet.setDescription(description);
                         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
                         savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
                         if (customColorString != null) {
@@ -149,11 +169,61 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         return savedSetList;
     }
 
+    public GCSavedSet getData(GCSavedSet querySet) {
+        GCSavedSet savedSet = null;
+        Cursor mCursor = null;
+        try {
+            mCursor = db_adapter.rawQuery("SELECT * FROM savedsets WHERE title=?", new String[]{querySet.getTitle()});
+
+            if (mCursor != null) {
+                if (mCursor.moveToFirst()) {
+                    savedSet = new GCSavedSet();
+                    int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
+                    String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
+                    String description = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_DESCRIPTION));
+                    String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
+                    String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
+                    String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
+                    String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
+
+                    savedSet.setId(id);
+                    savedSet.setTitle(title);
+                    savedSet.setDescription(description);
+                    savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
+                    savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
+                    if (customColorString != null) {
+                        savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
+                    } else {
+                        ArrayList<int[]> customColors = new ArrayList<>();
+                        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
+                            customColors.add(new int[]{255, 255, 255});
+                        }
+                        savedSet.setCustomColors(customColors);
+                    }
+                    if (chipString != null) {
+                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
+                    } else {
+                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(GCSavedSetDatabase.class.getSimpleName(), e.getMessage());
+        } finally {
+            if (mCursor != null) {
+                mCursor.close();
+            }
+            if (db_adapter.isOpen())
+                db_adapter.close();
+        }
+        return savedSet;
+    }
+
     public void deleteData(GCSavedSet savedSet) {
         // Define 'where' part of query.
-        String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
+        String selection = GCSavedSetEntry._ID + "=?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = {String.valueOf(savedSet.getTitle())};
+        String[] selectionArgs = {String.valueOf(savedSet.getId())};
         // Issue SQL statement.
         db_adapter.deleteRow(TABLE_NAME, selection, selectionArgs);
     }
@@ -163,14 +233,15 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(GCSavedSetEntry.SAVED_SET_TITLE, newSavedSet.getTitle());
+        values.put(GCSavedSetEntry.SAVED_SET_DESCRIPTION, newSavedSet.getDescription());
         values.put(GCSavedSetEntry.SAVED_SET_COLORS, GCUtil.convertColorListToShortenedColorString(newSavedSet.getColors()));
         values.put(GCSavedSetEntry.SAVED_SET_MODE, newSavedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, newSavedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(newSavedSet.getCustomColors()));
 
         // Which row to update, based on the ID
-        String selection = GCSavedSetEntry.SAVED_SET_TITLE + "=?";
-        String[] selectionArgs = {String.valueOf(oldSavedSet.getTitle())};
+        String selection = GCSavedSetEntry._ID + "=?";
+        String[] selectionArgs = {String.valueOf(oldSavedSet.getId())};
 
         db_adapter.updateEntryInDB(TABLE_NAME, values, selection, selectionArgs);
     }

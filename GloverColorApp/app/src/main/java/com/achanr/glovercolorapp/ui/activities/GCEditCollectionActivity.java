@@ -32,17 +32,19 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCCollection;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
+import com.achanr.glovercolorapp.ui.viewHolders.GCEditCollectionViewHolder;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ import java.util.Map;
  */
 public class GCEditCollectionActivity extends GCBaseActivity {
 
+    private ScrollView mEditSetLayout;
     private TextView mTitleEditText;
     private TextView mDescEditText;
     private GCCollection mCollection;
@@ -130,7 +133,6 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_edit_collection, mFrameLayout);
         setupToolbar(getString(R.string.title_edit_collection));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -139,11 +141,6 @@ public class GCEditCollectionActivity extends GCBaseActivity {
                 onBackPressed();
             }
         });
-
-        mTitleEditText = (EditText) findViewById(R.id.edit_text_title);
-        mDescEditText = (EditText) findViewById(R.id.edit_text_description);
-        mAddSetButton = (Button) findViewById(R.id.add_set_button);
-        mSetsListRecyclerView = (GridRecyclerView) findViewById(R.id.collection_sets_list);
         mTitleEditText.setFilters(new InputFilter[]{titleFilter});
 
         Intent intent = getIntent();
@@ -168,6 +165,18 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupEnterAnimationListener();
         }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_edit_collection, mFrameLayout);
+        GCEditCollectionViewHolder editCollectionViewHolder = new GCEditCollectionViewHolder(view);
+
+        mTitleEditText = editCollectionViewHolder.getTitleEditText();
+        mDescEditText = editCollectionViewHolder.getDescEditText();
+        mAddSetButton = editCollectionViewHolder.getAddSetButton();
+        mSetsListRecyclerView = editCollectionViewHolder.getSetsListRecyclerView();
+        mEditSetLayout = editCollectionViewHolder.getEditSetLayout();
     }
 
     @Override
@@ -244,6 +253,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
         mSetsListRecyclerView.setLayoutManager(mSetsListLayoutManager);
         mSetsListRecyclerView.setItemAnimator(new CustomItemAnimator());
         mSetsListListAdapter = new GCSavedSetListAdapter(this, mSetsList);
+        mSetsListListAdapter.sortList();
         mSetsListRecyclerView.setAdapter(mSetsListListAdapter);
     }
 
@@ -377,7 +387,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
     private void saveCollection() {
         String newTitle = mTitleEditText.getText().toString().trim();
-        if (validateTitleAgainstDatabase(newTitle) && isNewSet) {
+        if (isNewSet ? validateTitleAgainstDatabase(newTitle) : validateTitleAgainstDatabase(newTitle) && !newTitle.equals(mCollection.getTitle())) {
             showErrorDialog(getString(R.string.error_title_exists));
             return;
         }
@@ -543,7 +553,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
                     enterFinished = false;
                 } else {
                     if (isNewSet) {
-                        findViewById(R.id.edit_set_layout).setVisibility(View.INVISIBLE);
+                        mEditSetLayout.setVisibility(View.INVISIBLE);
                         addSetAnimation(false);
                     } else {
                         fadeBackgroundColor(false);
@@ -576,7 +586,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void fadeBackgroundColor(boolean isReverse) {
-        final View parentView = findViewById(R.id.edit_set_layout);
+        final View parentView = mEditSetLayout;
         TypedValue darkColor = new TypedValue();
         TypedValue lightColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimaryDark, darkColor, true);
@@ -605,7 +615,7 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addSetAnimation(final boolean isReverse) {
         // previously invisible view
-        final View myView = findViewById(R.id.edit_set_layout);
+        final View myView = mEditSetLayout;
 
         // get the center for the clipping circle
         int cx = myView.getMeasuredWidth();
@@ -690,9 +700,15 @@ public class GCEditCollectionActivity extends GCBaseActivity {
     private void onSetUpdated(GCSavedSet oldSet, GCSavedSet newSet) {
         GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.updateData(oldSet, newSet);
         mSetsListListAdapter.update(oldSet, newSet);
-        int position = mSetsList.indexOf(oldSet);
-        mSetsList.set(position, newSet);
+        int counter = 0;
+        for (GCSavedSet savedSet : mSetsList) {
+            if (savedSet.getId() == oldSet.getId()) {
+                mSetsList.set(counter, newSet);
+            }
+            counter++;
+        }
         Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.updateToOnlineDB(this, newSet);
     }
 
     public void onSetRemoved(GCSavedSet savedSet) {
