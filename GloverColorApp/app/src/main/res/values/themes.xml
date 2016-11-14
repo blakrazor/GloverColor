@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="blueThemeName">BLUE_THEME</string>
+    <string name="purpleThemeName">PURPLE_THEME</string>
+    <string name="greenThemeName">GREEN_THEME</string>
+    <string name="redThemeName">RED_THEME</string>
+    <string name="defaultThemeName">DEFAULT_THEME</string>
+
     <style name="BlueTheme">
-        <item name="themeName">BLUE_THEME</item>
+        <item name="themeName">@string/blueThemeName</item>
         <item name="colorPrimary">@color/blueThemePrimary</item>
         <item name="colorPrimaryDark">@color/blueThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/blueThemePrimaryDark</item>
@@ -13,7 +19,7 @@
     </style>
 
     <style name="PurpleTheme">
-        <item name="themeName">PURPLE_THEME</item>
+        <item name="themeName">@string/purpleThemeName</item>
         <item name="colorPrimary">@color/purpleThemePrimary</item>
         <item name="colorPrimaryDark">@color/purpleThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/purpleThemePrimaryDark</item>
@@ -25,7 +31,7 @@
     </style>
 
     <style name="GreenTheme">
-        <item name="themeName">GREEN_THEME</item>
+        <item name="themeName">@string/greenThemeName</item>
         <item name="colorPrimary">@color/greenThemePrimary</item>
         <item name="colorPrimaryDark">@color/greenThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/greenThemePrimaryDark</item>
@@ -37,7 +43,7 @@
     </style>
 
     <style name="RedTheme">
-        <item name="themeName">RED_THEME</item>
+        <item name="themeName">@string/redThemeName</item>
         <item name="colorPrimary">@color/redThemePrimary</item>
         <item name="colorPrimaryDark">@color/redThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/redThemePrimaryDark</item>
@@ -49,7 +55,7 @@
     </style>
 
     <style name="DefaultTheme">
-        <item name="themeName">DEFAULT_THEME</item>
+        <item name="themeName">@string/defaultThemeName</item>
         <item name="colorPrimary">@color/darkThemePrimary</item>
         <item name="colorPrimaryDark">@color/darkThemePrimaryDark</item>
         <item name="savedSetListBackground">@color/darkThemePrimaryDark</item>

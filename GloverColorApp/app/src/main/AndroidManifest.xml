@@ -89,9 +89,23 @@
             android:label="@string/title_version_info"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".ui.activities.GCSyncConflictActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_sync_conflicts"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="1503a3d7f3a5b932fe52076333b3746997624419"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id"/>
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1616332021995948"
+            android:exported="true"/>
     </application>
 </manifest>

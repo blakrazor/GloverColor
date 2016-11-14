@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/background">
+
+    <RelativeLayout
+        android:id="@+id/sync_conflicts_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/icon_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:alpha="0.2"
+            android:paddingRight="50dp"
+            android:paddingLeft="50dp"
+            android:src="@drawable/glover_color_logo"/>
+
+        <TextView
+            android:id="@+id/text_view_sync_message"
+            style="@style/BodyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="@string/sync_conflict_message"/>
+
+        <com.achanr.glovercolorapp.ui.views.GridRecyclerView
+            android:id="@+id/sync_conflicts_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="40dp"
+            android:scrollbars="vertical"
+            android:layout_below="@id/text_view_sync_message"
+            android:layoutAnimation="@anim/grid_layout_in_animation"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
