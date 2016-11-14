@@ -30,6 +30,7 @@ public class GloverColorApplication extends Application {
         GCPowerLevelUtil.initPowerLevelArrayList(this);
         GCChipUtil.initChipArrayList(this);
         GCModeUtil.initModeArrayList(this);
+        GCOnlineDatabaseUtil.initialize();
         GCOnlineDatabaseUtil.checkSyncStatus(this, null);
     }
 }
