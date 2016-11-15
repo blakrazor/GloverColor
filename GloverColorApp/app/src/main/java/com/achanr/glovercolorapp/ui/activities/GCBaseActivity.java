@@ -84,6 +84,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 // user is signed in!
+                GCOnlineDatabaseUtil.saveUserOnline();
                 GCOnlineDatabaseUtil.checkSyncStatus(this, new GCOnlineDatabaseUtil.OnCompletionHandler() {
                     @Override
                     public void onComplete() {
