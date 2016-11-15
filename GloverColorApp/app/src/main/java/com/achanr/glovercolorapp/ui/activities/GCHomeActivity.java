@@ -3,8 +3,6 @@ package com.achanr.glovercolorapp.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -79,13 +77,9 @@ public class GCHomeActivity extends GCBaseActivity {
     private void checkIfNewVersion() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(GCHomeActivity.this);
         String oldVersion = prefs.getString("CHECK_UPDATE_VERSION", "0.0");
-        String currentVersion;
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            currentVersion = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            currentVersion = prefs.getString(getString(R.string.version_number_preference), "0.0");
-        }
+
+        String[] versionNumberArray = getResources().getStringArray(R.array.version_number_array);
+        String currentVersion = versionNumberArray[versionNumberArray.length - 1];
 
         if (!currentVersion.equalsIgnoreCase(oldVersion)) {
             displayWhatsNewDialog(currentVersion);
