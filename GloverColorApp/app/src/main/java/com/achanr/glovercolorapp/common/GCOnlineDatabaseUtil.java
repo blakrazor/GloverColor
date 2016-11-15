@@ -11,6 +11,7 @@ import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.models.GCUser;
 import com.achanr.glovercolorapp.ui.activities.GCBaseActivity;
 import com.achanr.glovercolorapp.ui.activities.GCSyncConflictActivity;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,12 +52,14 @@ public class GCOnlineDatabaseUtil {
     private static ProgressDialog progressDialog;
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
+    private static final String USERS_KEY = "users";
 
     public static void initialize() {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         if (currentReference == null) {
             currentReference = FirebaseDatabase.getInstance().getReference();
         }
+        GCOnlineDatabaseUtil.saveUserOnline();
     }
 
     private static DatabaseReference getCurrentDatabaseReference() {
@@ -64,6 +67,17 @@ public class GCOnlineDatabaseUtil {
             currentReference = FirebaseDatabase.getInstance().getReference();
         }
         return currentReference;
+    }
+
+    public static void saveUserOnline() {
+        if (GCAuthUtil.isCurrentUserLoggedIn()) {
+            FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
+            GCUser user = GCUser.convertFromFirebaseUser(currentUser);
+            getCurrentDatabaseReference()
+                    .child(USERS_KEY)
+                    .child(currentUser.getUid())
+                    .setValue(user);
+        }
     }
 
     public static void syncToOnline(Context context, OnCompletionHandler handler) {
