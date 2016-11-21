@@ -126,4 +126,7 @@
     <string name="sync_status_out_of_sync">Out of Sync</string>
     <string name="sync_status_synced">Synced</string>
     <string name="sync_cancelled">Sync cancelled</string>
+    <string name="login_showcase">Login and synchronize your saved sets to an online database.</string>
+    <string name="new_showcase">NEW!</string>
+    <string name="check_your_status_showcase">Check your sync status from time to time. You can re-synchronize easily by pressing the \'Synchronize\' button in the navigation menu.</string>
 </resources>
