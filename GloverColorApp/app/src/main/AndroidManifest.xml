@@ -101,6 +101,12 @@
             android:label="@string/title_discover"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".ui.activities.GCUploadSetActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_upload_set"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"

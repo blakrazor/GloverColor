@@ -1,6 +1,9 @@
 package com.achanr.glovercolorapp.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;
@@ -38,5 +41,25 @@ public class GCDiscoverActivity extends GCBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 1, "Upload").setIcon(R.drawable.ic_cloud_upload_white_48dp)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                Intent intent = new Intent(this, GCUploadSetActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
