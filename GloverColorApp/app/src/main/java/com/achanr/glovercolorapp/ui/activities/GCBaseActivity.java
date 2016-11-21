@@ -430,7 +430,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
                     .setContentText(getString(R.string.check_your_status_showcase))
                     .hideOnTouchOutside()
                     .withMaterialShowcase()
-                    //.singleShot(GCConstants.LOGIN_LOGOUT_SHOWCASE)
+                    .singleShot(GCConstants.POST_LOGIN_SHOWCASE)
                     .build();
         } catch (Exception ex) {
             Log.e(GCBaseActivity.class.getSimpleName(), ex.getMessage());
