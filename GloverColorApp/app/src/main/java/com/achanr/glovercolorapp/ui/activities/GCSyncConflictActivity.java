@@ -139,7 +139,7 @@ public class GCSyncConflictActivity extends GCBaseActivity {
             List<GCSavedSet> unselectedSets = new ArrayList<>();
             List<GCSavedSet> selectedSets = new ArrayList<>();
             for (int x = 0; x < mOnlineDBSavedSets.size(); x++) {
-                GCSavedSet set = GCOnlineDatabaseUtil.convertToSavedSet(this, mOnlineDBSavedSets.get(x));
+                GCSavedSet set = GCSavedSet.convertToSavedSet(this, mOnlineDBSavedSets.get(x));
                 if (selectedPositions.contains(x)) {
                     selectedSets.add(set);
                 } else {
