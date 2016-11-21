@@ -33,7 +33,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         static final String SAVED_SET_CHIP = "chip";
         static final String SAVED_SET_CUSTOM_COLORS = "custom_colors";
         static final String SAVED_SET_DESCRIPTION = "description";
-        static final String SAVED_SET_SHARED_WITH_PUBLIC = "shared_with_public";
     }
 
     private final Context mContext;
@@ -54,8 +53,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                     GCSavedSetEntry.SAVED_SET_MODE + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_CHIP + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
                     GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCSavedSetEntry.SAVED_SET_DESCRIPTION + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
-                    GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC + GCDatabaseHelper.INT_TYPE +
+                    GCSavedSetEntry.SAVED_SET_DESCRIPTION + GCDatabaseHelper.TEXT_TYPE +
                     " );");
         }
     }
@@ -69,7 +67,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_MODE, savedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, savedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
-        values.put(GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC, savedSet.isSharedWithPublic() ? 1 : 0);
 
         db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -83,7 +80,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_MODE, dbSavedSet.getMode());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, dbSavedSet.getChip());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, dbSavedSet.getCustom_colors());
-        values.put(GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC, dbSavedSet.isSharedWithPublic() ? 1 : 0);
 
         db_adapter.insertEntryInDB(TABLE_NAME, values);
     }
@@ -104,8 +100,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
                 GCSavedSetEntry.SAVED_SET_COLORS,
                 GCSavedSetEntry.SAVED_SET_MODE,
                 GCSavedSetEntry.SAVED_SET_CHIP,
-                GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS,
-                GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC
+                GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS
         };
 
         // How you want the results sorted in the resulting Cursor
@@ -177,10 +172,8 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
         String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
         String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
-        int isSharedWithPublic = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC));
 
         savedSet.setId(id);
-        savedSet.setSharedWithPublic(isSharedWithPublic != 0);
         savedSet.setTitle(title);
         savedSet.setDescription(description);
         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
@@ -222,7 +215,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         values.put(GCSavedSetEntry.SAVED_SET_MODE, newSavedSet.getMode().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CHIP, newSavedSet.getChipSet().getTitle());
         values.put(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS, GCUtil.convertCustomColorArrayToString(newSavedSet.getCustomColors()));
-        values.put(GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC, newSavedSet.isSharedWithPublic() ? 1 : 0);
 
         // Which row to update, based on the ID
         String selection = GCSavedSetEntry._ID + "=?";

@@ -17,7 +17,6 @@ public class GCOnlineDBSavedSet implements Serializable {
     private String mode;
     private String chip;
     private String custom_colors;
-    private boolean sharedWithPublic;
 
     public GCOnlineDBSavedSet() {
     }
@@ -78,14 +77,6 @@ public class GCOnlineDBSavedSet implements Serializable {
         this.custom_colors = custom_colors;
     }
 
-    public boolean isSharedWithPublic() {
-        return sharedWithPublic;
-    }
-
-    public void setSharedWithPublic(boolean sharedWithPublic) {
-        this.sharedWithPublic = sharedWithPublic;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,7 +85,6 @@ public class GCOnlineDBSavedSet implements Serializable {
         GCOnlineDBSavedSet that = (GCOnlineDBSavedSet) o;
 
         if (id != that.id) return false;
-        if (sharedWithPublic != that.sharedWithPublic) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null)
             return false;
@@ -114,7 +104,6 @@ public class GCOnlineDBSavedSet implements Serializable {
         result = 31 * result + (mode != null ? mode.hashCode() : 0);
         result = 31 * result + (chip != null ? chip.hashCode() : 0);
         result = 31 * result + (custom_colors != null ? custom_colors.hashCode() : 0);
-        result = 31 * result + (sharedWithPublic ? 1 : 0);
         return result;
     }
 
@@ -127,7 +116,6 @@ public class GCOnlineDBSavedSet implements Serializable {
         dbSavedSet.setMode(savedSet.getMode().getTitle());
         dbSavedSet.setChip(savedSet.getChipSet().getTitle());
         dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
-        dbSavedSet.setSharedWithPublic(savedSet.isSharedWithPublic());
         return dbSavedSet;
     }
 }
