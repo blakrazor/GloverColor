@@ -35,4 +35,8 @@ public class GCConstants {
     public static final String CUSTOM_PREFIX = "??";
     public static final int MAX_COLORS = 16;
     public static final int HALF_COLORS = 8;
+
+    //ShowcaseView Constants
+    public static final long LOGIN_LOGOUT_SHOWCASE = 1001;
+    public static final long POST_LOGIN_SHOWCASE = 1002;
 }
