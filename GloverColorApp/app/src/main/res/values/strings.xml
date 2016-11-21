@@ -130,4 +130,5 @@
     <string name="new_showcase">NEW!</string>
     <string name="check_your_status_showcase">Check your sync status from time to time. You can re-synchronize easily by pressing the \'Synchronize\' button in the navigation menu.</string>
     <string name="title_discover">Discover</string>
+    <string name="title_upload_set">Upload Online</string>
 </resources>
