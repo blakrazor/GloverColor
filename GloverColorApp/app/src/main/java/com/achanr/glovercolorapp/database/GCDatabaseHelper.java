@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 34;
+    private static final int DATABASE_VERSION = 35;
     private static final String DATABASE_NAME = "SavedSet.db";
     static final String TEXT_TYPE = " TEXT";
     static final String INT_TYPE = " INT";
@@ -113,6 +113,10 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
                             GCCollectionDatabase.GCCollectionEntry.COLLECTION_SETS_KEY + " FROM " + GCCollectionDatabase.TABLE_NAME + ";");
                     db.execSQL("DROP TABLE " + GCCollectionDatabase.TABLE_NAME + ";");
                     db.execSQL("ALTER TABLE backupTable RENAME TO " + GCCollectionDatabase.TABLE_NAME + ";");
+                    break;
+                case 35:
+                    db.execSQL("ALTER TABLE " + GCSavedSetDatabase.TABLE_NAME +
+                            " ADD COLUMN " + GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_SHARED_WITH_PUBLIC + " " + INT_TYPE + " DEFAULT 0;");
                     break;
                 default: //if case not shown, no changes made
                     break;

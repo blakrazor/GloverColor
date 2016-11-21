@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
-import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
@@ -51,7 +50,7 @@ public class GCSyncConflictsAdapter extends RecyclerView.Adapter<GCSyncConflicts
     public void onBindViewHolder(GCSyncConflictsListItemViewHolder holder, final int position) {
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
-        GCSavedSet savedSet = GCOnlineDatabaseUtil.convertToSavedSet(mContext, mOnlineDBSavedSets.get(position));
+        GCSavedSet savedSet = GCSavedSet.convertToSavedSet(mContext, mOnlineDBSavedSets.get(position));
         String title = savedSet.getTitle();
         GCMode mode = savedSet.getMode();
         GCChip chipSet = savedSet.getChipSet();
