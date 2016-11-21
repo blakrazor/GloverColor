@@ -24,8 +24,8 @@ android {
         applicationId "com.achanr.glovercolorapp"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 18
-        versionName "2.0.1"
+        versionCode 19
+        versionName "2.0.2"
     }
 
     signingConfigs {
@@ -87,6 +87,8 @@ dependencies {
     //Butterknife for View Binding
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    //Showcase for tutorial
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
