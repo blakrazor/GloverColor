@@ -95,6 +95,12 @@
             android:label="@string/title_sync_conflicts"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".ui.activities.GCDiscoverActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_discover"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
