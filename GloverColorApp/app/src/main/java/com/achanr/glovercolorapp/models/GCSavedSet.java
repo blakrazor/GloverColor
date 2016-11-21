@@ -24,7 +24,6 @@ public class GCSavedSet implements Serializable {
     private GCMode mMode;
     private GCChip mChipSet;
     private ArrayList<int[]> mCustomColors;
-    private boolean sharedWithPublic;
 
     public GCSavedSet() {
         initializeCustomColorArray();
@@ -85,14 +84,6 @@ public class GCSavedSet implements Serializable {
         mChipSet = chipSet;
     }
 
-    public boolean isSharedWithPublic() {
-        return sharedWithPublic;
-    }
-
-    public void setSharedWithPublic(boolean sharedWithPublic) {
-        this.sharedWithPublic = sharedWithPublic;
-    }
-
     public ArrayList<int[]> getCustomColors() {
         if (mCustomColors == null || mCustomColors.isEmpty()) {
             initializeCustomColorArray();
@@ -131,7 +122,6 @@ public class GCSavedSet implements Serializable {
     public static GCSavedSet convertToSavedSet(Context context, GCOnlineDBSavedSet dbSavedSet) {
         GCSavedSet savedSet = new GCSavedSet();
         savedSet.setId(dbSavedSet.getId());
-        savedSet.setSharedWithPublic(dbSavedSet.isSharedWithPublic());
         savedSet.setTitle(dbSavedSet.getTitle());
         savedSet.setDescription(dbSavedSet.getDescription());
         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(dbSavedSet.getColors()));
