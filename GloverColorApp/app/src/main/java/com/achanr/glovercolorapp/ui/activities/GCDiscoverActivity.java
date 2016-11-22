@@ -41,6 +41,7 @@ public class GCDiscoverActivity extends GCBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
@@ -55,8 +56,7 @@ public class GCDiscoverActivity extends GCBaseActivity {
         switch (item.getItemId()) {
             case 1:
                 Intent intent = new Intent(this, GCUploadSetActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                startActivityTransition(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
