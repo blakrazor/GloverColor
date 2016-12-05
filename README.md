@@ -23,6 +23,7 @@ GloverColor is completely open source and I welcome other Android developers to 
  - June 2016 - Released GloverColor v1.1
  - June 2016 - Released GloverColor v1.2
  - October 2016 - Released GloverColor v1.3
+ - December 2016 - Silently Released GloverColor v2.0.1
 
 ## Credits
 
