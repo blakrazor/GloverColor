@@ -23,6 +23,7 @@ import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
+import com.achanr.glovercolorapp.ui.viewHolders.GCEnterCodeViewHolder;
 
 import java.util.ArrayList;
 
@@ -30,17 +31,14 @@ public class GCEnterCodeActivity extends GCBaseActivity {
 
     private TextInputLayout mEnterCodeEditText;
     private Button mSubmitCodeButton;
+    private Button mClearTextButton;
 
     private boolean isTextEntered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_enter_code, mFrameLayout);
         setupToolbar(getString(R.string.title_enter_code));
-
-        mEnterCodeEditText = (TextInputLayout) findViewById(R.id.edit_text_enter_code);
-        mSubmitCodeButton = (Button) findViewById(R.id.submit_code_button);
 
         updateButton();
         setListeners();
@@ -59,6 +57,15 @@ public class GCEnterCodeActivity extends GCBaseActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_enter_code, mFrameLayout);
+        GCEnterCodeViewHolder viewHolder = new GCEnterCodeViewHolder(view);
+        mEnterCodeEditText = viewHolder.getEnterCodeEditText();
+        mSubmitCodeButton = viewHolder.getSubmitCodeButton();
+        mClearTextButton = viewHolder.getClearTextButton();
     }
 
     private void setListeners() {
@@ -100,7 +107,7 @@ public class GCEnterCodeActivity extends GCBaseActivity {
             }
         });
 
-        findViewById(R.id.clear_text_button).setOnClickListener(new View.OnClickListener() {
+        mClearTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEnterCodeEditText.getEditText().setText("");

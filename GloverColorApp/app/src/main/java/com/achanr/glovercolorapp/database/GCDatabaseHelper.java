@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 31;
+    private static final int DATABASE_VERSION = 34;
     private static final String DATABASE_NAME = "SavedSet.db";
     static final String TEXT_TYPE = " TEXT";
     static final String INT_TYPE = " INT";
@@ -90,6 +90,29 @@ public class GCDatabaseHelper extends SQLiteOpenHelper {
                     break;
                 case 23:
                     COLLECTION_DATABASE.createTable(db);
+                    break;
+                case 32:
+                    db.execSQL("ALTER TABLE " + GCSavedSetDatabase.TABLE_NAME +
+                            " ADD COLUMN " + GCSavedSetDatabase.GCSavedSetEntry.SAVED_SET_DESCRIPTION + " " + TEXT_TYPE + ";");
+                    break;
+                case 34:
+                    db.execSQL("CREATE TABLE " +
+                            "backupTable" +
+                            " (" + GCCollectionDatabase.GCCollectionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_TITLE_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_DESC_KEY + GCDatabaseHelper.TEXT_TYPE + GCDatabaseHelper.COMMA_SEP +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_SETS_KEY + GCDatabaseHelper.TEXT_TYPE +
+                            " );");
+                    db.execSQL("INSERT INTO backupTable(" +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_TITLE_KEY + ", " +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_DESC_KEY + ", " +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_SETS_KEY +
+                            ") SELECT " +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_TITLE_KEY + ", " +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_DESC_KEY + ", " +
+                            GCCollectionDatabase.GCCollectionEntry.COLLECTION_SETS_KEY + " FROM " + GCCollectionDatabase.TABLE_NAME + ";");
+                    db.execSQL("DROP TABLE " + GCCollectionDatabase.TABLE_NAME + ";");
+                    db.execSQL("ALTER TABLE backupTable RENAME TO " + GCCollectionDatabase.TABLE_NAME + ";");
                     break;
                 default: //if case not shown, no changes made
                     break;

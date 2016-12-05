@@ -44,6 +44,12 @@
 
         <Preference
             android:clickable="true"
+            android:key="@string/acknowledgements_preference"
+            android:title="Acknowledgements"
+            android:summary="Kudos and thanks to all third parties"/>
+
+        <Preference
+            android:clickable="true"
             android:key="@string/rate_app_preference"
             android:title="Rate App"
             android:summary="Give or update your rating on the Play Store"/>
@@ -53,6 +59,12 @@
             android:key="@string/follow_facebook_preference"
             android:title="Follow on Facebook"
             android:summary="Stay up to date with the latest developments"/>
+
+        <Preference
+            android:clickable="true"
+            android:key="@string/opt_in_beta_preference"
+            android:title="Beta Opt-in"
+            android:summary="Join the open beta and be the first to test new features"/>
 
         <Preference
             android:clickable="true"

@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
@@ -36,10 +35,12 @@ import android.widget.Toast;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.CustomItemAnimator;
 import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.adapters.GCSavedSetListAdapter;
+import com.achanr.glovercolorapp.ui.viewHolders.GCSavedSetListViewHolder;
 import com.achanr.glovercolorapp.ui.views.GridRecyclerView;
 
 import java.util.ArrayList;
@@ -125,17 +126,23 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
         setupToolbar(getString(R.string.title_your_saved_sets));
 
-        getSavedSetListFromDatabase();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
+            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
+        } else {
+            mFab.setVisibility(View.VISIBLE);
+        }
+    }
 
-        /*if (mSavedSetList != null && mSavedSetList.size() > 0) {
-            findViewById(R.id.icon_background).setVisibility(View.GONE);
-        }*/
+    @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_saved_set_list, mFrameLayout);
+        GCSavedSetListViewHolder viewHolder = new GCSavedSetListViewHolder(view);
+        mSavedSetListRecyclerView = viewHolder.getSavedSetListRecyclerView();
+        mFab = viewHolder.getFab();
 
-        mSavedSetListRecyclerView = (GridRecyclerView) findViewById(R.id.saved_set_list_recyclerview);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,15 +164,15 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                 }
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setPosition(R.id.nav_saved_color_sets);
+
+        getSavedSetListFromDatabase();
         setupSavedSetList();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mSavedSetListRecyclerView.setVisibility(View.INVISIBLE);
-            mFab.setBackground(getDrawable(R.drawable.fab_ripple));
-        } else {
-            mFab.setVisibility(View.VISIBLE);
-        }
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -190,18 +197,13 @@ public class GCSavedSetListActivity extends GCBaseActivity {
                     });
                     mFab.setVisibility(View.GONE);
                 }
+                intent.removeExtra(FROM_NAVIGATION);
             }
 
             if (intent.getBooleanExtra(GCUtil.WAS_REFRESHED, false)) {
                 mFab.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setPosition(R.id.nav_saved_color_sets);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean(GCConstants.WAS_POWER_LEVELS_CHANGED_KEY, false)) {
@@ -280,7 +282,13 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         final List<GCSavedSet> filteredModelList = new ArrayList<>();
         for (GCSavedSet model : models) {
             final String text = model.getTitle().toLowerCase();
-            if (text.contains(query)) {
+            final String mode = model.getMode().getTitle().toLowerCase();
+            final String chip = model.getChipSet().getTitle().toLowerCase();
+            final String description = model.getDescription().toLowerCase();
+            if (text.contains(query)
+                    || mode.contains(query)
+                    || chip.contains(query)
+                    || description.contains(query)) {
                 filteredModelList.add(model);
             }
         }
@@ -409,14 +417,17 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         int position = mSavedSetList.indexOf(oldSet);
         mSavedSetList.set(position, newSet);
         Toast.makeText(this, getString(R.string.set_updated_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.updateToOnlineDB(this, newSet);
     }
 
     public void onSetDeleted(GCSavedSet savedSet) {
+        int id = GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(savedSet).getId();
         GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.deleteData(savedSet);
         mSavedSetListAdapter.remove(savedSet);
         int position = mSavedSetList.indexOf(savedSet);
         mSavedSetList.remove(position);
         Toast.makeText(this, getString(R.string.set_deleted_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.deleteFromOnlineDB(this, id);
     }
 
     private void onSetAdded(GCSavedSet newSet) {
@@ -425,6 +436,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetList.add(mSavedSetList.size(), newSet);
         mSavedSetList = GCUtil.sortList(this, mSavedSetList);
         Toast.makeText(this, getString(R.string.set_added_message), Toast.LENGTH_SHORT).show();
+        GCOnlineDatabaseUtil.addToOnlineDB(this, GCDatabaseHelper.getInstance(this).SAVED_SET_DATABASE.getData(newSet));
     }
 
     private void sort() {
@@ -448,7 +460,7 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
 
         // previously visible view
-        final View myView = findViewById(R.id.fab);
+        final View myView = mFab;
 
         // get the center for the clipping circle
         final int cx = myView.getMeasuredWidth() / 2;
@@ -567,9 +579,9 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         }
 
         isAnimating = true;
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            isAnimating = false;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 animateFab(false, new AnimationCompleteListener() {
@@ -593,5 +605,12 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     private void completedAnimationBackPressed() {
         isAnimating = false;
         super.onBackPressed();
+    }
+
+    public void refreshList() {
+        getSavedSetListFromDatabase();
+        mSavedSetListAdapter = new GCSavedSetListAdapter(this, mSavedSetList);
+        mSavedSetListAdapter.sortList();
+        mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
 }

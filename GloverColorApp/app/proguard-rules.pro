@@ -17,3 +17,15 @@
 #}
 
 -keep class android.support.v7.widget.SearchView { *; }
+-dontwarn com.squareup.okhttp.**
+
+-keepattributes *Annotation*
+# Add this global rule
+-keepattributes Signature
+
+# This rule will properly ProGuard all the model classes in
+# the package com.yourcompany.models. Modify to fit the structure
+# of your app.
+-keepclassmembers class com.achanr.glovercolorapp.models.** {
+  *;
+}
