@@ -14,7 +14,7 @@ import com.achanr.glovercolorapp.models.GCChip;
 import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.ui.viewHolders.GCSyncConflictsListItemViewHolder;
+import com.achanr.glovercolorapp.ui.viewHolders.GCMultiSelectorListItemViewHolder;
 import com.bignerdranch.android.multiselector.MultiSelector;
 
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ import java.util.List;
  * @author Andrew Chanrasmi on 10/25/16
  */
 
-public class GCSyncConflictsAdapter extends RecyclerView.Adapter<GCSyncConflictsListItemViewHolder> {
+public class GCMultiSelectorAdapter extends RecyclerView.Adapter<GCMultiSelectorListItemViewHolder> {
 
     private List<GCOnlineDBSavedSet> mOnlineDBSavedSets;
     private final Context mContext;
     private MultiSelector mMultiSelector;
 
-    public GCSyncConflictsAdapter(Context context, List<GCOnlineDBSavedSet> onlineDBSavedSets) {
+    public GCMultiSelectorAdapter(Context context, List<GCOnlineDBSavedSet> onlineDBSavedSets) {
         mOnlineDBSavedSets = new ArrayList<>(onlineDBSavedSets);
         mContext = context;
 
@@ -39,15 +39,15 @@ public class GCSyncConflictsAdapter extends RecyclerView.Adapter<GCSyncConflicts
     }
 
     @Override
-    public GCSyncConflictsListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GCMultiSelectorListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_sync_conflicts, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_multi_selector, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        return new GCSyncConflictsListItemViewHolder(mContext, v, mMultiSelector);
+        return new GCMultiSelectorListItemViewHolder(mContext, v, mMultiSelector);
     }
 
     @Override
-    public void onBindViewHolder(GCSyncConflictsListItemViewHolder holder, final int position) {
+    public void onBindViewHolder(GCMultiSelectorListItemViewHolder holder, final int position) {
         // - get element from your dataset at this mPosition
         // - replace the contents of the view with that element
         GCSavedSet savedSet = GCSavedSet.convertToSavedSet(mContext, mOnlineDBSavedSets.get(position));

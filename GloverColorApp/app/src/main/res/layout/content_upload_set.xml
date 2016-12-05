@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/background">
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/upload_set_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/icon_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:alpha="0.2"
+            android:paddingRight="50dp"
+            android:paddingLeft="50dp"
+            android:src="@drawable/glover_color_logo"/>
+
+        <TextView
+            android:id="@+id/text_view_upload_set"
+            style="@style/BodyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="@string/choose_sets_to_upload"/>
+
+        <com.achanr.glovercolorapp.ui.views.GridRecyclerView
+            android:id="@+id/upload_set_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="40dp"
+            android:scrollbars="vertical"
+            android:layout_below="@id/text_view_upload_set"
+            android:layoutAnimation="@anim/grid_layout_in_animation"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
