@@ -17,7 +17,7 @@ import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
-import com.achanr.glovercolorapp.ui.adapters.GCSyncConflictsAdapter;
+import com.achanr.glovercolorapp.ui.adapters.GCMultiSelectorAdapter;
 import com.achanr.glovercolorapp.ui.viewHolders.GCSyncConflictViewHolder;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class GCSyncConflictActivity extends GCBaseActivity {
     public static final String BUNDLE_KEY = "bundle_key";
     public static final String CONFLICT_SETS_KEY = "conflict_sets_key";
 
-    private GCSyncConflictsAdapter mAdapter;
+    private GCMultiSelectorAdapter mAdapter;
     private GCSyncConflictViewHolder mViewHolder;
     private ProgressDialog mProgressDialog;
 
@@ -122,7 +122,7 @@ public class GCSyncConflictActivity extends GCBaseActivity {
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         mViewHolder.getGridRecyclerView().setLayoutManager(mLayoutManager);
         mViewHolder.getGridRecyclerView().setItemAnimator(new CustomItemAnimator());
-        mAdapter = new GCSyncConflictsAdapter(this, mOnlineDBSavedSets);
+        mAdapter = new GCMultiSelectorAdapter(this, mOnlineDBSavedSets);
         mViewHolder.getGridRecyclerView().setAdapter(mAdapter);
     }
 

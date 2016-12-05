@@ -13,7 +13,7 @@ import com.bignerdranch.android.multiselector.SwappingHolder;
  * @author Andrew Chanrasmi on 10/25/16
  */
 
-public class GCSyncConflictsListItemViewHolder extends SwappingHolder {
+public class GCMultiSelectorListItemViewHolder extends SwappingHolder {
 
     public final TextView txtTitle;
     public final TextView txtColors;
@@ -22,7 +22,7 @@ public class GCSyncConflictsListItemViewHolder extends SwappingHolder {
     private final Context mContext;
     private boolean isChecked;
 
-    public GCSyncConflictsListItemViewHolder(Context context, View itemView, final MultiSelector multiSelector) {
+    public GCMultiSelectorListItemViewHolder(Context context, View itemView, final MultiSelector multiSelector) {
         super(itemView, multiSelector);
         mContext = context;
         txtTitle = (TextView) itemView.findViewById(R.id.list_item_sync_conflicts_title);
@@ -34,7 +34,7 @@ public class GCSyncConflictsListItemViewHolder extends SwappingHolder {
             @Override
             public void onClick(View v) {
                 setChecked(!isChecked);
-                multiSelector.setSelected(GCSyncConflictsListItemViewHolder.this, isChecked);
+                multiSelector.setSelected(GCMultiSelectorListItemViewHolder.this, isChecked);
             }
         });
     }

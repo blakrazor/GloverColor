@@ -39,4 +39,8 @@ public class GCConstants {
     //ShowcaseView Constants
     public static final long LOGIN_LOGOUT_SHOWCASE = 1001;
     public static final long POST_LOGIN_SHOWCASE = 1002;
+
+    //Upload set constants
+    public static final int MAX_UPLOAD_COUNT = 5;
+    public static final String UPLOAD_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 }
