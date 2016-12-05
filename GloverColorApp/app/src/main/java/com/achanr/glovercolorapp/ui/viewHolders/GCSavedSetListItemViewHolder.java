@@ -1,4 +1,4 @@
-package com.achanr.glovercolorapp.ui.views;
+package com.achanr.glovercolorapp.ui.viewHolders;
 
 import android.content.Context;
 import android.content.DialogInterface;

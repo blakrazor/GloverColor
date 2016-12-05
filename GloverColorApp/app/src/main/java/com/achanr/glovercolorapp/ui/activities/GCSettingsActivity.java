@@ -1,5 +1,6 @@
 package com.achanr.glovercolorapp.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -11,6 +12,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,7 +37,6 @@ public class GCSettingsActivity extends GCBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_settings, mFrameLayout);
         setupToolbar(getString(R.string.title_settings));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -49,6 +50,11 @@ public class GCSettingsActivity extends GCBaseActivity {
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, prefsFragment).commit();
+    }
+
+    @Override
+    protected void setupContentLayout() {
+        getLayoutInflater().inflate(R.layout.activity_settings, mFrameLayout);
     }
 
     @Override
@@ -82,6 +88,8 @@ public class GCSettingsActivity extends GCBaseActivity {
             setupResetDialogPreference();
             setupDefaultChipPreference();
             setupFollowFacebookPreference();
+            setupAcknowledgementsPreference();
+            setupOptinBetaPreference();
         }
 
         private void setupThemePreference() {
@@ -268,6 +276,37 @@ public class GCSettingsActivity extends GCBaseActivity {
                     } catch (PackageManager.NameNotFoundException ignored) {
                     }
                     startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    return true;
+                }
+            });
+        }
+
+        private void setupAcknowledgementsPreference() {
+            Preference acknowledgementsPreference = findPreference(getActivity().getString(R.string.acknowledgements_preference));
+            acknowledgementsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Acknowledgements")
+                            .setMessage(getString(R.string.acknowledgements_list))
+                            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                    return true;
+                }
+            });
+        }
+
+        private void setupOptinBetaPreference() {
+            Preference optinBetaPreference = findPreference(getActivity().getString(R.string.opt_in_beta_preference));
+            optinBetaPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getActivity().getString(R.string.beta_opt_in_link)));
+                    startActivity(browserIntent);
                     return true;
                 }
             });

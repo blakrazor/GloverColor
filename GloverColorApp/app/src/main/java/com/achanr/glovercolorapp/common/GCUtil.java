@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
@@ -34,6 +36,8 @@ import com.achanr.glovercolorapp.models.GCPoweredColor;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.ui.activities.GCCollectionsActivity;
 import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -257,7 +261,7 @@ public class GCUtil {
         return shareString;
     }
 
-    public static void showShareDialog(final Context mContext, GCSavedSet savedSet) {
+    public static void showShareDialog(final Context mContext, final GCSavedSet savedSet) {
         AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
         alert.setTitle(mContext.getString(R.string.share_code));
         alert.setIcon(R.drawable.ic_share_black_48dp);
@@ -282,11 +286,12 @@ public class GCUtil {
         alert.setNegativeButton(mContext.getString(R.string.share), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://deeplink.me/glovercolorapp.com/entercode/" + shareString);
-                sendIntent.setType("text/plain");
-                mContext.startActivity(Intent.createChooser(sendIntent, "Share gloving set with"));
+                createShareChooser(mContext, savedSet.getTitle(), mContext.getString(R.string.facebook_share_description), shareString);
+//                Intent sendIntent = new Intent();
+//                sendIntent.setAction(Intent.ACTION_SEND);
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://deeplink.me/glovercolorapp.com/entercode/" + shareString);
+//                sendIntent.setType("text/plain");
+//                mContext.startActivity(Intent.createChooser(sendIntent, "Share gloving set with"));
             }
         });
         alert.setNeutralButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -297,6 +302,48 @@ public class GCUtil {
         });
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
+    }
+
+    private static void createShareChooser(final Context context,
+                                           final String title,
+                                           final String description,
+                                           final String shareString) {
+        final Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TEXT, "https://deeplink.me/glovercolorapp.com/entercode/" + shareString);
+
+        final List<ResolveInfo> activities = context.getPackageManager().queryIntentActivities(i, 0);
+
+        List<String> appNames = new ArrayList<>();
+        for (ResolveInfo info : activities) {
+            appNames.add(info.loadLabel(context.getPackageManager()).toString());
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Share gloving set using...");
+        builder.setItems(appNames.toArray(new CharSequence[appNames.size()]), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                ResolveInfo info = activities.get(item);
+                if (info.activityInfo.packageName.equals("com.facebook.katana")) {
+                    // Facebook was chosen
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse("https://deeplink.me/glovercolorapp.com/entercode/" + shareString))
+                            .setImageUrl(Uri.parse("http://res.cloudinary.com/glovercolor/image/upload/w_599,h_314,c_fit/v1477433765/glovercolor_icon.png"))
+                            .setContentTitle(shareString)
+                            .setContentDescription(description)
+                            .build();
+                    ShareDialog shareDialog = new ShareDialog((Activity) context);
+                    shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                    return;
+                }
+
+                // start the selected activity
+                i.setPackage(info.activityInfo.packageName);
+                context.startActivity(i);
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public static String convertToCamelcase(Context context, String inputString) {

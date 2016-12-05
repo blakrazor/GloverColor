@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="acknowledgements_list">
+        \n\u2022 Picasso Image Library &#169; 2013 Square, Inc.
+        \n\u2022 Firebase for Android &#169; 2016 Google Inc.
+        \n\u2022 FirebaseUI for Android &#169; 2016 Google Inc.
+        \n\u2022 RecyclerView MultiSelect &#169; 2014 Big Nerd Ranch
+        \n\u2022 Facebook &#169; 2016 Facebook, Inc.
+        \n\u2022 Butter Knife &#169; 2013 Jake Wharton
+    </string>
     <string name="whats_new_in_version_1.1">
         \n\u2022 Fixed social media sharing
         \n\u2022 Fixed Chroma24 colors
@@ -19,5 +27,12 @@
         \n\u2022 Fixed similar abbreviation bug
         \n\u2022 Added numbers to colors and patterns
         \n\u2022 Added Flow V2 chip
+    </string>
+    <string name="whats_new_in_version_2.0">
+        \n\u2022 Performance Optimizations
+        \n\u2022 Login using Facebook/Google/Email
+        \n\u2022 Save/Synchronize sets with online database
+        \n\u2022 Improved Facebook sharing
+        \n\u2022 Added description field to sets
     </string>
 </resources>

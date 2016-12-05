@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.ui.viewHolders.GCVersionInfoViewHolder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,11 +23,11 @@ import java.util.Collections;
 public class GCVersionInfoActivity extends GCBaseActivity {
 
     public static final String CURRENT_VERSION = "current_version";
+    private GCVersionInfoViewHolder mViewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_version_info, mFrameLayout);
         setupToolbar(getString(R.string.title_version_info));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -40,27 +41,32 @@ public class GCVersionInfoActivity extends GCBaseActivity {
     }
 
     @Override
+    protected void setupContentLayout() {
+        View view = getLayoutInflater().inflate(R.layout.activity_version_info, mFrameLayout);
+        mViewHolder = new GCVersionInfoViewHolder(view);
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
     }
 
     private void setupVersionInfoList() {
-        RecyclerView versionRecyclerView = (RecyclerView) findViewById(R.id.version_listview);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        versionRecyclerView.setHasFixedSize(true);
+        mViewHolder.getRecyclerView().setHasFixedSize(true);
 
         // use a linear layout manager
         GridLayoutManager versionLayoutManager = new GridLayoutManager(this, 1);
-        versionRecyclerView.setLayoutManager(versionLayoutManager);
+        mViewHolder.getRecyclerView().setLayoutManager(versionLayoutManager);
         String[] versionInfoArray = getResources().getStringArray(R.array.version_info_array);
         Collections.reverse(Arrays.asList(versionInfoArray));
         String[] versionNumberArray = getResources().getStringArray(R.array.version_number_array);
         Collections.reverse(Arrays.asList(versionNumberArray));
         String currentVersion = getIntent().getStringExtra(CURRENT_VERSION);
         VersionInfoAdapter versionInfoAdapter = new VersionInfoAdapter(this, versionInfoArray, versionNumberArray, currentVersion);
-        versionRecyclerView.setAdapter(versionInfoAdapter);
+        mViewHolder.getRecyclerView().setAdapter(versionInfoAdapter);
     }
 
     private class VersionInfoAdapter extends RecyclerView.Adapter<VersionInfoItemViewHolder> {
@@ -71,7 +77,7 @@ public class GCVersionInfoActivity extends GCBaseActivity {
         final Context mContext;
 
         VersionInfoAdapter(Context context, String[] versionInfoList, String[] versionNumberList,
-                                  String currentVersion) {
+                           String currentVersion) {
             mContext = context;
             versionInfoArray = versionInfoList;
             versionNumberArray = versionNumberList;
