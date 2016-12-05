@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -55,6 +56,7 @@ public class GCOnlineDatabaseUtil {
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
     private static final String USERS_KEY = "users";
+    private static final String DISCOVER_KEY = "discover";
 
     public static void initialize() {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -351,5 +353,24 @@ public class GCOnlineDatabaseUtil {
                 onlineDBSavedSet.setTitle(onlineDBSavedSet.getTitle() + " copy");
             }
         }
+    }
+
+    public static void removeUploadedSets(Context context, String userId, OnCompletionHandler onCompletionHandler){
+        Query connection = getCurrentDatabaseReference()
+                .child(DISCOVER_KEY)
+                .orderByChild("userUid")
+                .equalTo(userId);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
