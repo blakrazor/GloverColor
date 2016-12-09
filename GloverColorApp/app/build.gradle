@@ -26,6 +26,8 @@ android {
         targetSdkVersion 24
         versionCode 19
         versionName "2.0.2"
+
+        resValue("string", "FACEBOOK_APP_ID", FACEBOOK_APP_ID)
     }
 
     signingConfigs {
