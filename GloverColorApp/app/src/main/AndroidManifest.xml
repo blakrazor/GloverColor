@@ -113,7 +113,7 @@
             android:value="1503a3d7f3a5b932fe52076333b3746997624419"/>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
+            android:value="@string/FACEBOOK_APP_ID"/>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
