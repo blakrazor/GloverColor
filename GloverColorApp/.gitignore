@@ -8,4 +8,4 @@
 /captures
 /keystore.properties
 /google-services.json
-/*.keystore
+*.keystore
