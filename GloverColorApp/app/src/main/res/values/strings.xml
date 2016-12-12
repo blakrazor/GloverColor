@@ -139,4 +139,5 @@
     <string name="you_selected_too_many">You have selected %1$d sets. You may only upload a max of %2$d sets. Please choose again.</string>
     <string name="upload">Upload</string>
     <string name="uploading_sets_please_wait">Uploading sets...Please Wait...</string>
+    <string name="discover">Discover</string>
 </resources>
