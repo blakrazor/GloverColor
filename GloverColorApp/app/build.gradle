@@ -20,28 +20,30 @@ android {
     compileSdkVersion 24
     buildToolsVersion "22.0.1"
 
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
     defaultConfig {
         applicationId "com.achanr.glovercolorapp"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 19
         versionName "2.0.2"
-
-        resValue("string", "FACEBOOK_APP_ID", FACEBOOK_APP_ID)
     }
 
     signingConfigs {
         debug {
-            storeFile file("glovercolordebug.keystore")
-            storePassword "DebugGloverColor"
-            keyAlias "GloverColorDebug"
-            keyPassword "DebugGloverColor"
+            storeFile file(keystoreProperties['DEBUG_STORE_FILE'])
+            storePassword keystoreProperties['DEBUG_STORE_PASSWORD']
+            keyAlias keystoreProperties['DEBUG_KEY_ALIAS']
+            keyPassword keystoreProperties['DEBUG_KEY_PASSWORD']
         }
         release {
-            storeFile file("glovercolor.keystore")
-            storePassword "ChanrasmiGloverColor"
-            keyAlias "glovercolor"
-            keyPassword "ChanrasmiGloverColor"
+            storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
+            storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+            keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
+            keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
         }
     }
 
@@ -51,11 +53,15 @@ android {
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+
+            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
     }
 }
@@ -68,7 +74,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
 

@@ -108,12 +108,13 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <!-- Meant to be exposed -->
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="1503a3d7f3a5b932fe52076333b3746997624419"/>
+            android:value="1503a3d7f3a5b932fe52076333b3746997624419" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/FACEBOOK_APP_ID"/>
+            android:value="${facebookAppId}"/>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
