@@ -122,37 +122,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
             if (mCursor != null) {
                 if (mCursor.moveToFirst()) {
                     do {
-                        GCSavedSet savedSet = new GCSavedSet();
-
-                        int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
-                        String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
-                        String description = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_DESCRIPTION));
-                        String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
-                        String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
-                        String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
-                        String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
-
-                        savedSet.setId(id);
-                        savedSet.setTitle(title);
-                        savedSet.setDescription(description);
-                        savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-                        savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
-                        if (customColorString != null) {
-                            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
-                        } else {
-                            ArrayList<int[]> customColors = new ArrayList<>();
-                            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
-                                customColors.add(new int[]{255, 255, 255});
-                            }
-                            savedSet.setCustomColors(customColors);
-                        }
-                        if (chipString != null) {
-                            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
-                        } else {
-                            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
-                        }
-
-                        savedSetList.add(savedSet);
+                        savedSetList.add(parseForSavedSet(mCursor));
                     } while (mCursor.moveToNext());
                 }
             }
@@ -177,34 +147,7 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
 
             if (mCursor != null) {
                 if (mCursor.moveToFirst()) {
-                    savedSet = new GCSavedSet();
-                    int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
-                    String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
-                    String description = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_DESCRIPTION));
-                    String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
-                    String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
-                    String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
-                    String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
-
-                    savedSet.setId(id);
-                    savedSet.setTitle(title);
-                    savedSet.setDescription(description);
-                    savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-                    savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
-                    if (customColorString != null) {
-                        savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
-                    } else {
-                        ArrayList<int[]> customColors = new ArrayList<>();
-                        for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
-                            customColors.add(new int[]{255, 255, 255});
-                        }
-                        savedSet.setCustomColors(customColors);
-                    }
-                    if (chipString != null) {
-                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
-                    } else {
-                        savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
-                    }
+                    savedSet = parseForSavedSet(mCursor);
                 }
             }
         } catch (Exception e) {
@@ -216,6 +159,40 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
             if (db_adapter.isOpen())
                 db_adapter.close();
         }
+        return savedSet;
+    }
+
+    private GCSavedSet parseForSavedSet(Cursor mCursor) {
+        GCSavedSet savedSet = new GCSavedSet();
+
+        int id = mCursor.getInt(mCursor.getColumnIndex(GCSavedSetEntry._ID));
+        String title = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_TITLE));
+        String description = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_DESCRIPTION));
+        String shortenedColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_COLORS));
+        String modeString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_MODE));
+        String chipString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CHIP));
+        String customColorString = mCursor.getString(mCursor.getColumnIndex(GCSavedSetEntry.SAVED_SET_CUSTOM_COLORS));
+
+        savedSet.setId(id);
+        savedSet.setTitle(title);
+        savedSet.setDescription(description);
+        savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
+        savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
+        if (customColorString != null) {
+            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
+        } else {
+            ArrayList<int[]> customColors = new ArrayList<>();
+            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
+                customColors.add(new int[]{255, 255, 255});
+            }
+            savedSet.setCustomColors(customColors);
+        }
+        if (chipString != null) {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
+        } else {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+        }
+
         return savedSet;
     }
 

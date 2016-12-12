@@ -25,6 +25,8 @@
     <string name="title_edit_collection">Edit Collection</string>
     <string name="title_version_info">Version Release Notes</string>
     <string name="title_sync_conflicts">Sync Conflicts</string>
+    <string name="title_discover">Discover</string>
+    <string name="title_upload_set">Upload Online</string>
 
     <!-- Saved Set -->
     <string name="title">Title</string>
@@ -55,8 +57,8 @@
     <string name="save_changes">Save Changes</string>
     <string name="save_changes_dialog">Save your changes?</string>
     <string name="error_title_empty">Title cannot be empty.</string>
-    <string name="error_title_length">Title must be less than %d characters.</string>
-    <string name="error_desc_length">Description must be less than %d characters.</string>
+    <string name="error_title_length">Title must be less than %1$d characters.</string>
+    <string name="error_desc_length">Description must be less than %1$d characters.</string>
     <string name="error_no_color">You must choose at least 1 color.</string>
     <string name="error_title_exists">Title already exists. Choose a different title.</string>
     <string name="revert_changes">Revert Changes</string>
@@ -107,7 +109,7 @@
     <string name="sync_conflict_message">There were conflicts when syncing your sets online. Please select all sets you would like to keep.</string>
     <string name="facebook_share_description">Enter this code on the GloverColor mobile app or click this link from your mobile phone!</string>
     <string name="confirm_selection">Confirm Selection</string>
-    <string name="confirm_selection_body">You have selected %d sets. Any unselected sets will be deleted forever. Are you sure you would like to continue?</string>
+    <string name="confirm_selection_body">You have selected %1$d sets. Any unselected sets will be deleted forever. Are you sure you would like to continue?</string>
     <string name="confirm">Confirm</string>
     <string name="sync_conflicts">Sync Conflicts</string>
     <string name="resolving_conflicts_message">Resolving conflicts...Please Wait...</string>
@@ -126,4 +128,16 @@
     <string name="sync_status_out_of_sync">Out of Sync</string>
     <string name="sync_status_synced">Synced</string>
     <string name="sync_cancelled">Sync cancelled</string>
+    <string name="login_showcase">Login and synchronize your saved sets to an online database.</string>
+    <string name="new_showcase">NEW!</string>
+    <string name="check_your_status_showcase">Check your sync status from time to time. You can re-synchronize easily by pressing the \'Synchronize\' button in the navigation menu.</string>
+
+    <!-- Discover Feature -->
+    <string name="choose_sets_to_upload">Choose which sets you would like to upload and share online. Sets you upload now will replace any previously uploaded sets.</string>
+    <string name="select_one_set">You must select at least 1 set to upload.</string>
+    <string name="you_selected_to_upload">You have selected %1$d sets. Are you sure you would like to continue?</string>
+    <string name="you_selected_too_many">You have selected %1$d sets. You may only upload a max of %2$d sets. Please choose again.</string>
+    <string name="upload">Upload</string>
+    <string name="uploading_sets_please_wait">Uploading sets...Please Wait...</string>
+    <string name="discover">Discover</string>
 </resources>
