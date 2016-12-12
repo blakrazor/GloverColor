@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static com.achanr.glovercolorapp.models.GCOnlineDBSavedSet.convertToOnlineDBSavedSet;
 
 /**
  * @author Andrew Chanrasmi on 10/24/16
@@ -53,6 +56,7 @@ public class GCOnlineDatabaseUtil {
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
     private static final String USERS_KEY = "users";
+    private static final String DISCOVER_KEY = "discover";
 
     public static void initialize() {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -186,42 +190,6 @@ public class GCOnlineDatabaseUtil {
         if (handler != null) handler.onComplete();
     }
 
-    private static GCOnlineDBSavedSet convertToOnlineDBSavedSet(GCSavedSet savedSet) {
-        GCOnlineDBSavedSet dbSavedSet = new GCOnlineDBSavedSet();
-        dbSavedSet.setId(savedSet.getId());
-        dbSavedSet.setTitle(savedSet.getTitle());
-        dbSavedSet.setDescription(savedSet.getDescription());
-        dbSavedSet.setColors(GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
-        dbSavedSet.setMode(savedSet.getMode().getTitle());
-        dbSavedSet.setChip(savedSet.getChipSet().getTitle());
-        dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
-        return dbSavedSet;
-    }
-
-    public static GCSavedSet convertToSavedSet(Context context, GCOnlineDBSavedSet dbSavedSet) {
-        GCSavedSet savedSet = new GCSavedSet();
-        savedSet.setId(dbSavedSet.getId());
-        savedSet.setTitle(dbSavedSet.getTitle());
-        savedSet.setDescription(dbSavedSet.getDescription());
-        savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(dbSavedSet.getColors()));
-        savedSet.setMode(GCModeUtil.getModeUsingTitle(context, dbSavedSet.getMode().toUpperCase()));
-        if (dbSavedSet.getCustom_colors() != null) {
-            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(dbSavedSet.getCustom_colors()));
-        } else {
-            ArrayList<int[]> customColors = new ArrayList<>();
-            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
-                customColors.add(new int[]{255, 255, 255});
-            }
-            savedSet.setCustomColors(customColors);
-        }
-        if (dbSavedSet.getChip() != null) {
-            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(dbSavedSet.getChip().toUpperCase()));
-        } else {
-            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
-        }
-        return savedSet;
-    }
-
     private static void showProgressDialog(Context context, String title, String message) {
         if (progressDialog == null || !progressDialog.isShowing()) {
             progressDialog = ProgressDialog.show(context, title, message, true);
@@ -273,7 +241,7 @@ public class GCOnlineDatabaseUtil {
                                         .child(USER_SAVED_SET_KEY)
                                         .child(GCAuthUtil.getCurrentUser().getUid())
                                         .child(key)
-                                        .setValue(convertToOnlineDBSavedSet(savedSet));
+                                        .setValue(GCOnlineDBSavedSet.convertToOnlineDBSavedSet(savedSet));
                             }
                             dismissProgressDialog();
                         }
@@ -385,5 +353,23 @@ public class GCOnlineDatabaseUtil {
                 onlineDBSavedSet.setTitle(onlineDBSavedSet.getTitle() + " copy");
             }
         }
+    }
+
+    public static void removeUploadedSets(Context context, String userId, OnCompletionHandler onCompletionHandler){
+        Query connection = getCurrentDatabaseReference()
+                .child(DISCOVER_KEY)
+                .orderByChild("userUid")
+                .equalTo(userId);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -1,5 +1,7 @@
 package com.achanr.glovercolorapp.models;
 
+import com.achanr.glovercolorapp.common.GCUtil;
+
 import java.io.Serializable;
 
 /**
@@ -84,6 +86,8 @@ public class GCOnlineDBSavedSet implements Serializable {
 
         if (id != that.id) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
         if (colors != null ? !colors.equals(that.colors) : that.colors != null) return false;
         if (mode != null ? !mode.equals(that.mode) : that.mode != null) return false;
         if (chip != null ? !chip.equals(that.chip) : that.chip != null) return false;
@@ -95,10 +99,23 @@ public class GCOnlineDBSavedSet implements Serializable {
     public int hashCode() {
         int result = id;
         result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (colors != null ? colors.hashCode() : 0);
         result = 31 * result + (mode != null ? mode.hashCode() : 0);
         result = 31 * result + (chip != null ? chip.hashCode() : 0);
         result = 31 * result + (custom_colors != null ? custom_colors.hashCode() : 0);
         return result;
+    }
+
+    public static GCOnlineDBSavedSet convertToOnlineDBSavedSet(GCSavedSet savedSet) {
+        GCOnlineDBSavedSet dbSavedSet = new GCOnlineDBSavedSet();
+        dbSavedSet.setId(savedSet.getId());
+        dbSavedSet.setTitle(savedSet.getTitle());
+        dbSavedSet.setDescription(savedSet.getDescription());
+        dbSavedSet.setColors(GCUtil.convertColorListToShortenedColorString(savedSet.getColors()));
+        dbSavedSet.setMode(savedSet.getMode().getTitle());
+        dbSavedSet.setChip(savedSet.getChipSet().getTitle());
+        dbSavedSet.setCustom_colors(GCUtil.convertCustomColorArrayToString(savedSet.getCustomColors()));
+        return dbSavedSet;
     }
 }

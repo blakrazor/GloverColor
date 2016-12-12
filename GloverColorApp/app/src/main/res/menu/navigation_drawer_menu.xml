@@ -32,10 +32,17 @@
                     android:icon="@drawable/ic_sync_black_48dp"
                     android:title="@string/nav_synchronize"
                     android:visible="false"/>
+                <!--TODO: Disabling this for now in order to fix secret issue-->
+                <!--<item-->
+                    <!--android:id="@+id/nav_discover"-->
+                    <!--android:icon="@drawable/ic_public_black_48dp"-->
+                    <!--android:title="@string/discover"-->
+                    <!--android:visible="false"/>-->
                 <item
                     android:id="@+id/nav_login_logout"
                     android:icon="@drawable/ic_account_box_black_48dp"
-                    android:title="@string/login"/>
+                    android:title="@string/login"
+                    android:actionViewClass="android.widget.ImageButton"/>
             </group>
         </menu>
     </item>
