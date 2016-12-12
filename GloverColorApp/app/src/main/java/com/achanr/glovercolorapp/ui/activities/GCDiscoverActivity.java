@@ -35,7 +35,8 @@ public class GCDiscoverActivity extends GCBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setPosition(R.id.nav_discover);
+        //TODO: Disabling this for now in order to fix secret issue
+//        setPosition(R.id.nav_discover);
     }
 
     @Override

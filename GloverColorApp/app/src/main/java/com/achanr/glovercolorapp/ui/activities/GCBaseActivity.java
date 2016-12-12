@@ -215,11 +215,13 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mPosition = R.id.nav_settings;
             intent = new Intent(this, GCSettingsActivity.class);
             startActivityTransition(intent);
-        } else if (id == R.id.nav_discover && mPosition != R.id.nav_discover) {
-            mPosition = R.id.nav_discover;
-            intent = new Intent(this, GCDiscoverActivity.class);
-            startActivityTransition(intent);
         }
+        //TODO: Disabling this for now in order to fix secret issue
+//        else if (id == R.id.nav_discover && mPosition != R.id.nav_discover) {
+//            mPosition = R.id.nav_discover;
+//            intent = new Intent(this, GCDiscoverActivity.class);
+//            startActivityTransition(intent);
+//        }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -317,7 +319,8 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mNavHeaderViewHolder.setUserLoginVisibility(true);
             navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
             navMenu.findItem(R.id.nav_sync).setVisible(true);
-            navMenu.findItem(R.id.nav_discover).setVisible(true);
+            //TODO: Disabling this for now in order to fix secret issue
+//            navMenu.findItem(R.id.nav_discover).setVisible(true);
 
             FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
             if (currentUser.getPhotoUrl() != null) {
@@ -336,7 +339,8 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mNavHeaderViewHolder.setUserLoginVisibility(false);
             navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
             navMenu.findItem(R.id.nav_sync).setVisible(false);
-            navMenu.findItem(R.id.nav_discover).setVisible(false);
+            //TODO: Disabling this for now in order to fix secret issue
+//            navMenu.findItem(R.id.nav_discover).setVisible(false);
         }
     }
 
