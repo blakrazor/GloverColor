@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Slide;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,9 +26,12 @@ import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.common.GCAuthUtil;
+import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 import com.achanr.glovercolorapp.ui.viewHolders.GCNavHeaderViewHolder;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -90,6 +95,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
                     public void onComplete() {
                         updateLoginView();
                         Toast.makeText(GCBaseActivity.this, R.string.login_successful, Toast.LENGTH_SHORT).show();
+                        displayPostLoginTutorialShowcase();
                     }
                 });
             } else {
@@ -126,6 +132,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                displayLoginTutorialShowcase();
                 GCOnlineDatabaseUtil.checkSyncStatus(GCBaseActivity.this, null);
                 updateSyncStatus();
             }
@@ -208,8 +215,13 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mPosition = R.id.nav_settings;
             intent = new Intent(this, GCSettingsActivity.class);
             startActivityTransition(intent);
-            //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
+        //TODO: Disabling this for now in order to fix secret issue
+//        else if (id == R.id.nav_discover && mPosition != R.id.nav_discover) {
+//            mPosition = R.id.nav_discover;
+//            intent = new Intent(this, GCDiscoverActivity.class);
+//            startActivityTransition(intent);
+//        }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -307,6 +319,8 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mNavHeaderViewHolder.setUserLoginVisibility(true);
             navMenu.findItem(R.id.nav_login_logout).setTitle(R.string.logout);
             navMenu.findItem(R.id.nav_sync).setVisible(true);
+            //TODO: Disabling this for now in order to fix secret issue
+//            navMenu.findItem(R.id.nav_discover).setVisible(true);
 
             FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
             if (currentUser.getPhotoUrl() != null) {
@@ -325,6 +339,8 @@ public abstract class GCBaseActivity extends AppCompatActivity
             mNavHeaderViewHolder.setUserLoginVisibility(false);
             navMenu.findItem(R.id.nav_login_logout).setTitle(getString(R.string.login));
             navMenu.findItem(R.id.nav_sync).setVisible(false);
+            //TODO: Disabling this for now in order to fix secret issue
+//            navMenu.findItem(R.id.nav_discover).setVisible(false);
         }
     }
 
@@ -391,5 +407,43 @@ public abstract class GCBaseActivity extends AppCompatActivity
         };
 
         mNavHeaderViewHolder = new GCNavHeaderViewHolder(this, mNavigationView.getHeaderView(0), onClickListener);
+    }
+
+    private void displayLoginTutorialShowcase() {
+        try {
+            NavigationMenuView navView = (NavigationMenuView) mNavigationView.getChildAt(0);
+            ViewTarget target = new ViewTarget(navView.getChildAt(7));
+            new ShowcaseView.Builder(GCBaseActivity.this)
+                    .setTarget(target)
+                    .setStyle(R.style.CustomShowcaseMaterial)
+                    .setContentTitle(getString(R.string.new_showcase))
+                    .setContentText(getString(R.string.login_showcase))
+                    .hideOnTouchOutside()
+                    .withMaterialShowcase()
+                    .singleShot(GCConstants.LOGIN_LOGOUT_SHOWCASE)
+                    .build();
+        } catch (Exception ex) {
+            Log.e(GCBaseActivity.class.getSimpleName(), ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void displayPostLoginTutorialShowcase() {
+        try {
+            View headerView = mNavigationView.getHeaderView(0).findViewById(R.id.sync_status_textview);
+            ViewTarget target = new ViewTarget(headerView);
+            new ShowcaseView.Builder(GCBaseActivity.this)
+                    .setTarget(target)
+                    .setStyle(R.style.CustomShowcaseMaterial)
+                    .setContentTitle(getString(R.string.new_showcase))
+                    .setContentText(getString(R.string.check_your_status_showcase))
+                    .hideOnTouchOutside()
+                    .withMaterialShowcase()
+                    .singleShot(GCConstants.POST_LOGIN_SHOWCASE)
+                    .build();
+        } catch (Exception ex) {
+            Log.e(GCBaseActivity.class.getSimpleName(), ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 }
