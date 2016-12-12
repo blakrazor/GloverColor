@@ -360,7 +360,6 @@ public class GCOnlineDatabaseUtil {
                 .child(DISCOVER_KEY)
                 .orderByChild("userUid")
                 .equalTo(userId);
-        connection.keepSynced(true);
         connection.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
