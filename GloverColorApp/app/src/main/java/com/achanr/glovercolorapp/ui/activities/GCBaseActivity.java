@@ -39,7 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
+import static com.achanr.glovercolorapp.common.GCAuthUtil.RC_SIGN_IN;
 
 /**
  * Glover Color App Project

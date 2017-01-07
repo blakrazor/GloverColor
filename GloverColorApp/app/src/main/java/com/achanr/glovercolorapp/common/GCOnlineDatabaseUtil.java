@@ -76,11 +76,13 @@ public class GCOnlineDatabaseUtil {
     public static void saveUserOnline() {
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
             FirebaseUser currentUser = GCAuthUtil.getCurrentUser();
-            GCUser user = GCUser.convertFromFirebaseUser(currentUser);
-            getCurrentDatabaseReference()
-                    .child(USERS_KEY)
-                    .child(currentUser.getUid())
-                    .setValue(user);
+            if (currentUser != null) {
+                GCUser user = GCUser.convertFromFirebaseUser(currentUser);
+                getCurrentDatabaseReference()
+                        .child(USERS_KEY)
+                        .child(currentUser.getUid())
+                        .setValue(user);
+            }
         }
     }
 
@@ -355,7 +357,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    public static void removeUploadedSets(Context context, String userId, OnCompletionHandler onCompletionHandler){
+    public static void removeUploadedSets(Context context, String userId, OnCompletionHandler onCompletionHandler) {
         Query connection = getCurrentDatabaseReference()
                 .child(DISCOVER_KEY)
                 .orderByChild("userUid")

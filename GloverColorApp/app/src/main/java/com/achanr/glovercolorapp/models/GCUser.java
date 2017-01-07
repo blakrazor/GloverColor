@@ -26,7 +26,7 @@ public class GCUser implements Serializable {
     private GCUser(String displayName, String email, Uri photoUrl, String providerId, String uid, boolean isEmailVerified) {
         mDisplayName = displayName;
         mEmail = email;
-        mPhotoUrl = photoUrl.toString();
+        mPhotoUrl = photoUrl != null ? photoUrl.toString() : "";
         mProviderId = providerId;
         mUid = uid;
         mIsEmailVerified = isEmailVerified;
