@@ -450,51 +450,56 @@ public class GCSavedSetListActivity extends GCBaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public void animateFab(boolean isAppearing, final AnimationCompleteListener animationCompleteListener) {
-        if (mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
-            mFab.setVisibility(View.GONE);
-            if (animationCompleteListener != null) {
-                animationCompleteListener.onComplete();
-            }
-            return;
-        }
-
-        // previously visible view
-        final View myView = mFab;
-
-        // get the center for the clipping circle
-        final int cx = myView.getMeasuredWidth() / 2;
-        final int cy = myView.getMeasuredHeight() / 2;
-
-
-        // create the animation (the final radius is zero)
-        Animator anim;
-        ObjectAnimator animator;
-        AnimatorSet animatorSet = new AnimatorSet();
-        if (isAppearing) {
-            int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
-            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
-            animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
-            myView.setVisibility(View.VISIBLE);
-        } else {
-            int initialRadius = myView.getWidth() / 2;
-            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
-            animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    myView.setVisibility(View.INVISIBLE);
+    public void animateFab(final boolean isAppearing, final AnimationCompleteListener animationCompleteListener) {
+        mFab.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFromNavigation != null && mFromNavigation.equalsIgnoreCase(GCEditCollectionActivity.class.getName())) {
+                    mFab.setVisibility(View.GONE);
                     if (animationCompleteListener != null) {
                         animationCompleteListener.onComplete();
                     }
+                    return;
                 }
-            });
-        }
 
-        animatorSet.playTogether(anim, animator);
-        // start the animation
-        animatorSet.start();
+                // previously visible view
+                final View myView = mFab;
+
+                // get the center for the clipping circle
+                final int cx = myView.getMeasuredWidth() / 2;
+                final int cy = myView.getMeasuredHeight() / 2;
+
+
+                // create the animation (the final radius is zero)
+                Animator anim;
+                ObjectAnimator animator;
+                AnimatorSet animatorSet = new AnimatorSet();
+                if (isAppearing) {
+                    int finalRadius = Math.max(myView.getWidth(), myView.getHeight()) / 2;
+                    anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+                    animator = ObjectAnimator.ofFloat(myView, "rotation", 45f, 0f);
+                    myView.setVisibility(View.VISIBLE);
+                } else {
+                    int initialRadius = myView.getWidth() / 2;
+                    anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+                    animator = ObjectAnimator.ofFloat(myView, "rotation", 0f, 45f);
+                    animatorSet.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            myView.setVisibility(View.INVISIBLE);
+                            if (animationCompleteListener != null) {
+                                animationCompleteListener.onComplete();
+                            }
+                        }
+                    });
+                }
+
+                animatorSet.playTogether(anim, animator);
+                // start the animation
+                animatorSet.start();
+            }
+        });
     }
 
     @Override

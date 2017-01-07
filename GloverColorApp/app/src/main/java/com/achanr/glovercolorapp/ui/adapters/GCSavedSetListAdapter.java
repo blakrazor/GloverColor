@@ -38,8 +38,10 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         mSavedSetList.add(position, savedSet);
         sortList();
         int newPosition = mSavedSetList.indexOf(savedSet);
-        notifyItemInserted(newPosition);
-        //notifyItemRangeChanged(position, getItemCount());
+        if (newPosition >= 0) {
+            notifyItemInserted(newPosition);
+            //notifyItemRangeChanged(position, getItemCount());
+        }
     }
 
     public void update(GCSavedSet oldSet, GCSavedSet newSet) {
@@ -61,9 +63,11 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
 
     public void remove(GCSavedSet savedSet) {
         int position = mSavedSetList.indexOf(savedSet);
-        mSavedSetList.remove(position);
-        notifyItemRemoved(position);
-        //notifyItemRangeChanged(position, getItemCount());
+        if (position >= 0) {
+            mSavedSetList.remove(position);
+            notifyItemRemoved(position);
+            //notifyItemRangeChanged(position, getItemCount());
+        }
     }
 
     @Override
