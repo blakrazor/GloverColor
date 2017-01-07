@@ -12,6 +12,9 @@ buildscript {
 
         // the latest version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+        //Automating firebase uploading proguard mapping for crashes
+        classpath 'com.google.firebase:firebase-plugins:1.0.4'
     }
 }
 
