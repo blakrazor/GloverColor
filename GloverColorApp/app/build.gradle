@@ -18,7 +18,7 @@ repositories {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "24.0.3"
 
     def keystorePropertiesFile = rootProject.file("keystore.properties")
     def keystoreProperties = new Properties()
@@ -30,6 +30,7 @@ android {
         targetSdkVersion 24
         versionCode 20
         versionName "2.0.3"
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
