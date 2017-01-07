@@ -20,6 +20,9 @@
 -dontwarn com.squareup.okhttp.**
 
 -keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
 # Add this global rule
 -keepattributes Signature
 

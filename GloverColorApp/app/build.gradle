@@ -10,6 +10,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-crash'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -28,8 +29,8 @@ android {
         applicationId "com.achanr.glovercolorapp"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 20
-        versionName "2.0.3"
+        versionCode 21
+        versionName "2.0.4"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -86,6 +87,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.0.1'
     compile 'com.google.android.gms:play-services-auth:10.0.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
+    compile 'com.google.firebase:firebase-crash:10.0.1'
 
     //URL Image loading
     compile 'com.squareup.picasso:picasso:2.5.2'
