@@ -5,7 +5,6 @@ import android.app.Application;
 import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCColorUtil;
 import com.achanr.glovercolorapp.common.GCModeUtil;
-import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCPowerLevelUtil;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.crashlytics.android.Crashlytics;
@@ -36,7 +35,5 @@ public class GloverColorApplication extends Application {
         GCPowerLevelUtil.initPowerLevelArrayList(this);
         GCChipUtil.initChipArrayList(this);
         GCModeUtil.initModeArrayList(this);
-        GCOnlineDatabaseUtil.initialize();
-        GCOnlineDatabaseUtil.checkSyncStatus(this, null);
     }
 }

@@ -64,10 +64,16 @@ public abstract class GCBaseActivity extends AppCompatActivity
     Toolbar mToolbar;
     private GCNavHeaderViewHolder mNavHeaderViewHolder;
     private static int mPosition;
+    private static boolean wasInitialized;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!wasInitialized) {
+            GCOnlineDatabaseUtil.initialize();
+            GCOnlineDatabaseUtil.checkSyncStatus(this, null);
+            wasInitialized = true;
+        }
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
         ButterKnife.bind(this);
