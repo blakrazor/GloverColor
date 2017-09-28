@@ -57,11 +57,11 @@ public class GCMultiSelectorAdapter extends RecyclerView.Adapter<GCMultiSelector
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(savedSet);
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText(GCUtil.convertToCamelcase(mContext, mode.getTitle()));
+        holder.txtMode.setText(GCUtil.convertToTitleCase(mContext, mode.getTitle()));
         if (chipSet.getTitle().equalsIgnoreCase("NONE")) {
             holder.txtChipset.setText("No Preset");
         } else {
-            holder.txtChipset.setText(GCUtil.convertToCamelcase(mContext, chipSet.getTitle()));
+            holder.txtChipset.setText(GCUtil.convertToTitleCase(mContext, chipSet.getTitle()));
         }
         holder.setChecked(getSelectedSets().contains(position));
     }

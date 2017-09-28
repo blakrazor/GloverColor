@@ -346,12 +346,12 @@ public class GCUtil {
         alert.show();
     }
 
-    public static String convertToCamelcase(Context context, String inputString) {
+    public static String convertToTitleCase(Context context, String inputString) {
         if (inputString != null && !inputString.isEmpty()) {
 
             if (inputString.toLowerCase().contains("dop")) {
                 int dopIndex = inputString.toLowerCase().indexOf("dop");
-                return convertToCamelcase(context, inputString.substring(0, dopIndex)) + "DOP" + convertToCamelcase(context, inputString.substring(dopIndex + 3).toLowerCase());
+                return convertToTitleCase(context, inputString.substring(0, dopIndex)) + "DOP" + convertToTitleCase(context, inputString.substring(dopIndex + 3).toLowerCase());
             }
 
             if (inputString.equalsIgnoreCase(context.getString(R.string.OG_CHROMA))) {
@@ -363,7 +363,7 @@ public class GCUtil {
             }
 
             if (inputString.toLowerCase().startsWith("sp")) {
-                return "SP" + convertToCamelcase(context, inputString.substring(2).toLowerCase());
+                return "SP" + convertToTitleCase(context, inputString.substring(2).toLowerCase());
             }
 
 
@@ -376,7 +376,7 @@ public class GCUtil {
             for (String part : parts) {
                 camelCaseString = camelCaseString + capitalizeFirstLetter(part) + " ";
             }
-            return camelCaseString;
+            return camelCaseString.trim();
         } else {
             return "";
         }
