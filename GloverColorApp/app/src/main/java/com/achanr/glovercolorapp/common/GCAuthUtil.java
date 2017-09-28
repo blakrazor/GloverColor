@@ -9,13 +9,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
+import java.util.Arrays;
 
 /**
  * @author Andrew Chanrasmi on 10/21/16
  */
 
 public class GCAuthUtil {
+
+    // Choose an arbitrary request code value
+    public static final int RC_SIGN_IN = 123;
 
     public static FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
@@ -29,10 +32,10 @@ public class GCAuthUtil {
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setProviders(
-                                AuthUI.EMAIL_PROVIDER,
-                                AuthUI.GOOGLE_PROVIDER,
-                                AuthUI.FACEBOOK_PROVIDER)
+                        .setProviders(Arrays.asList(
+                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                         .setTheme(R.style.DefaultTheme)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .build(),

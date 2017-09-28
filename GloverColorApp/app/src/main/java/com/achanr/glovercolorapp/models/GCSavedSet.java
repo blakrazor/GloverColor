@@ -1,12 +1,14 @@
 package com.achanr.glovercolorapp.models;
 
+import android.content.Context;
+
+import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
+import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static android.R.attr.description;
 
 /**
  * Glover Color App Project
@@ -85,7 +87,7 @@ public class GCSavedSet implements Serializable {
     public ArrayList<int[]> getCustomColors() {
         if (mCustomColors == null || mCustomColors.isEmpty()) {
             initializeCustomColorArray();
-        } else if (mCustomColors.size() < GCConstants.MAX_COLORS){
+        } else if (mCustomColors.size() < GCConstants.MAX_COLORS) {
             int difference = GCConstants.MAX_COLORS - mCustomColors.size();
             for (int i = 0; i < difference; i++) {
                 mCustomColors.add(new int[]{255, 255, 255});
@@ -115,5 +117,29 @@ public class GCSavedSet implements Serializable {
     @Override
     public String toString() {
         return "Title:" + mTitle + " Colors:" + GCUtil.convertColorListToShortenedColorString(mColors) + " Mode:" + mMode;
+    }
+
+    public static GCSavedSet convertToSavedSet(Context context, GCOnlineDBSavedSet dbSavedSet) {
+        GCSavedSet savedSet = new GCSavedSet();
+        savedSet.setId(dbSavedSet.getId());
+        savedSet.setTitle(dbSavedSet.getTitle());
+        savedSet.setDescription(dbSavedSet.getDescription());
+        savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(dbSavedSet.getColors()));
+        savedSet.setMode(GCModeUtil.getModeUsingTitle(context, dbSavedSet.getMode().toUpperCase()));
+        if (dbSavedSet.getCustom_colors() != null) {
+            savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(dbSavedSet.getCustom_colors()));
+        } else {
+            ArrayList<int[]> customColors = new ArrayList<>();
+            for (int i = 0; i < GCConstants.MAX_COLORS; i++) {
+                customColors.add(new int[]{255, 255, 255});
+            }
+            savedSet.setCustomColors(customColors);
+        }
+        if (dbSavedSet.getChip() != null) {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(dbSavedSet.getChip().toUpperCase()));
+        } else {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+        }
+        return savedSet;
     }
 }

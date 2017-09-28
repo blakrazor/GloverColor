@@ -10,6 +10,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.firebase-crash'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -18,28 +19,33 @@ repositories {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "24.0.3"
+
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
     defaultConfig {
         applicationId "com.achanr.glovercolorapp"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 18
-        versionName "2.0.1"
+        versionCode 22
+        versionName "2.0.5"
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
         debug {
-            storeFile file("glovercolordebug.keystore")
-            storePassword "DebugGloverColor"
-            keyAlias "GloverColorDebug"
-            keyPassword "DebugGloverColor"
+            storeFile file(keystoreProperties['DEBUG_STORE_FILE'])
+            storePassword keystoreProperties['DEBUG_STORE_PASSWORD']
+            keyAlias keystoreProperties['DEBUG_KEY_ALIAS']
+            keyPassword keystoreProperties['DEBUG_KEY_PASSWORD']
         }
         release {
-            storeFile file("glovercolor.keystore")
-            storePassword "ChanrasmiGloverColor"
-            keyAlias "glovercolor"
-            keyPassword "ChanrasmiGloverColor"
+            storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
+            storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+            keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
+            keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
         }
     }
 
@@ -49,11 +55,15 @@ android {
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+
+            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
     }
 }
@@ -66,17 +76,18 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.6.1'
+    compile 'com.firebaseui:firebase-ui-auth:1.0.1'
     //Dependencies for Firebase
-    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.google.firebase:firebase-auth:9.6.1'
-    compile 'com.google.android.gms:play-services-auth:9.6.1'
-    compile 'com.google.firebase:firebase-database:9.6.1'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-auth:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
+    compile 'com.google.firebase:firebase-crash:10.0.1'
 
     //URL Image loading
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -87,6 +98,8 @@ dependencies {
     //Butterknife for View Binding
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    //Showcase for tutorial
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
