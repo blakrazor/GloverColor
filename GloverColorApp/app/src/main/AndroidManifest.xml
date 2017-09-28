@@ -108,13 +108,13 @@
             android:name="io.fabric.ApiKey"
             android:value="1503a3d7f3a5b932fe52076333b3746997624419"
             tools:replace="android:value"/>
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="${facebookAppId}"/>
+        <!--<meta-data-->
+            <!--android:name="com.facebook.sdk.ApplicationId"-->
+            <!--android:value="${facebookAppId}"/>-->
 
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider1616332021995948"
-            android:exported="true"/>
+        <!--<provider-->
+            <!--android:name="com.facebook.FacebookContentProvider"-->
+            <!--android:authorities="com.facebook.app.FacebookContentProvider1616332021995948"-->
+            <!--android:exported="true"/>-->
     </application>
 </manifest>

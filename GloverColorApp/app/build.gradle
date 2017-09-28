@@ -21,9 +21,9 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
 
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//    def keystorePropertiesFile = rootProject.file("keystore.properties")
+//    def keystoreProperties = new Properties()
+//    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
     defaultConfig {
         applicationId "com.achanr.glovercolorapp"
@@ -34,36 +34,36 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    signingConfigs {
-        debug {
-            storeFile file(keystoreProperties['DEBUG_STORE_FILE'])
-            storePassword keystoreProperties['DEBUG_STORE_PASSWORD']
-            keyAlias keystoreProperties['DEBUG_KEY_ALIAS']
-            keyPassword keystoreProperties['DEBUG_KEY_PASSWORD']
-        }
-        release {
-            storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
-            storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
-            keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
-            keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
-        }
-    }
+//    signingConfigs {
+//        debug {
+//            storeFile file(keystoreProperties['DEBUG_STORE_FILE'])
+//            storePassword keystoreProperties['DEBUG_STORE_PASSWORD']
+//            keyAlias keystoreProperties['DEBUG_KEY_ALIAS']
+//            keyPassword keystoreProperties['DEBUG_KEY_PASSWORD']
+//        }
+//        release {
+//            storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
+//            storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+//            keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
+//            keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
+//        }
+//    }
 
     buildTypes {
         debug {
             minifyEnabled false
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.debug
 
-            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
+//            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
 
-            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
+//            manifestPlaceholders = [ facebookAppId:keystoreProperties['FACEBOOK_APP_ID']]
         }
     }
 }
@@ -103,4 +103,4 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
