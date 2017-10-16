@@ -18,8 +18,8 @@ repositories {
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     def keystorePropertiesFile = rootProject.file("keystore.properties")
     def keystoreProperties = new Properties()
@@ -28,9 +28,9 @@ android {
     defaultConfig {
         applicationId "com.achanr.glovercolorapp"
         minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 22
-        versionName "2.0.5"
+        targetSdkVersion 26
+        versionCode 23
+        versionName "2.1.0"
         vectorDrawables.useSupportLibrary = true
     }
 

@@ -27,3 +27,5 @@ proguard/
 *.log
 GloverColorApp/.idea/inspectionProfiles/profiles_settings.xml
 GloverColorApp/.idea/inspectionProfiles/Project_Default.xml
+GloverColorApp/app/google-services.json
+GloverColorApp/projectFilesBackup/*

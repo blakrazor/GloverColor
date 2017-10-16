@@ -1,5 +1,8 @@
 <resources>
 
+    <!-- Facebook App Id -->
+    <string name="facebook_application_id" translatable="false">1616332021995948</string>
+
     <!-- General text -->
     <string name="app_name">GloverColor</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

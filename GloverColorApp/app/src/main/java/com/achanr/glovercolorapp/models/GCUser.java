@@ -2,6 +2,7 @@ package com.achanr.glovercolorapp.models;
 
 import android.net.Uri;
 
+import com.achanr.glovercolorapp.common.GCUtil;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;
@@ -34,8 +35,8 @@ public class GCUser implements Serializable {
 
     public static GCUser convertFromFirebaseUser(FirebaseUser firebaseUser) {
         return new GCUser(
-                firebaseUser.getDisplayName(),
-                firebaseUser.getEmail(),
+                GCUtil.hashStringUsingMD5(firebaseUser.getDisplayName()),
+                GCUtil.hashStringUsingMD5(firebaseUser.getEmail()),
                 firebaseUser.getPhotoUrl(),
                 firebaseUser.getProviderId(),
                 firebaseUser.getUid(),
