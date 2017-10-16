@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class GCDatabaseHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 35;
+    private static final int DATABASE_VERSION = 34;
     private static final String DATABASE_NAME = "SavedSet.db";
     static final String TEXT_TYPE = " TEXT";
     static final String INT_TYPE = " INT";
