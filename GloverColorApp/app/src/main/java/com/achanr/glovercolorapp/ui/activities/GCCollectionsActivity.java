@@ -545,4 +545,10 @@ public class GCCollectionsActivity extends GCBaseActivity {
         mCollectionsListAdapter = new GCCollectionsListAdapter(this, mCollectionsList);
         mCollectionsListRecyclerView.setAdapter(mCollectionsListAdapter);
     }
+
+    @Override
+    protected void updateAfterLogout() {
+        super.updateAfterLogout();
+        refreshList();
+    }
 }

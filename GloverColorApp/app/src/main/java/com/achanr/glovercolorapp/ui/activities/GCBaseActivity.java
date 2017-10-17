@@ -29,6 +29,7 @@ import com.achanr.glovercolorapp.common.GCAuthUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCOnlineDatabaseUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.ui.viewHolders.GCNavHeaderViewHolder;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -71,6 +72,7 @@ public abstract class GCBaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         if (!wasInitialized) {
             GCOnlineDatabaseUtil.initialize();
+            GCOnlineDatabaseUtil.syncWithOnlineDatabase(this);
             GCOnlineDatabaseUtil.checkSyncStatus(this, null);
             wasInitialized = true;
         }
@@ -306,8 +308,10 @@ public abstract class GCBaseActivity extends AppCompatActivity
             //Currently logged in, so log out
             GCAuthUtil.logOut(GCBaseActivity.this, new OnCompleteListener<Void>() {
                 public void onComplete(@NonNull Task<Void> task) {
-                    // user is now signed out
-                    updateLoginView();
+                    // user is now signed out so clear out all collections and saved sets
+                    GCDatabaseHelper.getInstance(GCBaseActivity.this).COLLECTION_DATABASE.clearTable();
+                    GCDatabaseHelper.getInstance(GCBaseActivity.this).SAVED_SET_DATABASE.clearTable();
+                    updateAfterLogout();
                     Toast.makeText(GCBaseActivity.this, R.string.logout_successful, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -316,6 +320,10 @@ public abstract class GCBaseActivity extends AppCompatActivity
             GCAuthUtil.startLoginActivity(GCBaseActivity.this);
         }
 
+    }
+
+    protected void updateAfterLogout() {
+        updateLoginView();
     }
 
     private void updateLoginView() {

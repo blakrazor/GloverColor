@@ -5,6 +5,7 @@ import android.content.Context;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCChip;
+import com.achanr.glovercolorapp.models.GCOnlineDefaultChip;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,12 +122,29 @@ public class GCChipUtil {
             mChipArrayList.add(chip);
         }
 
+        fillDatabase(context, mChipArrayList);
+    }
+
+    public static void syncOnlineDefaultChipDatabase(Context context, ArrayList<GCOnlineDefaultChip> onlineChips) {
+        mChipArrayList = new ArrayList<>();
+        for (GCOnlineDefaultChip onlineChip : onlineChips) {
+            GCChip chip = GCChip.convertFromOnlineChip(onlineChip);
+            if (chip != null) {
+                mChipArrayList.add(chip);
+            }
+        }
+
+        fillDatabase(context, mChipArrayList);
+    }
+
+    private static void fillDatabase(Context context, ArrayList<GCChip> modes) {
         //Clear database and save default values
         GCDatabaseHelper.getInstance(context).CHIP_DATABASE.clearTable();
-        for (GCChip chip : mChipArrayList) {
+        for (GCChip chip : modes) {
             GCDatabaseHelper.getInstance(context).CHIP_DATABASE.insertData(chip);
         }
     }
+
 
     public static GCChip getChipUsingTitle(String title) {
         GCChip chip = null;

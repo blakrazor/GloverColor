@@ -5,6 +5,7 @@ import android.content.Context;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCColor;
+import com.achanr.glovercolorapp.models.GCOnlineColor;
 
 import java.util.ArrayList;
 
@@ -340,9 +341,24 @@ public class GCColorUtil {
             mColorArrayList.add(new GCColor(colorItem, colorAbbrev, rgbValues));
         }
 
+        fillDatabase(context, mColorArrayList);
+    }
+
+    public static void syncOnlineColorDatabase(Context context, ArrayList<GCOnlineColor> onlineColors) {
+        mColorArrayList = new ArrayList<>();
+        for (GCOnlineColor onlineColor : onlineColors) {
+            GCColor color = GCColor.convertFromOnlineColor(onlineColor);
+            if (color != null) {
+                mColorArrayList.add(color);
+            }
+        }
+        fillDatabase(context, mColorArrayList);
+    }
+
+    private static void fillDatabase(Context context, ArrayList<GCColor> modes) {
         //Clear database and save default values
         GCDatabaseHelper.getInstance(context).COLOR_DATABASE.clearTable();
-        for (GCColor color : mColorArrayList) {
+        for (GCColor color : modes) {
             GCDatabaseHelper.getInstance(context).COLOR_DATABASE.insertData(color);
         }
     }

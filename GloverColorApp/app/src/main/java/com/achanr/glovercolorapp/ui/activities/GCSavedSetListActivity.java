@@ -618,4 +618,10 @@ public class GCSavedSetListActivity extends GCBaseActivity {
         mSavedSetListAdapter.sortList();
         mSavedSetListRecyclerView.setAdapter(mSavedSetListAdapter);
     }
+
+    @Override
+    protected void updateAfterLogout() {
+        super.updateAfterLogout();
+        refreshList();
+    }
 }

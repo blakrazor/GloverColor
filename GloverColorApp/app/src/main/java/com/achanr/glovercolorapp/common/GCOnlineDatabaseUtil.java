@@ -3,13 +3,20 @@ package com.achanr.glovercolorapp.common;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCMode;
+import com.achanr.glovercolorapp.models.GCOnlineColor;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
+import com.achanr.glovercolorapp.models.GCOnlineDefaultChip;
+import com.achanr.glovercolorapp.models.GCOnlineMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.models.GCUser;
 import com.achanr.glovercolorapp.ui.activities.GCBaseActivity;
@@ -56,6 +63,11 @@ public class GCOnlineDatabaseUtil {
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
     private static final String USERS_KEY = "users";
+    private static final String CHIP_DATABASE = "chip_database";
+    private static final String CHIP_DATABASE_VERSION = "database_version";
+    private static final String COLOR_DATABASE = "color_database";
+    private static final String MODE_DATABASE = "mode_database";
+    private static final String DEFAULT_CHIP_DATABASE = "default_chips";
     private static final String DISCOVER_KEY = "discover";
 
     public static void initialize() {
@@ -373,5 +385,115 @@ public class GCOnlineDatabaseUtil {
 
             }
         });
+    }
+
+    public static void syncWithOnlineDatabase(final Context context) {
+        showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
+        // check online database version
+        DatabaseReference connection = getCurrentDatabaseReference()
+                .child(CHIP_DATABASE)
+                .child(CHIP_DATABASE_VERSION);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        long onlineDatabaseVersion = dataSnapshot.getValue(long.class);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                        long storedOnlineDatabaseVersion = prefs.getLong(CHIP_DATABASE_VERSION, 0);
+                        // check if database version greater than stored version
+                        if (onlineDatabaseVersion > storedOnlineDatabaseVersion) {
+                            //if so, update all databases
+                            syncOnlineColorDatabase(context);
+                            syncOnlineModeDatabase(context);
+                            syncOnlineDefaultChipDatabase(context);
+
+                            // save the new database version
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putLong(CHIP_DATABASE_VERSION, onlineDatabaseVersion);
+                            editor.apply();
+                        }
+
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        dismissProgressDialog();
+                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncWithOnlineDatabase:onCancelled", databaseError.toException());
+                        Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private static void syncOnlineColorDatabase(final Context context) {
+        DatabaseReference connection = getCurrentDatabaseReference()
+                .child(CHIP_DATABASE)
+                .child(COLOR_DATABASE);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<GCOnlineColor> onlineColors = new ArrayList<>();
+                        for (DataSnapshot colorSnapshot : dataSnapshot.getChildren()) {
+                            onlineColors.add(colorSnapshot.getValue(GCOnlineColor.class));
+                        }
+                        if (onlineColors.size() > 0) {
+                            GCColorUtil.syncOnlineColorDatabase(context, onlineColors);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineColorDatabase:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+
+    private static void syncOnlineModeDatabase(final Context context) {
+        DatabaseReference connection = getCurrentDatabaseReference()
+                .child(CHIP_DATABASE)
+                .child(MODE_DATABASE);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<GCOnlineMode> onlineModes = new ArrayList<>();
+                        for (DataSnapshot modeSnapshot : dataSnapshot.getChildren()) {
+                            onlineModes.add(modeSnapshot.getValue(GCOnlineMode.class));
+                        }
+                        if (onlineModes.size() > 0) {
+                            GCModeUtil.syncOnlineModeDatabase(context, onlineModes);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineModeDatabase:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+
+    private static void syncOnlineDefaultChipDatabase(final Context context) {
+        DatabaseReference connection = getCurrentDatabaseReference()
+                .child(CHIP_DATABASE)
+                .child(DEFAULT_CHIP_DATABASE);
+        connection.keepSynced(true);
+        connection.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<GCOnlineDefaultChip> onlineChips = new ArrayList<>();
+                        for (DataSnapshot chipSnapshot : dataSnapshot.getChildren()) {
+                            onlineChips.add(chipSnapshot.getValue(GCOnlineDefaultChip.class));
+                        }
+                        if (onlineChips.size() > 0) {
+                            GCChipUtil.syncOnlineDefaultChipDatabase(context, onlineChips);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineDefaultChipDatabase:onCancelled", databaseError.toException());
+                    }
+                });
     }
 }
