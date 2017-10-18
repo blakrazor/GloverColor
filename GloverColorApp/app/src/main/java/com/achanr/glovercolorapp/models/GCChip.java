@@ -1,5 +1,7 @@
 package com.achanr.glovercolorapp.models;
 
+import com.achanr.glovercolorapp.common.GCUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,8 +27,8 @@ public class GCChip implements Serializable {
                 && !"".equals(onlineChip.name)
                 && onlineChip.colors != null
                 && onlineChip.modes != null) {
-            ArrayList<String> modes = new ArrayList<>(onlineChip.modes);
-            ArrayList<String> colors = new ArrayList<>(onlineChip.colors);
+            ArrayList<String> modes = new ArrayList<>(GCUtil.removeUnderscoresFromList(onlineChip.modes));
+            ArrayList<String> colors = new ArrayList<>(GCUtil.removeUnderscoresFromList(onlineChip.colors));
             return new GCChip(onlineChip.name, colors, modes);
         }
         return null;

@@ -71,7 +71,7 @@ public class GCChipDatabase extends GCAbstractDatabase {
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
-                GCChipEntry._ID + " DESC";
+                GCChipEntry._ID + " ASC";
 
         Cursor mCursor = null;
         try {

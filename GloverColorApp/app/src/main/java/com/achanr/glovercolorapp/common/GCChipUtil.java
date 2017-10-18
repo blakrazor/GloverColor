@@ -9,6 +9,8 @@ import com.achanr.glovercolorapp.models.GCOnlineDefaultChip;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 
 /**
  * @author Andrew Chanrasmi
@@ -20,8 +22,7 @@ public class GCChipUtil {
 
     public static void initChipArrayList(Context context) {
         mChipArrayList = GCDatabaseHelper.getInstance(context).CHIP_DATABASE.getAllData();
-        if (mChipArrayList == null || mChipArrayList.isEmpty()
-                || !mChipArrayList.get(0).getTitle().equalsIgnoreCase(context.getString(R.string.NO_CHIP))) {
+        if (mChipArrayList == null || mChipArrayList.isEmpty()) {
             createDefaultChips(context);
         }
     }
@@ -127,12 +128,39 @@ public class GCChipUtil {
 
     public static void syncOnlineDefaultChipDatabase(Context context, ArrayList<GCOnlineDefaultChip> onlineChips) {
         mChipArrayList = new ArrayList<>();
+        ArrayList<String> allColors = new ArrayList<>();
+        ArrayList<String> allModes = new ArrayList<>();
+        LinkedHashSet<String> uniqueColors = new LinkedHashSet<>();
+        LinkedHashSet<String> uniqueModes = new LinkedHashSet<>();
+
         for (GCOnlineDefaultChip onlineChip : onlineChips) {
             GCChip chip = GCChip.convertFromOnlineChip(onlineChip);
             if (chip != null) {
                 mChipArrayList.add(chip);
+                for (String color : chip.getColors()) {
+                    if (uniqueColors.add(color)) {
+                        allColors.add(color);
+                    }
+                }
+                for (String mode : chip.getModes()) {
+                    if (uniqueModes.add(mode)) {
+                        allModes.add(mode);
+                    }
+                }
             }
         }
+
+        Collections.sort(allColors);
+        allColors.add(0, context.getString(R.string.NONE));
+        allColors.remove(context.getString(R.string.BLANK));
+        allColors.add(1, context.getString(R.string.BLANK));
+        Collections.sort(allModes);
+        //also add the none chip just for kicks and to not break apps that do use it
+        GCChip noneChip = new GCChip(
+                context.getString(R.string.NO_CHIP),
+                allColors,
+                allModes);
+        mChipArrayList.add(0, noneChip);
 
         fillDatabase(context, mChipArrayList);
     }
