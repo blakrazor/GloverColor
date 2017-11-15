@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -403,44 +405,46 @@ public class GCOnlineDatabaseUtil {
     }
 
     public static void syncWithOnlineDatabase(final Activity context) {
-        showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
-        // check online database version
-        final DatabaseReference connection = getCurrentDatabaseReference()
-                .child(CHIP_DATABASE);
-        connection.keepSynced(true);
-        connection.child(CHIP_DATABASE_VERSION).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long onlineDatabaseVersion = dataSnapshot.getValue(long.class);
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                long storedOnlineDatabaseVersion = prefs.getLong(CHIP_DATABASE_VERSION, 0);
-                // check if database version greater than stored version
-                if (onlineDatabaseVersion > storedOnlineDatabaseVersion) {
-                    defaultChipsSynced = false;
-                    defaultColorsSynced = false;
-                    defaultModesSynced = false;
+        if (isNetworkAvailable(context)) {
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
+            // check online database version
+            final DatabaseReference connection = getCurrentDatabaseReference()
+                    .child(CHIP_DATABASE);
+            connection.keepSynced(true);
+            connection.child(CHIP_DATABASE_VERSION).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    long onlineDatabaseVersion = dataSnapshot.getValue(long.class);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    long storedOnlineDatabaseVersion = prefs.getLong(CHIP_DATABASE_VERSION, 0);
+                    // check if database version greater than stored version
+                    if (onlineDatabaseVersion > storedOnlineDatabaseVersion) {
+                        defaultChipsSynced = false;
+                        defaultColorsSynced = false;
+                        defaultModesSynced = false;
 
-                    //if so, update all databases
-                    syncOnlineColorDatabase(context, connection);
-                    syncOnlineModeDatabase(context, connection);
-                    syncOnlineDefaultChipDatabase(context, connection);
+                        //if so, update all databases
+                        syncOnlineColorDatabase(context, connection);
+                        syncOnlineModeDatabase(context, connection);
+                        syncOnlineDefaultChipDatabase(context, connection);
 
-                    // save the new database version
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putLong(CHIP_DATABASE_VERSION, onlineDatabaseVersion);
-                    editor.apply();
-                } else {
-                    dismissProgressDialog(context);
+                        // save the new database version
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putLong(CHIP_DATABASE_VERSION, onlineDatabaseVersion);
+                        editor.apply();
+                    } else {
+                        dismissProgressDialog(context);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                dismissProgressDialog(context);
-                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncWithOnlineDatabase:onCancelled", databaseError.toException());
-                Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    dismissProgressDialog(context);
+                    Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncWithOnlineDatabase:onCancelled", databaseError.toException());
+                    Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private static void syncOnlineColorDatabase(final Activity context, DatabaseReference connection) {
@@ -519,5 +523,12 @@ public class GCOnlineDatabaseUtil {
         if (defaultChipsSynced && defaultColorsSynced && defaultModesSynced) {
             dismissProgressDialog(context);
         }
+    }
+
+    private static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -364,7 +364,7 @@ public class GCColorUtil {
     }
 
     public static GCColor getColorUsingTitle(String title) {
-        GCColor color = null;
+        GCColor color = getDefaultColor();
         for (GCColor colorItem : mColorArrayList) {
             if (title.equalsIgnoreCase(colorItem.getTitle())) {
                 color = colorItem;
@@ -375,7 +375,7 @@ public class GCColorUtil {
     }
 
     static GCColor getColorUsingAbbrev(String abbrev) {
-        GCColor color = null;
+        GCColor color = getDefaultColor();
         for (GCColor colorItem : mColorArrayList) {
             if (abbrev.equals(colorItem.getAbbreviation())) {
                 color = colorItem;
@@ -383,6 +383,10 @@ public class GCColorUtil {
             }
         }
         return color;
+    }
+
+    static GCColor getDefaultColor() {
+        return new GCColor("BLANK", "--", new int[]{0, 0, 0});
     }
 }
 

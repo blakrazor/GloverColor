@@ -182,6 +182,9 @@ public class GCChipUtil {
                 break;
             }
         }
+        if (chip == null) {
+            chip = getChipUsingTitle("NONE");
+        }
         return chip;
     }
 

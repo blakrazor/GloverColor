@@ -71,10 +71,14 @@ public abstract class GCBaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!wasInitialized) {
-            GCOnlineDatabaseUtil.initialize();
-            GCOnlineDatabaseUtil.syncWithOnlineDatabase(this);
-            GCOnlineDatabaseUtil.checkSyncStatus(this, null);
-            wasInitialized = true;
+            try {
+                GCOnlineDatabaseUtil.initialize();
+                GCOnlineDatabaseUtil.syncWithOnlineDatabase(this);
+                GCOnlineDatabaseUtil.checkSyncStatus(this, null);
+                wasInitialized = true;
+            } catch (Exception e) {
+                Toast.makeText(this, R.string.error_syncing, Toast.LENGTH_SHORT).show();
+            }
         }
         GCUtil.onActivityCreateSetTheme(this);
         setContentView(R.layout.navigation_drawer_layout);
