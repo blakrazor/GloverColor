@@ -95,7 +95,7 @@ public class GCSettingsActivity extends GCBaseActivity {
             ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.theme_preference));
             String oldThemeString = GCUtil.getCurrentTheme(getActivity());
             String shortThemeString = oldThemeString.substring(0, oldThemeString.indexOf("_THEME"));
-            listPreference.setSummary(GCUtil.convertToCamelcase(getActivity(), shortThemeString));
+            listPreference.setSummary(GCUtil.convertToTitleCase(getActivity(), shortThemeString));
             listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -250,12 +250,12 @@ public class GCSettingsActivity extends GCBaseActivity {
             ListPreference listPreference = (ListPreference) findPreference(getActivity().getString(R.string.default_chip_preference));
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String oldDefaultChip = prefs.getString(getString(R.string.default_chip_preference), getString(R.string.NO_CHIP));
-            listPreference.setSummary(GCUtil.convertToCamelcase(getActivity(), oldDefaultChip));
+            listPreference.setSummary(GCUtil.convertToTitleCase(getActivity(), oldDefaultChip));
             listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String newDefaultChipString = (String) newValue;
-                    preference.setSummary(GCUtil.convertToCamelcase(getActivity(), newDefaultChipString));
+                    preference.setSummary(GCUtil.convertToTitleCase(getActivity(), newDefaultChipString));
                     return true;
                 }
             });

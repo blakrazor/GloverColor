@@ -11,6 +11,7 @@ import com.achanr.glovercolorapp.common.GCChipUtil;
 import com.achanr.glovercolorapp.common.GCConstants;
 import com.achanr.glovercolorapp.common.GCModeUtil;
 import com.achanr.glovercolorapp.common.GCUtil;
+import com.achanr.glovercolorapp.models.GCMode;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 
@@ -176,8 +177,19 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
         savedSet.setId(id);
         savedSet.setTitle(title);
         savedSet.setDescription(description);
+        if (chipString != null) {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
+        } else {
+            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
+        }
         savedSet.setColors(GCUtil.convertShortenedColorStringToColorList(shortenedColorString));
-        savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase()));
+        GCMode mode = GCModeUtil.getModeUsingTitle(mContext, modeString.toUpperCase());
+        if (mode != null) {
+            savedSet.setMode(mode);
+        } else {
+            String firstMode = savedSet.getChipSet().getModes().get(0);
+            savedSet.setMode(GCModeUtil.getModeUsingTitle(mContext, firstMode.toUpperCase()));
+        }
         if (customColorString != null) {
             savedSet.setCustomColors(GCUtil.convertStringToCustomColorArray(customColorString));
         } else {
@@ -187,12 +199,6 @@ public class GCSavedSetDatabase extends GCAbstractDatabase {
             }
             savedSet.setCustomColors(customColors);
         }
-        if (chipString != null) {
-            savedSet.setChipSet(GCChipUtil.getChipUsingTitle(chipString.toUpperCase()));
-        } else {
-            savedSet.setChipSet(GCChipUtil.getChipUsingTitle("NONE"));
-        }
-
         return savedSet;
     }
 

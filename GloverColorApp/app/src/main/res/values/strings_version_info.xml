@@ -36,4 +36,10 @@
         \n\u2022 Improved Facebook sharing
         \n\u2022 Added description field to sets
     </string>
+    <string name="whats_new_in_version_2.1">
+        \n\u2022 Performance Optimizations
+        \n\u2022 Fixing Facebook login issue
+        \n\u2022 Improving security of user details
+        \n\u2022 Moved chip database online with app able to sync dynamically to new changes any time
+    </string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.achanr.glovercolorapp.R;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
 import com.achanr.glovercolorapp.models.GCMode;
+import com.achanr.glovercolorapp.models.GCOnlineMode;
 
 import java.util.ArrayList;
 
@@ -32,9 +33,25 @@ public class GCModeUtil {
             mModeArrayList.add(new GCMode(modeString));
         }
 
+        fillDatabase(context, mModeArrayList);
+    }
+
+    public static void syncOnlineModeDatabase(Context context, ArrayList<GCOnlineMode> onlineModes) {
+        mModeArrayList = new ArrayList<>();
+        for (GCOnlineMode onlineMode : onlineModes) {
+            GCMode mode = GCMode.convertFromOnlineMode(onlineMode);
+            if (mode != null) {
+                mModeArrayList.add(mode);
+            }
+        }
+
+        fillDatabase(context, mModeArrayList);
+    }
+
+    private static void fillDatabase(Context context, ArrayList<GCMode> modes) {
         //Clear database and save default values
         GCDatabaseHelper.getInstance(context).MODE_DATABASE.clearTable();
-        for (GCMode mode : mModeArrayList) {
+        for (GCMode mode : modes) {
             GCDatabaseHelper.getInstance(context).MODE_DATABASE.insertData(mode);
         }
     }

@@ -1,15 +1,25 @@
 package com.achanr.glovercolorapp.common;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.achanr.glovercolorapp.R;
+import com.achanr.glovercolorapp.application.GloverColorApplication;
 import com.achanr.glovercolorapp.database.GCDatabaseHelper;
+import com.achanr.glovercolorapp.models.GCMode;
+import com.achanr.glovercolorapp.models.GCOnlineColor;
 import com.achanr.glovercolorapp.models.GCOnlineDBSavedSet;
+import com.achanr.glovercolorapp.models.GCOnlineDefaultChip;
+import com.achanr.glovercolorapp.models.GCOnlineMode;
 import com.achanr.glovercolorapp.models.GCSavedSet;
 import com.achanr.glovercolorapp.models.GCUser;
 import com.achanr.glovercolorapp.ui.activities.GCBaseActivity;
@@ -56,7 +66,16 @@ public class GCOnlineDatabaseUtil {
 
     private static final String USER_SAVED_SET_KEY = "user_saved_sets";
     private static final String USERS_KEY = "users";
+    private static final String CHIP_DATABASE = "chip_database";
+    private static final String CHIP_DATABASE_VERSION = "database_version";
+    private static final String COLOR_DATABASE = "color_database";
+    private static final String MODE_DATABASE = "mode_database";
+    private static final String DEFAULT_CHIP_DATABASE = "default_chips";
     private static final String DISCOVER_KEY = "discover";
+
+    private static boolean defaultChipsSynced;
+    private static boolean defaultModesSynced;
+    private static boolean defaultColorsSynced;
 
     public static void initialize() {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -86,7 +105,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    public static void syncToOnline(Context context, OnCompletionHandler handler) {
+    public static void syncToOnline(Activity context, OnCompletionHandler handler) {
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
             showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             FirebaseUser user = GCAuthUtil.getCurrentUser();
@@ -96,7 +115,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    private static void syncSavedSets(final Context context, final String userUID, final OnCompletionHandler handler) {
+    private static void syncSavedSets(final Activity context, final String userUID, final OnCompletionHandler handler) {
 
         final List<GCSavedSet> savedSets = GCDatabaseHelper.getInstance(context).SAVED_SET_DATABASE.getAllData();
         DatabaseReference connection = getCurrentDatabaseReference()
@@ -129,18 +148,18 @@ public class GCOnlineDatabaseUtil {
                     syncCollections(context, userUID, handler);
                 } else {
                     //else, multiple differences exist
-                    dismissProgressDialog();
+                    dismissProgressDialog(context);
                     Intent intent = new Intent(context, GCSyncConflictActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(GCSyncConflictActivity.CONFLICT_SETS_KEY, (Serializable) comparison.getA());
                     intent.putExtra(GCSyncConflictActivity.BUNDLE_KEY, bundle);
-                    ((GCBaseActivity) context).startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
+                    context.startActivityForResult(intent, SYNC_CONFLICT_REQUEST_CODE);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                dismissProgressDialog();
+                dismissProgressDialog(context);
                 Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "loadSavedSets:onCancelled", databaseError.toException());
                 Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                 CurrentSyncStatus = SyncStatus.Unavailable;
@@ -180,31 +199,41 @@ public class GCOnlineDatabaseUtil {
                 .setValue(localSavedSets);
     }
 
-    public static void syncCollections(Context context, String userUID, OnCompletionHandler handler) {
+    public static void syncCollections(Activity context, String userUID, OnCompletionHandler handler) {
         //TODO: complete this later
         syncCompleted(context, handler);
     }
 
-    private static void syncCompleted(Context context, OnCompletionHandler handler) {
+    private static void syncCompleted(Activity context, OnCompletionHandler handler) {
         CurrentSyncStatus = SyncStatus.Synced;
         Toast.makeText(context, R.string.data_synced_complete_message, Toast.LENGTH_SHORT).show();
-        dismissProgressDialog();
+        dismissProgressDialog(context);
         if (handler != null) handler.onComplete();
     }
 
-    private static void showProgressDialog(Context context, String title, String message) {
-        if (progressDialog == null || !progressDialog.isShowing()) {
-            progressDialog = ProgressDialog.show(context, title, message, true);
-        }
+    private static void showProgressDialog(final Activity activity, final String title, final String message) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog == null || !progressDialog.isShowing()) {
+                    progressDialog = ProgressDialog.show(activity, title, message, true);
+                }
+            }
+        });
     }
 
-    private static void dismissProgressDialog() {
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+    private static void dismissProgressDialog(Activity activity) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            }
+        });
     }
 
-    public static void addToOnlineDB(Context context, GCSavedSet savedSet) {
+    public static void addToOnlineDB(Activity context, GCSavedSet savedSet) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
             showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             String key = getCurrentDatabaseReference()
@@ -217,11 +246,11 @@ public class GCOnlineDatabaseUtil {
                     .child(GCAuthUtil.getCurrentUser().getUid())
                     .child(key)
                     .setValue(convertToOnlineDBSavedSet(savedSet));
-            dismissProgressDialog();
+            dismissProgressDialog(context);
         }
     }
 
-    public static void updateToOnlineDB(final Context context, final GCSavedSet savedSet) {
+    public static void updateToOnlineDB(final Activity context, final GCSavedSet savedSet) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && savedSet != null) {
             showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             getCurrentDatabaseReference()
@@ -245,12 +274,12 @@ public class GCOnlineDatabaseUtil {
                                         .child(key)
                                         .setValue(GCOnlineDBSavedSet.convertToOnlineDBSavedSet(savedSet));
                             }
-                            dismissProgressDialog();
+                            dismissProgressDialog(context);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            dismissProgressDialog();
+                            dismissProgressDialog(context);
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "updateSet:onCancelled", databaseError.toException());
                             Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                             CurrentSyncStatus = SyncStatus.Unavailable;
@@ -259,7 +288,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    public static void deleteFromOnlineDB(final Context context, final int id) {
+    public static void deleteFromOnlineDB(final Activity context, final int id) {
         if (GCAuthUtil.isCurrentUserLoggedIn() && id >= 0) {
             showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
             getCurrentDatabaseReference()
@@ -283,12 +312,12 @@ public class GCOnlineDatabaseUtil {
                                         .child(key)
                                         .removeValue();
                             }
-                            dismissProgressDialog();
+                            dismissProgressDialog(context);
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            dismissProgressDialog();
+                            dismissProgressDialog(context);
                             Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "deleteSet:onCancelled", databaseError.toException());
                             Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                             CurrentSyncStatus = SyncStatus.Unavailable;
@@ -297,7 +326,7 @@ public class GCOnlineDatabaseUtil {
         }
     }
 
-    public static void checkSyncStatus(final Context context, final OnCompletionHandler handler) {
+    public static void checkSyncStatus(final Activity context, final OnCompletionHandler handler) {
         if (GCAuthUtil.isCurrentUserLoggedIn()) {
             if (handler != null) {
                 showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.checking_sync_status_message));
@@ -322,7 +351,7 @@ public class GCOnlineDatabaseUtil {
                                 CurrentSyncStatus = SyncStatus.OutOfSync;
                             }
                             if (handler != null) {
-                                dismissProgressDialog();
+                                dismissProgressDialog(context);
                                 handler.onComplete();
                             }
                         }
@@ -333,7 +362,7 @@ public class GCOnlineDatabaseUtil {
                             Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
                             CurrentSyncStatus = SyncStatus.Unavailable;
                             if (handler != null) {
-                                dismissProgressDialog();
+                                dismissProgressDialog(context);
                                 handler.onComplete();
                             }
                         }
@@ -373,5 +402,133 @@ public class GCOnlineDatabaseUtil {
 
             }
         });
+    }
+
+    public static void syncWithOnlineDatabase(final Activity context) {
+        if (isNetworkAvailable(context)) {
+            showProgressDialog(context, context.getString(R.string.online_sync), context.getString(R.string.syncing_wait_message));
+            // check online database version
+            final DatabaseReference connection = getCurrentDatabaseReference()
+                    .child(CHIP_DATABASE);
+            connection.keepSynced(true);
+            connection.child(CHIP_DATABASE_VERSION).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    long onlineDatabaseVersion = dataSnapshot.getValue(long.class);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    long storedOnlineDatabaseVersion = prefs.getLong(CHIP_DATABASE_VERSION, 0);
+                    // check if database version greater than stored version
+                    if (onlineDatabaseVersion > storedOnlineDatabaseVersion) {
+                        defaultChipsSynced = false;
+                        defaultColorsSynced = false;
+                        defaultModesSynced = false;
+
+                        //if so, update all databases
+                        syncOnlineColorDatabase(context, connection);
+                        syncOnlineModeDatabase(context, connection);
+                        syncOnlineDefaultChipDatabase(context, connection);
+
+                        // save the new database version
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putLong(CHIP_DATABASE_VERSION, onlineDatabaseVersion);
+                        editor.apply();
+                    } else {
+                        dismissProgressDialog(context);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    dismissProgressDialog(context);
+                    Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncWithOnlineDatabase:onCancelled", databaseError.toException());
+                    Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private static void syncOnlineColorDatabase(final Activity context, DatabaseReference connection) {
+        connection.child(COLOR_DATABASE).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<GCOnlineColor> onlineColors = new ArrayList<>();
+                for (DataSnapshot colorSnapshot : dataSnapshot.getChildren()) {
+                    onlineColors.add(colorSnapshot.getValue(GCOnlineColor.class));
+                }
+                if (onlineColors.size() > 0) {
+                    GCColorUtil.syncOnlineColorDatabase(context, onlineColors);
+                }
+                defaultColorsSynced = true;
+                checkFinishedSyncing(context);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                defaultColorsSynced = true;
+                checkFinishedSyncing(context);
+                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineColorDatabase:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    private static void syncOnlineModeDatabase(final Activity context, DatabaseReference connection) {
+        connection.child(MODE_DATABASE).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<GCOnlineMode> onlineModes = new ArrayList<>();
+                for (DataSnapshot modeSnapshot : dataSnapshot.getChildren()) {
+                    onlineModes.add(modeSnapshot.getValue(GCOnlineMode.class));
+                }
+                if (onlineModes.size() > 0) {
+                    GCModeUtil.syncOnlineModeDatabase(context, onlineModes);
+                }
+                defaultModesSynced = true;
+                checkFinishedSyncing(context);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                defaultModesSynced = true;
+                checkFinishedSyncing(context);
+                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineModeDatabase:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    private static void syncOnlineDefaultChipDatabase(final Activity context, DatabaseReference connection) {
+        connection.child(DEFAULT_CHIP_DATABASE).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<GCOnlineDefaultChip> onlineChips = new ArrayList<>();
+                for (DataSnapshot chipSnapshot : dataSnapshot.getChildren()) {
+                    onlineChips.add(chipSnapshot.getValue(GCOnlineDefaultChip.class));
+                }
+                if (onlineChips.size() > 0) {
+                    GCChipUtil.syncOnlineDefaultChipDatabase(context, onlineChips);
+                }
+                defaultChipsSynced = true;
+                checkFinishedSyncing(context);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                defaultChipsSynced = true;
+                checkFinishedSyncing(context);
+                Log.w(GCOnlineDatabaseUtil.class.getSimpleName(), "syncOnlineDefaultChipDatabase:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    private static void checkFinishedSyncing(Activity context) {
+        if (defaultChipsSynced && defaultColorsSynced && defaultModesSynced) {
+            dismissProgressDialog(context);
+        }
+    }
+
+    private static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

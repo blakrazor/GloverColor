@@ -1,6 +1,7 @@
 package com.achanr.glovercolorapp.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author Andrew Chanrasmi
@@ -12,10 +13,27 @@ public class GCColor implements Serializable {
     private String mAbbreviation;
     private int[] mRGBValues;
 
-    public GCColor(String title, String abbreviation, int[] RGBValues){
+    public GCColor(String title, String abbreviation, int[] RGBValues) {
         mTitle = title;
         mAbbreviation = abbreviation;
         mRGBValues = RGBValues;
+    }
+
+    public static GCColor convertFromOnlineColor(GCOnlineColor onlineColor) {
+        if (onlineColor != null
+                && !"".equals(onlineColor.name)
+                && (!"".equals(onlineColor.abbrev) || "NONE".equals(onlineColor.name))
+                && !"".equals(onlineColor.rgb)) {
+            String[] rgbParts = onlineColor.rgb.split(",");
+            if (rgbParts.length == 3) {
+                int[] rgbValues = new int[3];
+                rgbValues[0] = Integer.parseInt(rgbParts[0]);
+                rgbValues[1] = Integer.parseInt(rgbParts[1]);
+                rgbValues[2] = Integer.parseInt(rgbParts[2]);
+                return new GCColor(onlineColor.name, onlineColor.abbrev, rgbValues);
+            }
+        }
+        return null;
     }
 
     public String getTitle() {

@@ -14,6 +14,13 @@ public class GCMode implements Serializable {
         mTitle = title;
     }
 
+    public static GCMode convertFromOnlineMode(GCOnlineMode onlineMode) {
+        if (onlineMode != null && !"".equals(onlineMode.name)) {
+            return new GCMode(onlineMode.name);
+        }
+        return null;
+    }
+
     public String getTitle() {
         return mTitle;
     }

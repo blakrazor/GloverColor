@@ -88,11 +88,11 @@ public class GCSavedSetListAdapter extends RecyclerView.Adapter<GCSavedSetListIt
         SpannableStringBuilder builder = GCUtil.generateMultiColoredString(mSavedSetList.get(position));
         holder.txtTitle.setText(title);
         holder.txtColors.setText(builder, TextView.BufferType.SPANNABLE);
-        holder.txtMode.setText(GCUtil.convertToCamelcase(mContext, mode.getTitle()));
+        holder.txtMode.setText(GCUtil.convertToTitleCase(mContext, mode.getTitle()));
         if (chipSet.getTitle().equalsIgnoreCase("NONE")) {
             holder.txtChipset.setText("No Preset");
         } else {
-            holder.txtChipset.setText(GCUtil.convertToCamelcase(mContext, chipSet.getTitle()));
+            holder.txtChipset.setText(GCUtil.convertToTitleCase(mContext, chipSet.getTitle()));
         }
         holder.mSavedSet = mSavedSetList.get(position);
     }

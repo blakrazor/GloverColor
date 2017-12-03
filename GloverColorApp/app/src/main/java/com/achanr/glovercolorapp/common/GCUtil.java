@@ -39,6 +39,10 @@ import com.achanr.glovercolorapp.ui.activities.GCSavedSetListActivity;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -346,12 +350,12 @@ public class GCUtil {
         alert.show();
     }
 
-    public static String convertToCamelcase(Context context, String inputString) {
+    public static String convertToTitleCase(Context context, String inputString) {
         if (inputString != null && !inputString.isEmpty()) {
 
             if (inputString.toLowerCase().contains("dop")) {
                 int dopIndex = inputString.toLowerCase().indexOf("dop");
-                return convertToCamelcase(context, inputString.substring(0, dopIndex)) + "DOP" + convertToCamelcase(context, inputString.substring(dopIndex + 3).toLowerCase());
+                return convertToTitleCase(context, inputString.substring(0, dopIndex)) + "DOP" + convertToTitleCase(context, inputString.substring(dopIndex + 3).toLowerCase());
             }
 
             if (inputString.equalsIgnoreCase(context.getString(R.string.OG_CHROMA))) {
@@ -363,7 +367,7 @@ public class GCUtil {
             }
 
             if (inputString.toLowerCase().startsWith("sp")) {
-                return "SP" + convertToCamelcase(context, inputString.substring(2).toLowerCase());
+                return "SP" + convertToTitleCase(context, inputString.substring(2).toLowerCase());
             }
 
 
@@ -376,7 +380,7 @@ public class GCUtil {
             for (String part : parts) {
                 camelCaseString = camelCaseString + capitalizeFirstLetter(part) + " ";
             }
-            return camelCaseString;
+            return camelCaseString.trim();
         } else {
             return "";
         }
@@ -592,5 +596,28 @@ public class GCUtil {
             }
         }
         return setArrayList;
+    }
+
+    public static String hashStringUsingMD5(String s) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes(Charset.forName("US-ASCII")), 0, s.length());
+            byte[] magnitude = digest.digest();
+            BigInteger bi = new BigInteger(1, magnitude);
+            String hash = String.format("%0" + (magnitude.length << 1) + "x", bi);
+            return hash;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static List<String> removeUnderscoresFromList(List<String> stringList) {
+        List<String> newList = new ArrayList<>();
+        for (String string : stringList) {
+            newList.add(string.replaceAll("_", " "));
+        }
+        return newList;
     }
 }

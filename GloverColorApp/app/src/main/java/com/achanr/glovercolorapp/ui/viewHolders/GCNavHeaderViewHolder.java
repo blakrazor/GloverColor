@@ -73,6 +73,9 @@ public class GCNavHeaderViewHolder {
     }
 
     public void setProfilePictureImage(Uri uri) {
-        Picasso.with(mContext).load(uri).into(profilePictureImageView);
+        Picasso.with(mContext)
+                .load(uri)
+                .error(ContextCompat.getDrawable(mContext, R.drawable.glover_color_logo))
+                .into(profilePictureImageView);
     }
 }
