@@ -6,6 +6,7 @@ import com.achanr.glovercolorapp.BuildConfig;
 import com.achanr.glovercolorapp.R;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -29,15 +30,26 @@ public class GCAuthUtil {
     }
 
     public static void startLoginActivity(Activity activity) {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                .setAndroidPackageName("com.achanr.glovercolorapp", /*installIfNotAvailable*/true, /*minimumVersion*/null)
+                .setHandleCodeInApp(true)
+                .setUrl("glovercolorfirebase.firebaseapp.com") // This URL needs to be whitelisted
+                .build();
+
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                        .setAvailableProviders(Arrays.asList(
+                                new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                new AuthUI.IdpConfig.FacebookBuilder().build(),
+                                new AuthUI.IdpConfig.EmailBuilder()
+                                        .enableEmailLinkSignIn()
+                                        .setActionCodeSettings(actionCodeSettings)
+                                        .build()))
                         .setTheme(R.style.DefaultTheme)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .setTosAndPrivacyPolicyUrls("https://sites.google.com/view/glovercolor/terms-and-conditions",
+                                "https://sites.google.com/view/glovercolor/privacy-policy")
                         .build(),
                 RC_SIGN_IN
         );

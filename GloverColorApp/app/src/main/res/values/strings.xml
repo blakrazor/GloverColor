@@ -2,6 +2,7 @@
 
     <!-- Facebook App Id -->
     <string name="facebook_application_id" translatable="false">1616332021995948</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbA1616332021995948</string>
 
     <!-- General text -->
     <string name="app_name">GloverColor</string>
@@ -115,14 +116,14 @@
     <string name="confirm_selection_body">You have selected %1$d sets. Any unselected sets will be deleted forever. Are you sure you would like to continue?</string>
     <string name="confirm">Confirm</string>
     <string name="sync_conflicts">Sync Conflicts</string>
-    <string name="resolving_conflicts_message">Resolving conflicts...Please Wait...</string>
+    <string name="resolving_conflicts_message">Resolving conflicts…Please Wait…</string>
     <string name="please_login_first">Please login first to save data online</string>
     <string name="data_already_synced">Data is already synced</string>
     <string name="something_went_wrong">Something went wrong Try again later</string>
     <string name="data_synced_complete_message">Data has been synced to your account</string>
     <string name="online_sync">Online Sync</string>
-    <string name="syncing_wait_message">Syncing...Please Wait...</string>
-    <string name="checking_sync_status_message">Checking Sync Status...Please Wait...</string>
+    <string name="syncing_wait_message">Syncing…Please Wait…</string>
+    <string name="checking_sync_status_message">Checking Sync Status…Please Wait…</string>
     <string name="title_nav_account">Account</string>
     <string name="nav_synchronize">Synchronize</string>
     <string name="logged_in_as">Logged in as:</string>
@@ -142,6 +143,6 @@
     <string name="you_selected_to_upload">You have selected %1$d sets. Are you sure you would like to continue?</string>
     <string name="you_selected_too_many">You have selected %1$d sets. You may only upload a max of %2$d sets. Please choose again.</string>
     <string name="upload">Upload</string>
-    <string name="uploading_sets_please_wait">Uploading sets...Please Wait...</string>
+    <string name="uploading_sets_please_wait">Uploading sets…Please Wait…</string>
     <string name="discover">Discover</string>
 </resources>
