@@ -42,4 +42,9 @@
         \n\u2022 Improving security of user details
         \n\u2022 Moved chip database online with app able to sync dynamically to new changes any time
     </string>
+    <string name="whats_new_in_version_2.1.1">
+        \n\u2022 Updated libraries
+        \n\u2022 Updated Firebase Auth Framework
+        \n\u2022 Removed collection of PII by Firebase Analytics for GDPR compliance
+    </string>
 </resources>

@@ -25,10 +25,10 @@ android {
 
     defaultConfig {
         applicationId "com.achanr.glovercolorapp"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 23
-        versionName "2.1.0"
+        versionCode 24
+        versionName "2.1.1"
         vectorDrawables.useSupportLibrary = true
     }
 
