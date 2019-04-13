@@ -2,6 +2,7 @@
 
     <!-- Facebook App Id -->
     <string name="facebook_application_id" translatable="false">1616332021995948</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbA1616332021995948</string>
 
     <!-- General text -->
     <string name="app_name">GloverColor</string>
