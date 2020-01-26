@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.ui.viewHolders;
 
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 

@@ -2,7 +2,7 @@ package com.achanr.glovercolorapp.ui.viewHolders;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;

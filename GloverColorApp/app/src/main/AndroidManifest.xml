@@ -93,17 +93,12 @@
             android:label="@string/title_upload_set">
         </activity>
 
-        <!-- Meant to be exposed -->
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="1503a3d7f3a5b932fe52076333b3746997624419"
-            tools:replace="android:value"/>
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1616332021995948"
             android:exported="true"/>
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
