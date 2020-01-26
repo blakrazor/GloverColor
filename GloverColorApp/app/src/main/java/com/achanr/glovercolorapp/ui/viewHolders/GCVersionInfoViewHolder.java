@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.ui.viewHolders;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;

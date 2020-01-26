@@ -1,6 +1,6 @@
 package com.achanr.glovercolorapp.ui.viewHolders;
 
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.View;
 
 import com.achanr.glovercolorapp.R;
